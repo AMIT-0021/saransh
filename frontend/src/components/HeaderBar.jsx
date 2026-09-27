@@ -13,7 +13,9 @@ import {
   Building2,
   RotateCcw,
   X,
-  CheckCircle2
+  CheckCircle2,
+  Scale,
+  FileText
 } from "lucide-react";
 import { FACILITY_SCENARIOS } from "../data/syntheticCases";
 import { TRANSLATIONS } from "../data/translations";
@@ -37,6 +39,7 @@ export default function HeaderBar({
 }) {
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [activeModalTab, setActiveModalTab] = useState("PRIVACY");
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-subtle transition-all">
@@ -171,14 +174,14 @@ export default function HeaderBar({
             <span className="hidden md:inline">{t.resetBtn || "Reset Cases"}</span>
           </button>
 
-          {/* Privacy & DPDP Policy Modal Button */}
+          {/* Privacy & Clinical Terms Modal Button */}
           <button
             onClick={() => setIsPrivacyModalOpen(true)}
-            title="View India DPDP Act 2023 & ABDM Clinical Privacy Safeguards"
+            title="View India DPDP Act 2023, ABDM Safeguards & NMC Clinical Terms"
             className="flex items-center space-x-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-xl border border-emerald-200 transition shadow-xs font-semibold"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="hidden sm:inline">DPDP & ABDM Privacy</span>
+            <span className="hidden sm:inline">Privacy & Terms</span>
           </button>
         </div>
       </div>
@@ -255,18 +258,24 @@ export default function HeaderBar({
             {/* Modal Header */}
             <div className="flex items-start justify-between pb-4 border-b border-slate-100 shrink-0">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shadow-xs">
-                  <ShieldCheck className="w-6 h-6" />
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-xs ${
+                  activeModalTab === "PRIVACY"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                    : "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                }`}>
+                  {activeModalTab === "PRIVACY" ? <ShieldCheck className="w-6 h-6" /> : <Scale className="w-6 h-6" />}
                 </div>
                 <div>
                   <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                    Clinical Security & Privacy Safeguards
+                    {activeModalTab === "PRIVACY" ? "Clinical Security & Privacy Safeguards" : "Clinical Terms & Institutional Disclaimers"}
                     <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold border border-emerald-300">
-                      DPDP ACT 2023 COMPLIANT
+                      {activeModalTab === "PRIVACY" ? "DPDP ACT 2023 COMPLIANT" : "CDSCO SaMD CLASS A"}
                     </span>
                   </h3>
                   <p className="text-xs text-slate-500">
-                    National Health Mission (NHM) & Ayushman Bharat Digital Mission (ABDM) HDMP Standard
+                    {activeModalTab === "PRIVACY"
+                      ? "National Health Mission (NHM) & Ayushman Bharat Digital Mission (ABDM) HDMP Standard"
+                      : "National Medical Commission (NMC) Registered Medical Practitioner Liability Framework"}
                   </p>
                 </div>
               </div>
@@ -278,53 +287,125 @@ export default function HeaderBar({
               </button>
             </div>
 
-            {/* Modal Body: Bento Cards of the 4 Pillars */}
+            {/* Segmented Control Tabs */}
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl mt-3 border border-slate-200 shrink-0">
+              <button
+                onClick={() => setActiveModalTab("PRIVACY")}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
+                  activeModalTab === "PRIVACY"
+                    ? "bg-white text-emerald-800 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>1. DPDP Act 2023 & ABDM Privacy</span>
+              </button>
+              <button
+                onClick={() => setActiveModalTab("TERMS")}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
+                  activeModalTab === "TERMS"
+                    ? "bg-white text-indigo-800 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <Scale className="w-3.5 h-3.5 text-indigo-600" />
+                <span>2. Clinical Terms & NMC SaMD Disclaimers</span>
+              </button>
+            </div>
+
+            {/* Modal Body: Bento Cards */}
             <div className="overflow-y-auto py-4 space-y-3 pr-1 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>1. Edge-Based De-Identification (Zero Cloud PII)</span>
-                </div>
-                <p className="text-slate-600 pl-6 leading-relaxed">
-                  Direct personal identifiers (Patient Name, Phone, Aadhaar) are stripped on the client tablet before any LLM inference occurs. The cloud AI only analyzes clinical parameters (e.g. <em>Patient_M62, crushing chest pain, SpO2 89%</em>).
-                </p>
-              </div>
+              {activeModalTab === "PRIVACY" ? (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>1. Edge-Based De-Identification (Zero Cloud PII)</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Direct personal identifiers (Patient Name, Phone, Aadhaar) are stripped on the client tablet before any LLM inference occurs. The cloud AI only analyzes clinical parameters (e.g. <em>Patient_M62, crushing chest pain, SpO2 89%</em>).
+                    </p>
+                  </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>2. Explicit Consent & Emergency Casualty Exemption</span>
-                </div>
-                <p className="text-slate-600 pl-6 leading-relaxed">
-                  Informed consent is logged at intake. For unconscious or trauma casualties, the system invokes <strong>Section 7(a) DPDP Exemption</strong> (medical emergency), logging an emergency audit trail counter-signed by the Medical Officer.
-                </p>
-              </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>2. Explicit Consent & Emergency Casualty Exemption</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Informed consent is logged at intake. For unconscious or trauma casualties, the system invokes <strong>Section 7(a) DPDP Exemption</strong> (medical emergency), logging an emergency audit trail counter-signed by the Medical Officer.
+                    </p>
+                  </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>3. Role-Based Access Control (ASHA Intake vs. Doctor Decision)</span>
-                </div>
-                <p className="text-slate-600 pl-6 leading-relaxed">
-                  Frontline ASHA/ANM workers can only record intake. Only licensed Medical Officers with valid State/NMC registration numbers can counter-sign triage notes, issue referral slips, or discharge patients.
-                </p>
-              </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>3. Role-Based Access Control (ASHA Intake vs. Doctor Decision)</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Frontline ASHA/ANM workers can only record intake. Only licensed Medical Officers with valid State/NMC registration numbers can counter-sign triage notes, issue referral slips, or discharge patients.
+                    </p>
+                  </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>4. Cryptographic Non-Repudiation & Audit Hashing</span>
-                </div>
-                <p className="text-slate-600 pl-6 leading-relaxed">
-                  Every triage classification and doctor override generates a SHA-256 tamper-evident hash linked to the physician's credentials, guaranteeing complete legal traceability under NMC regulations.
-                </p>
-              </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>4. Cryptographic Non-Repudiation & Audit Hashing</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Every triage classification and doctor override generates a SHA-256 tamper-evident hash linked to the physician's credentials, guaranteeing complete legal traceability under NMC regulations.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <span>1. CDSCO SaMD Class A Classification (Assistive CDSS Only)</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Saransh operates strictly as an Assistive Clinical Decision Support System (CDSS). It <strong>DOES NOT</strong> diagnose illness, prescribe medication, or replace independent clinical examination.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <span>2. NMC Medical Officer Primacy & Mandatory Counter-Signature</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Under National Medical Commission regulations, 100% legal, diagnostic, and clinical accountability rests with the attending Medical Officer. No triage note or referral is legally valid without verified doctor credentials.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <span>3. Resuscitation Bay Priority Over Digital Intake</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      For acute life threats (shock, respiratory arrest, major trauma), digital intake is strictly secondary to immediate physical transfer to the resuscitation bay. Deterministic red lines trigger an emergency chime automatically.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center space-x-2 text-slate-900 font-bold mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <span>4. Frontline ASHA & ANM Operational Boundaries</span>
+                    </div>
+                    <p className="text-slate-600 pl-6 leading-relaxed">
+                      Frontline staff are authorized to record vernacular voice complaints, capture non-invasive vitals, and assist anatomical touch mapping. Modifying triage lanes or discharging patients without physician oversight is strictly forbidden.
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Modal Footer */}
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
               <span className="flex items-center gap-1.5 font-medium">
-                <Lock className="w-3.5 h-3.5 text-teal-600" /> AES-256 Encryption at Rest &bull; TLS 1.3 in Transit
+                <Lock className="w-3.5 h-3.5 text-teal-600" /> CDSCO Medical Device Rules 2017 &bull; NMC Professional Conduct Guidelines
               </span>
               <button
                 onClick={() => setIsPrivacyModalOpen(false)}

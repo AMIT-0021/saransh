@@ -117,7 +117,7 @@ export default function TriageResultCard({
       <div
         className={`p-6 rounded-2xl border transition-all flex flex-wrap items-center justify-between gap-4 ${
           priority === "RED"
-            ? "bg-rose-50 border-rose-200 text-rose-950"
+            ? "bg-rose-50 border-rose-300 text-rose-950 emergency-pulse ring-1 ring-rose-400/40"
             : priority === "YELLOW"
             ? "bg-amber-50 border-amber-200 text-amber-950"
             : "bg-emerald-50 border-emerald-200 text-emerald-950"

@@ -1,5 +1,6 @@
 import os
 import uuid
+import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional, Any
 from fastapi import FastAPI, HTTPException, Body, Query
@@ -15,11 +16,15 @@ from models import (
     ClinicianReviewPayload,
     QueueItem,
     QueueDashboardResponse,
-    FacilityStats
+    FacilityStats,
+    ReferralSlipRequest,
+    ReferralSlipResponse,
+    FHIRBundleResponse
 )
 from triage_rules import PRIORITY_RANK
 from ai_service import process_multimodal_triage
 from seed_data import get_seed_patients, ODISHA_NHM_FACILITIES
+
 
 app = FastAPI(
     title="Saransh (सारांश) — Multimodal Human-in-the-Loop Healthcare Triage API",
@@ -57,6 +62,8 @@ def root():
         "version": "1.0.0"
     }
 
+@app.get("/health")
+@app.get("/api/health")
 @app.get("/api/v1/health")
 def health_check():
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
@@ -70,6 +77,7 @@ def health_check():
     }
 
 @app.get("/api/v1/facilities")
+@app.get("/api/facilities")
 def get_facilities():
     """
     Returns authentic All-India 8-Facility Healthcare Network Registry.
@@ -77,6 +85,7 @@ def get_facilities():
     return list(ODISHA_NHM_FACILITIES.values())
 
 @app.post("/api/v1/demo/seed")
+@app.post("/api/demo/seed")
 def seed_demo_patients():
     """Resets the triage database to the canonical All-India 8-facility synthetic demo cases."""
     init_db()
@@ -86,6 +95,7 @@ def seed_demo_patients():
         "count": len(triage_db)
     }
 
+@app.post("/api/triage/analyze", response_model=TriageRecord)
 @app.post("/api/v1/triage/analyze", response_model=TriageRecord)
 def analyze_triage(payload: TriageIntakePayload):
     """
@@ -105,12 +115,13 @@ def analyze_triage(payload: TriageIntakePayload):
     # Execute Hybrid Triage Engine
     ai_output: AITriageOutput = process_multimodal_triage(payload)
 
-    # Create new TriageRecord
+    # Create new TriageRecord with explicit triage_lane
     new_record = TriageRecord(
         visit_id=visit_id,
         token_number=payload.patient_basic_info.token_number,
         created_at=datetime.now().isoformat(),
         queue_status="WAITING",
+        triage_lane=ai_output.final_computed_priority,
         patient_basic_info=payload.patient_basic_info,
         symptoms_and_complaints=payload.symptoms_and_complaints,
         vital_signs=payload.vital_signs,
@@ -125,6 +136,298 @@ def analyze_triage(payload: TriageIntakePayload):
 
     triage_db[visit_id] = new_record
     return new_record
+
+# ==============================================================================
+# NHM 1-Click Referral Slip & Timestamp Hash Generator
+# ==============================================================================
+@app.post("/api/referrals/create", response_model=ReferralSlipResponse)
+@app.post("/api/v1/referrals/create", response_model=ReferralSlipResponse)
+def create_referral_slip(request: ReferralSlipRequest):
+    """
+    Generates an official Government of Odisha / NHM Referral Slip with cryptographic timestamp hash.
+    Enables instant inter-facility digital handover and 108 ambulance dispatch synchronization.
+    """
+    now = datetime.now()
+    now_iso = now.isoformat()
+    ref_id = f"REF-OD-{now.strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+
+    # Compute SHA-256 timestamp hash for tamper-proof digital audit
+    raw_hash_data = f"{request.patient_id}|{request.from_facility_nin}|{request.receiving_facility_nin}|{request.triage_priority}|{now_iso}"
+    timestamp_hash = hashlib.sha256(raw_hash_data.encode("utf-8")).hexdigest()
+
+    # Pre-referral stabilization default if not specified
+    stabilization = request.pre_referral_treatment or (
+        "High-flow oxygen at 6 L/min via Non-Rebreather Mask; Wide-bore IV cannula 18G secured; Continuous SpO2 & ECG monitoring."
+        if request.triage_priority == "RED" else
+        "Oral rehydration initiated; Vitals recorded; Paracetamol 500mg administered; Patient stabilized for road transit."
+    )
+
+    ambulance_info = request.ambulance_call_status or "108 Advanced Life Support (ALS) Ambulance alerted with active GPS tracking."
+    paramedic_info = request.accompanying_paramedic or "Sister Manorama Nayak (Staff Nurse) + Emergency Medical Technician"
+
+    qr_data = f"OD-NHM-REF|{ref_id}|{request.abha_id or 'NO-ABHA'}|{request.triage_priority}|{timestamp_hash[:16]}"
+
+    # If linked to a visit_id in database, update queue_status to REFERRED
+    if request.visit_id and request.visit_id in triage_db:
+        triage_db[request.visit_id].queue_status = "REFERRED"
+
+    return ReferralSlipResponse(
+        referral_id=ref_id,
+        token_number=request.visit_id or "T-REF",
+        timestamp_hash=timestamp_hash,
+        dispatch_timestamp=now_iso,
+        status="DISPATCHED",
+        from_facility=request.from_facility,
+        from_facility_nin=request.from_facility_nin,
+        receiving_facility=request.receiving_facility,
+        receiving_facility_nin=request.receiving_facility_nin,
+        triage_priority=request.triage_priority,
+        patient_id=request.patient_id,
+        patient_name=request.patient_name,
+        age=request.age,
+        sex=request.sex,
+        abha_id=request.abha_id,
+        chief_complaint=request.chief_complaint,
+        departure_vitals=request.vitals_summary,
+        pre_referral_stabilization=stabilization,
+        ambulance_coordination=ambulance_info,
+        accompanying_staff=paramedic_info,
+        referring_doctor=request.referring_officer,
+        nhm_odisha_corridor="NH-16 Express Golden Hour Healthcare Corridor (District Headquarter Network)",
+        digital_signature_hash=f"SHA256:{timestamp_hash[:16]}...{timestamp_hash[-16:]}",
+        verification_qr_data=qr_data
+    )
+
+# ==============================================================================
+# ABDM FHIR R4 Bundle Generator (Condition, Encounter, Observation)
+# ==============================================================================
+def build_fhir_bundle_for_record(record: TriageRecord) -> FHIRBundleResponse:
+    bundle_id = f"bundle-{record.visit_id.lower()}"
+    now_iso = datetime.now().isoformat()
+    patient = record.patient_basic_info
+    vitals = record.vital_signs
+    sym = record.symptoms_and_complaints
+    priority = record.triage_lane or record.ai_triage_output.final_computed_priority
+
+    # 1. Composition Resource (Document Header)
+    composition = {
+        "resourceType": "Composition",
+        "id": f"comp-{record.visit_id.lower()}",
+        "status": "final",
+        "type": {
+            "coding": [{
+                "system": "http://snomed.info/sct",
+                "code": "371531000",
+                "display": "Clinical report"
+            }]
+        },
+        "subject": {"reference": f"Patient/{patient.patient_id}"},
+        "encounter": {"reference": f"Encounter/{record.visit_id}"},
+        "date": now_iso,
+        "author": [{"display": "Saransh Clinical Triage AI Assistant"}],
+        "title": f"Saransh Triage Assessment & Clinical Summary - {patient.name_or_alias}",
+        "section": [{
+            "title": "Triage Urgency & Handover",
+            "text": {
+                "status": "generated",
+                "div": f"<div><strong>Triage Priority:</strong> {priority} | <strong>Chief Complaint:</strong> {sym.chief_complaint}</div>"
+            }
+        }]
+    }
+
+    # 2. Patient Resource
+    patient_res = {
+        "resourceType": "Patient",
+        "id": patient.patient_id,
+        "identifier": [{
+            "system": "https://healthid.ndhm.gov.in",
+            "value": patient.abha_id or "91-4821-9923-0192"
+        }],
+        "name": [{"text": patient.name_or_alias}],
+        "gender": patient.sex.lower() if patient.sex in ["Male", "Female"] else "other",
+        "extension": [{
+            "url": "https://nrces.in/ndhm/fhir/r4/StructureDefinition/Age",
+            "valueInteger": patient.age
+        }]
+    }
+
+    # 3. Encounter Resource
+    encounter_res = {
+        "resourceType": "Encounter",
+        "id": record.visit_id,
+        "status": "in-progress" if record.queue_status == "WAITING" else "finished",
+        "class": {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "code": "EMER" if priority == "RED" else "AMB",
+            "display": "Emergency" if priority == "RED" else "Ambulatory"
+        },
+        "priority": {
+            "coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActPriority",
+                "code": "EM" if priority == "RED" else "UR" if priority == "YELLOW" else "R",
+                "display": priority
+            }]
+        },
+        "subject": {"reference": f"Patient/{patient.patient_id}"},
+        "serviceProvider": {"display": patient.facility_type}
+    }
+
+    # 4. Condition Resource (ICD-10 / SNOMED CT Mapped)
+    snomed_code = "29857009" if "chest" in sym.chief_complaint.lower() else "386661006" if "fever" in sym.chief_complaint.lower() else "49727002"
+    condition_res = {
+        "resourceType": "Condition",
+        "id": f"cond-{record.visit_id.lower()}",
+        "clinicalStatus": {
+            "coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                "code": "active"
+            }]
+        },
+        "verificationStatus": {
+            "coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                "code": "confirmed"
+            }]
+        },
+        "code": {
+            "coding": [{
+                "system": "http://snomed.info/sct",
+                "code": snomed_code,
+                "display": sym.chief_complaint or "Clinical Presentation"
+            }]
+        },
+        "subject": {"reference": f"Patient/{patient.patient_id}"}
+    }
+
+    # 5. Observation Resources (Vital Signs)
+    observations = []
+    if vitals.spo2_percent is not None:
+        observations.append({
+            "resourceType": "Observation",
+            "id": f"obs-spo2-{record.visit_id.lower()}",
+            "status": "final",
+            "code": {
+                "coding": [{
+                    "system": "http://loinc.org",
+                    "code": "59408-5",
+                    "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
+                }]
+            },
+            "subject": {"reference": f"Patient/{patient.patient_id}"},
+            "valueQuantity": {"value": vitals.spo2_percent, "unit": "%", "system": "http://unitsofmeasure.org", "code": "%"}
+        })
+
+    if vitals.bp_systolic is not None:
+        observations.append({
+            "resourceType": "Observation",
+            "id": f"obs-bp-{record.visit_id.lower()}",
+            "status": "final",
+            "code": {
+                "coding": [{
+                    "system": "http://loinc.org",
+                    "code": "85354-9",
+                    "display": "Blood pressure panel"
+                }]
+            },
+            "subject": {"reference": f"Patient/{patient.patient_id}"},
+            "component": [
+                {
+                    "code": {"coding": [{"system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure"}]},
+                    "valueQuantity": {"value": vitals.bp_systolic, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]"}
+                },
+                {
+                    "code": {"coding": [{"system": "http://loinc.org", "code": "8462-4", "display": "Diastolic blood pressure"}]},
+                    "valueQuantity": {"value": vitals.bp_diastolic or 80, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]"}
+                }
+            ]
+        })
+
+    if vitals.heart_rate_bpm is not None:
+        observations.append({
+            "resourceType": "Observation",
+            "id": f"obs-hr-{record.visit_id.lower()}",
+            "status": "final",
+            "code": {
+                "coding": [{
+                    "system": "http://loinc.org",
+                    "code": "8867-4",
+                    "display": "Heart rate"
+                }]
+            },
+            "subject": {"reference": f"Patient/{patient.patient_id}"},
+            "valueQuantity": {"value": vitals.heart_rate_bpm, "unit": "/min", "system": "http://unitsofmeasure.org", "code": "/min"}
+        })
+
+    if vitals.temperature_f is not None:
+        observations.append({
+            "resourceType": "Observation",
+            "id": f"obs-temp-{record.visit_id.lower()}",
+            "status": "final",
+            "code": {
+                "coding": [{
+                    "system": "http://loinc.org",
+                    "code": "8310-5",
+                    "display": "Body temperature"
+                }]
+            },
+            "subject": {"reference": f"Patient/{patient.patient_id}"},
+            "valueQuantity": {"value": vitals.temperature_f, "unit": "degF", "system": "http://unitsofmeasure.org", "code": "[degF]"}
+        })
+
+    entries = [
+        {"resource": composition},
+        {"resource": patient_res},
+        {"resource": encounter_res},
+        {"resource": condition_res}
+    ]
+    for obs in observations:
+        entries.append({"resource": obs})
+
+    return FHIRBundleResponse(
+        resourceType="Bundle",
+        id=bundle_id,
+        meta={
+            "lastUpdated": now_iso,
+            "profile": ["https://nrces.in/ndhm/fhir/r4/StructureDefinition/DocumentBundle"]
+        },
+        type="document",
+        timestamp=now_iso,
+        entry=entries
+    )
+
+@app.get("/api/fhir/bundle/{visit_id}", response_model=FHIRBundleResponse)
+@app.get("/api/v1/fhir/bundle/{visit_id}", response_model=FHIRBundleResponse)
+def get_fhir_bundle(visit_id: str):
+    """
+    Returns an official ABDM / NDHM compliant HL7 FHIR R4 Bundle for any triage record.
+    Includes Condition, Encounter, and Observation schemas.
+    """
+    if visit_id not in triage_db:
+        raise HTTPException(status_code=404, detail="Triage visit record not found")
+    return build_fhir_bundle_for_record(triage_db[visit_id])
+
+@app.post("/api/fhir/bundle", response_model=FHIRBundleResponse)
+def create_fhir_bundle(payload: TriageIntakePayload):
+    """
+    Generates a real-time ABDM FHIR R4 Bundle directly from an intake payload.
+    """
+    ai_output: AITriageOutput = process_multimodal_triage(payload)
+    temp_record = TriageRecord(
+        visit_id=f"VISIT-FHIR-{uuid.uuid4().hex[:6].upper()}",
+        token_number="T-FHIR",
+        created_at=datetime.now().isoformat(),
+        triage_lane=ai_output.final_computed_priority,
+        patient_basic_info=payload.patient_basic_info,
+        symptoms_and_complaints=payload.symptoms_and_complaints,
+        vital_signs=payload.vital_signs,
+        medical_history=payload.medical_history,
+        uploaded_reports=payload.uploaded_reports,
+        visual_inputs=payload.visual_inputs,
+        red_flag_checklist=payload.red_flag_checklist,
+        ai_triage_output=ai_output
+    )
+    return build_fhir_bundle_for_record(temp_record)
+
 
 # Authentic Real-Time Healthcare Facility Telemetry & Bed Allocation Registry
 FACILITY_TELEMETRY_MAP = {

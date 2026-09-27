@@ -1,17 +1,69 @@
 /**
- * LocalStorage Offline Queue Buffer for Saransh
- * Allows offline intake and automatic synchronization with the backend when connection is restored.
+ * IndexedDB & LocalStorage Hybrid Offline Queue Buffer for Saransh (सारांश)
+ * Ensures robust offline intake resilience with zero unhandled promise crashes.
  */
 
 const STORAGE_KEY = "saransh_offline_queue_records";
 const TOKEN_KEY = "saransh_offline_token_counter";
+const DB_NAME = "saransh_offline_db";
+const DB_VERSION = 1;
+const STORE_NAME = "intakes";
+
+// Helper to safely open IndexedDB
+function openIndexedDB() {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined" || !window.indexedDB) {
+      return reject(new Error("IndexedDB not supported"));
+    }
+    try {
+      const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: "token_number" });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("Failed to open IndexedDB"));
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+// Write to IndexedDB safely without crashing
+async function writeToIndexedDB(record) {
+  try {
+    const db = await openIndexedDB();
+    return new Promise((resolve) => {
+      try {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        store.put(record);
+        tx.oncomplete = () => {
+          db.close();
+          resolve(true);
+        };
+        tx.onerror = () => {
+          db.close();
+          resolve(false);
+        };
+      } catch (_) {
+        resolve(false);
+      }
+    });
+  } catch (err) {
+    // Graceful fallback to localStorage
+    return false;
+  }
+}
 
 export function getOfflineQueue() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
-    console.error("Error reading offline queue from localStorage", e);
+    console.warn("Error reading offline queue from localStorage:", e);
     return [];
   }
 }
@@ -25,16 +77,30 @@ export function saveOfflineRecord(record) {
     localStorage.setItem(TOKEN_KEY, String(counter + 1));
 
     record.token_number = offlineToken;
-    record.patient_basic_info.token_number = offlineToken;
+    if (record.patient_basic_info) {
+      record.patient_basic_info.token_number = offlineToken;
+    }
     record.is_offline_cached = true;
+    record.cached_at = new Date().toISOString();
 
+    // 1. Synchronously persist to LocalStorage
     current.unshift(record);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+
+    // 2. Asynchronously mirror into IndexedDB (fire-and-forget safe)
+    writeToIndexedDB(record).catch(() => {});
+
     return record;
   } catch (e) {
-    console.error("Error saving offline record", e);
+    console.warn("Error saving offline record:", e);
     return record;
   }
+}
+
+export async function saveOfflineRecordAsync(record) {
+  const saved = saveOfflineRecord(record);
+  await writeToIndexedDB(saved).catch(() => {});
+  return saved;
 }
 
 export function getOfflinePendingCount() {
@@ -42,7 +108,16 @@ export function getOfflinePendingCount() {
 }
 
 export function clearOfflineQueue() {
-  localStorage.removeItem(STORAGE_KEY);
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    openIndexedDB().then((db) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).clear();
+      tx.oncomplete = () => db.close();
+    }).catch(() => {});
+  } catch (e) {
+    console.warn("Error clearing offline queue:", e);
+  }
 }
 
 export async function syncOfflineQueueWithBackend(backendUrl = "http://localhost:8000") {
@@ -83,6 +158,10 @@ export async function syncOfflineQueueWithBackend(backendUrl = "http://localhost
     }
   }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
+  } catch (e) {
+    console.warn("Error updating offline queue after sync:", e);
+  }
   return { synced, failed, remainingCount: remaining.length };
 }

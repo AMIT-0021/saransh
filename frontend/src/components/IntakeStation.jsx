@@ -1390,14 +1390,14 @@ export default function IntakeStation({
                     </div>
 
                     {/* 7 Vertical Frequency Bars of Varying Heights */}
-                    <div className="flex items-center space-x-1.5 h-8 px-2 bg-black/40 rounded-xl border border-teal-500/30 shrink-0">
-                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-1" style={{ height: isSoundDetected ? `${Math.max(12, Math.min(28, audioVolumePercent * 0.4))}px` : "14px" }}></span>
-                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-2" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(30, audioVolumePercent * 0.6))}px` : "22px" }}></span>
-                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-3" style={{ height: isSoundDetected ? `${Math.max(20, Math.min(32, audioVolumePercent * 0.8))}px` : "28px" }}></span>
-                      <span className="w-1.5 bg-emerald-300 rounded-full wave-bar-4" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(26, audioVolumePercent * 0.5))}px` : "18px" }}></span>
-                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-5" style={{ height: isSoundDetected ? `${Math.max(18, Math.min(30, audioVolumePercent * 0.7))}px` : "26px" }}></span>
-                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-6" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(24, audioVolumePercent * 0.45))}px` : "16px" }}></span>
-                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-7" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(28, audioVolumePercent * 0.55))}px` : "20px" }}></span>
+                    <div className="flex items-center space-x-1.5 h-8 px-2.5 bg-black/50 rounded-xl border border-teal-500/40 shrink-0 shadow-inner">
+                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-1 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(28, audioVolumePercent * 0.45))}px` : "14px" }}></span>
+                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-2 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(18, Math.min(30, audioVolumePercent * 0.65))}px` : "22px" }}></span>
+                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-3 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(22, Math.min(32, audioVolumePercent * 0.85))}px` : "28px" }}></span>
+                      <span className="w-1.5 bg-emerald-300 rounded-full wave-bar-4 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(26, audioVolumePercent * 0.55))}px` : "18px" }}></span>
+                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-5 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(20, Math.min(30, audioVolumePercent * 0.75))}px` : "26px" }}></span>
+                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-6 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(24, audioVolumePercent * 0.5))}px` : "16px" }}></span>
+                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-7 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(18, Math.min(28, audioVolumePercent * 0.6))}px` : "20px" }}></span>
                     </div>
                   </div>
                 )}
@@ -1434,20 +1434,26 @@ export default function IntakeStation({
                   </div>
                 )}
 
-                {/* Sample Vernacular Utterance Chips (Language-Specific) */}
+                {/* Sample Vernacular Utterance Chips (Language-Specific) with 1-Click Audio Demo */}
                 <div className="space-y-2">
-                  <span className="text-xs font-semibold text-slate-600 block">
-                    {t.sampleVoiceLabel}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600 block">
+                      {t.sampleVoiceLabel}
+                    </span>
+                    <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">
+                      ⚡ Stage Demo Audio Ready
+                    </span>
+                  </div>
                   <div className="grid grid-cols-1 gap-2">
                     {(SAMPLE_AUDIO_SCRIPTS[patientInfo.language_preference] || SAMPLE_AUDIO_SCRIPTS.Odia || []).map((sample, idx) => (
-                      <button
+                      <div
                         key={sample.label || idx}
-                        type="button"
-                        onClick={() => handleInjectSampleVoice(sample)}
-                        className="text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-teal-50 hover:border-teal-300 transition text-xs flex items-center justify-between group cursor-pointer"
+                        className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-teal-50/50 hover:border-teal-300 transition text-xs flex items-center justify-between group shadow-2xs"
                       >
-                        <div className="truncate mr-2">
+                        <div
+                          onClick={() => handleInjectSampleVoice(sample)}
+                          className="truncate mr-2 flex-1 cursor-pointer"
+                        >
                           <span className="font-bold text-slate-900 group-hover:text-teal-900 block truncate">
                             {sample.label}
                           </span>
@@ -1455,10 +1461,29 @@ export default function IntakeStation({
                             {sample.text}
                           </span>
                         </div>
-                        <span className="text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-medium shrink-0">
-                          Inject
-                        </span>
-                      </button>
+                        <div className="flex items-center space-x-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleInjectSampleVoice(sample);
+                              handlePlaySpeech(sample.text, patientInfo.language_preference);
+                            }}
+                            title="1-Click Instant Audio Playback (Odia/Hindi/English)"
+                            className="text-[10px] bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1 rounded-lg font-bold flex items-center space-x-1 shadow-xs transition cursor-pointer"
+                          >
+                            <Volume2 className="w-3 h-3 text-teal-100" />
+                            <span>Play</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleInjectSampleVoice(sample)}
+                            className="text-[10px] bg-white border border-slate-300 hover:border-teal-400 text-slate-700 hover:text-teal-800 px-2 py-1 rounded-lg font-semibold transition cursor-pointer"
+                          >
+                            Inject
+                          </button>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -1638,26 +1663,32 @@ export default function IntakeStation({
                           key={region.id}
                           type="button"
                           onClick={() => handleBodyRegionClick(region)}
-                          className={`p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-1.5 ${
+                          title={`Anatomical Zone: ${region.label}\nClick to toggle symptoms: ${region.symptoms.join(", ")}`}
+                          className={`p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-1.5 group relative overflow-hidden ${
                             isRegionActive
-                              ? "bg-emerald-50/90 border-emerald-400 text-emerald-950 ring-2 ring-emerald-500 shadow-md shadow-emerald-500/20"
-                              : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50/80 shadow-xs"
+                              ? "bg-teal-500/10 border-teal-500 text-teal-950 ring-2 ring-teal-500 shadow-md shadow-teal-500/25 scale-[1.01]"
+                              : "bg-white border-slate-200 text-slate-700 hover:border-teal-400 hover:bg-teal-50/30 hover:shadow-md hover:shadow-teal-500/10 hover:-translate-y-0.5 active:translate-y-0"
                           }`}
                         >
+                          {/* Ambient zone glow on active */}
+                          {isRegionActive && (
+                            <span className="absolute -right-4 -bottom-4 w-12 h-12 bg-teal-400/20 rounded-full blur-md pointer-events-none"></span>
+                          )}
+
                           <div className="flex items-center justify-between">
-                            <span className="text-lg">{region.icon}</span>
+                            <span className="text-lg group-hover:scale-110 transition-transform duration-200">{region.icon}</span>
                             <span
-                              className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                              className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full transition-colors ${
                                 isRegionActive
-                                  ? "bg-emerald-600 text-white"
-                                  : "bg-slate-100 text-slate-500"
+                                  ? "bg-teal-600 text-white shadow-xs"
+                                  : "bg-slate-100 text-slate-500 group-hover:bg-teal-100 group-hover:text-teal-800"
                               }`}
                             >
                               {activeCount > 0 ? `${activeCount} Active` : "Select"}
                             </span>
                           </div>
                           <div>
-                            <span className="font-black text-xs block leading-tight">
+                            <span className="font-black text-xs block leading-tight group-hover:text-teal-900 transition-colors">
                               {region.label}
                             </span>
                             <span className="text-[10px] text-slate-500 truncate block mt-0.5">

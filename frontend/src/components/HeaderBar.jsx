@@ -113,10 +113,10 @@ export default function HeaderBar({
           >
             {isOffline ? (
               <>
-                <WifiOff className="w-3.5 h-3.5 text-amber-600" />
-                <span>{t.offlineMode || "Offline Mode"}</span>
+                <WifiOff className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                <span className="font-bold">⚡ Offline Mode - Queued Locally</span>
                 {pendingSyncCount > 0 && (
-                  <span className="bg-amber-500 text-white px-1.5 py-0.2 rounded-full text-[10px] font-bold">
+                  <span className="bg-amber-600 text-white px-1.5 py-0.5 rounded-full text-[10px] font-black">
                     {pendingSyncCount}
                   </span>
                 )}

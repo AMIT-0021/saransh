@@ -174,6 +174,7 @@ class TriageRecord(BaseModel):
     token_number: str
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
     queue_status: str = Field(default="WAITING", description="WAITING, IN_REVIEW, COMPLETED, REFERRED")
+    triage_lane: str = Field(default="GREEN", description="RED, YELLOW, or GREEN")
     patient_basic_info: PatientBasicInfo
     symptoms_and_complaints: SymptomsData
     vital_signs: VitalSigns
@@ -233,3 +234,61 @@ class QueueDashboardResponse(BaseModel):
     green_count: int
     total_waiting: int
     facility_stats: FacilityStats
+
+# ==============================================================================
+# NHM Referral & FHIR R4 Bundle Schemas
+# ==============================================================================
+class ReferralSlipRequest(BaseModel):
+    visit_id: Optional[str] = None
+    patient_id: str = "PHC-1001"
+    patient_name: str = "Anonymous Patient"
+    age: int = 35
+    sex: str = "Male"
+    abha_id: Optional[str] = "91-4821-9923-0192"
+    from_facility: str = "PHC Jatni"
+    from_facility_nin: str = "OD-KHD-PHC-102"
+    receiving_facility: str = "Capital Hospital (District Headquarter Hospital, Bhubaneswar - NIN: OD-DHH-401)"
+    receiving_facility_nin: str = "OD-DHH-401"
+    triage_priority: str = "RED"
+    chief_complaint: str = "Severe Chest Pain / Acute Coronary Syndrome"
+    vitals_summary: str = "SpO2: 89%, BP: 158/96 mmHg, HR: 112 bpm"
+    pre_referral_treatment: Optional[str] = "High-flow O2 at 6L/min via NRB mask; Aspirin 300mg + Clopidogrel 300mg stat; IV line 18G secured"
+    ambulance_call_status: Optional[str] = "108 ALS Ambulance (OD-02-AX-1081) dispatched from Jatni base station"
+    accompanying_paramedic: Optional[str] = "Sister Manorama Nayak (Staff Nurse) + EMT R. K. Sahoo"
+    referral_reason: Optional[str] = "Tertiary coronary angiography & ICU care not available at PHC"
+    referring_officer: str = "Dr. S. Mohanty, MBBS, MD (Medical Officer In-Charge)"
+
+class ReferralSlipResponse(BaseModel):
+    referral_id: str
+    token_number: Optional[str] = None
+    timestamp_hash: str
+    dispatch_timestamp: str
+    status: str = "DISPATCHED"
+    from_facility: str
+    from_facility_nin: str
+    receiving_facility: str
+    receiving_facility_nin: str
+    triage_priority: str
+    patient_id: str
+    patient_name: str
+    age: int
+    sex: str
+    abha_id: Optional[str] = None
+    chief_complaint: str
+    departure_vitals: str
+    pre_referral_stabilization: str
+    ambulance_coordination: str
+    accompanying_staff: str
+    referring_doctor: str
+    nhm_odisha_corridor: str
+    digital_signature_hash: str
+    verification_qr_data: str
+
+class FHIRBundleResponse(BaseModel):
+    resourceType: str = "Bundle"
+    id: str
+    meta: Dict[str, Any]
+    type: str = "document"
+    timestamp: str
+    entry: List[Dict[str, Any]]
+

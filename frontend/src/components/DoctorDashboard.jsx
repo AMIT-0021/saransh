@@ -351,24 +351,25 @@ export default function DoctorDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Column 1: RED EMERGENCY QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "RED") && (
-          <div className="space-y-4">
-            <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
-              <div className="flex items-center space-x-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping"></span>
-                <h4 className="font-extrabold text-sm text-rose-950 uppercase tracking-wide">
-                  {t.emergencyQueueTitle}
-                </h4>
+          <div className="bg-rose-950/[0.03] border border-rose-300/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden ring-1 ring-rose-400/20">
+            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-center justify-between shadow-xs emergency-pulse">
+              <div className="flex items-center space-x-2.5">
+                <span className="w-3 h-3 rounded-full bg-rose-600 animate-ping"></span>
+                <div>
+                  <h4 className="font-extrabold text-sm text-rose-950 uppercase tracking-wide">
+                    {t.emergencyQueueTitle}
+                  </h4>
+                  <span className="text-[10px] text-rose-800 font-bold block">{t.immediateTarget}</span>
+                </div>
               </div>
-              <span className="bg-rose-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                {redItems.length}
+              <span className="bg-rose-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-xs flex items-center space-x-1">
+                <span>{redItems.length}</span>
+                <span className="text-[10px] font-semibold opacity-90">P1</span>
               </span>
-            </div>
-            <div className="text-[11px] text-rose-800 font-semibold px-2">
-              {t.immediateTarget}
             </div>
 
             {redItems.length === 0 ? (
-              <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-200 text-center text-xs text-slate-400">
+              <div className="p-6 rounded-2xl bg-white border border-dashed border-rose-200 text-center text-xs text-rose-400">
                 No active Emergency (RED) patients currently waiting.
               </div>
             ) : (
@@ -389,24 +390,25 @@ export default function DoctorDashboard({
 
         {/* Column 2: YELLOW URGENT QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "YELLOW") && (
-          <div className="space-y-4">
-            <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
-              <div className="flex items-center space-x-2">
+          <div className="bg-amber-950/[0.02] border border-amber-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden">
+            <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
+              <div className="flex items-center space-x-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                <h4 className="font-extrabold text-sm text-amber-950 uppercase tracking-wide">
-                  {t.urgentQueueTitle}
-                </h4>
+                <div>
+                  <h4 className="font-extrabold text-sm text-amber-950 uppercase tracking-wide">
+                    {t.urgentQueueTitle}
+                  </h4>
+                  <span className="text-[10px] text-amber-800 font-bold block">{t.urgentTarget}</span>
+                </div>
               </div>
-              <span className="bg-amber-500 text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                {yellowItems.length}
+              <span className="bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-xs flex items-center space-x-1">
+                <span>{yellowItems.length}</span>
+                <span className="text-[10px] font-semibold opacity-90">P2</span>
               </span>
-            </div>
-            <div className="text-[11px] text-amber-800 font-semibold px-2">
-              {t.urgentTarget}
             </div>
 
             {yellowItems.length === 0 ? (
-              <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-200 text-center text-xs text-slate-400">
+              <div className="p-6 rounded-2xl bg-white border border-dashed border-amber-200 text-center text-xs text-amber-400">
                 No active Urgent (YELLOW) patients currently waiting.
               </div>
             ) : (
@@ -427,24 +429,25 @@ export default function DoctorDashboard({
 
         {/* Column 3: GREEN ROUTINE QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "GREEN") && (
-          <div className="space-y-4">
-            <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
-              <div className="flex items-center space-x-2">
+          <div className="bg-emerald-950/[0.02] border border-emerald-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden">
+            <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
+              <div className="flex items-center space-x-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <h4 className="font-extrabold text-sm text-emerald-950 uppercase tracking-wide">
-                  {t.routineQueueTitle}
-                </h4>
+                <div>
+                  <h4 className="font-extrabold text-sm text-emerald-950 uppercase tracking-wide">
+                    {t.routineQueueTitle}
+                  </h4>
+                  <span className="text-[10px] text-emerald-800 font-bold block">{t.routineTarget}</span>
+                </div>
               </div>
-              <span className="bg-emerald-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                {greenItems.length}
+              <span className="bg-emerald-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-xs flex items-center space-x-1">
+                <span>{greenItems.length}</span>
+                <span className="text-[10px] font-semibold opacity-90">P3</span>
               </span>
-            </div>
-            <div className="text-[11px] text-emerald-800 font-semibold px-2">
-              {t.routineTarget}
             </div>
 
             {greenItems.length === 0 ? (
-              <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-200 text-center text-xs text-slate-400">
+              <div className="p-6 rounded-2xl bg-white border border-dashed border-emerald-200 text-center text-xs text-emerald-400">
                 No active Routine (GREEN) patients in queue.
               </div>
             ) : (
@@ -750,9 +753,9 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
       onClick={onReview}
       className={`bg-white rounded-2xl border transition-all p-4 shadow-sm hover:shadow-card hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between space-y-3 ${
         isRed
-          ? "border-rose-200 hover:border-rose-400 ring-1 ring-rose-200/50"
+          ? "border-rose-300 hover:border-rose-500 ring-1 ring-rose-200/80 shadow-rose-100/50"
           : isYellow
-          ? "border-amber-200 hover:border-amber-400 ring-1 ring-amber-200/50"
+          ? "border-amber-200 hover:border-amber-400 ring-1 ring-amber-200/60"
           : "border-slate-200 hover:border-teal-400"
       }`}
     >
@@ -838,15 +841,17 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
 
           <button
             onClick={onReview}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 shadow-xs cursor-pointer ${
+            title="1-Click Clinician Review & Counter-Sign"
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
               isRed
-                ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-950/20"
+                ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-950/20 ring-1 ring-rose-400"
                 : isYellow
-                ? "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-950/20"
-                : "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-950/20"
+                ? "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-950/20 ring-1 ring-amber-400"
+                : "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-950/20 ring-1 ring-teal-400"
             }`}
           >
-            <span>{t?.reviewBtn || "Review"}</span>
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Counter-Sign</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>

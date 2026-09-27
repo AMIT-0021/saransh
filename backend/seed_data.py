@@ -992,4 +992,8 @@ def get_seed_patients() -> List[TriageRecord]:
     )
     records.append(suresh)
 
+    for r in records:
+        r.triage_lane = r.ai_triage_output.final_computed_priority
+
     return records
+

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saransh (सारांश) — BPUT Hackathon Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070B14;
+      --card-bg: rgba(19, 26, 42, 0.75);
+      --card-border: rgba(45, 60, 90, 0.45);
+      --teal-main: #14B8A6;
+      --teal-glow: rgba(20, 184, 166, 0.25);
+      --cyan-main: #38BDF8;
+      --red-alert: #F43F5E;
+      --amber-warn: #F59E0B;
+      --emerald-ok: #10B981;
+      --text-white: #FFFFFF;
+      --text-offwhite: #E2E8F0;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-offwhite);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      user-select: none;
+    }
+
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: absolute;
+      top: -20%;
+      left: 10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.08) 0%, rgba(56, 189, 248, 0.03) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -15%;
+      right: 5%;
+      width: 45vw;
+      height: 45vw;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.05) 0%, rgba(245, 158, 11, 0.02) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Accent Line */
+    .top-glow-line {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(90deg, #14B8A6, #38BDF8, #F43F5E, #14B8A6);
+      background-size: 300% 100%;
+      animation: gradientMove 8s ease infinite;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 50;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header Nav */
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 40;
+      background: rgba(7, 11, 20, 0.6);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--teal-main), var(--cyan-main));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #070B14;
+      font-size: 18px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-white);
+    }
+
+    .brand-title span {
+      color: var(--teal-main);
+      font-weight: 500;
+      font-size: 14px;
+      margin-left: 6px;
+    }
+
+    .track-badge {
+      background: rgba(20, 184, 166, 0.12);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      color: var(--cyan-main);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .deck-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-offwhite);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon:hover {
+      background: rgba(20, 184, 166, 0.2);
+      border-color: var(--teal-main);
+      color: var(--text-white);
+    }
+
+    /* Deck Viewport & Slides */
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 60px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .slide {
+      width: 90vw;
+      max-width: 1400px;
+      height: 80vh;
+      display: none;
+      flex-direction: column;
+      justify-content: flex-start;
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: absolute;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      margin-bottom: 24px;
+    }
+
+    .slide-eyebrow {
+      color: var(--teal-main);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--teal-main);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--teal-main);
+    }
+
+    .slide-title {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-white);
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* Content Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(20, 184, 166, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .card.highlight-teal {
+      border-color: rgba(20, 184, 166, 0.5);
+      background: linear-gradient(180deg, rgba(20, 184, 166, 0.08) 0%, rgba(19, 26, 42, 0.8) 100%);
+    }
+
+    .card.highlight-red {
+      border-color: rgba(244, 63, 94, 0.5);
+      background: linear-gradient(180deg, rgba(244, 63, 94, 0.08) 0%, rgba(19, 26, 42, 0.8) 100%);
+    }
+
+    .card.highlight-amber {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(19, 26, 42, 0.8) 100%);
+    }
+
+    .card.highlight-emerald {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(19, 26, 42, 0.8) 100%);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-offwhite);
+      flex: 1;
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .badge-red {
+      background: rgba(244, 63, 94, 0.2);
+      color: #FDA4AF;
+      border: 1px solid var(--red-alert);
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.2);
+      color: #FDE68A;
+      border: 1px solid var(--amber-warn);
+    }
+
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.2);
+      color: #A7F3D0;
+      border: 1px solid var(--emerald-ok);
+    }
+
+    .badge-teal {
+      background: rgba(20, 184, 166, 0.2);
+      color: #99F6E4;
+      border: 1px solid var(--teal-main);
+    }
+
+    /* List styling inside cards */
+    ul.feature-list {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    ul.feature-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+      color: var(--text-offwhite);
+      line-height: 1.5;
+    }
+
+    ul.feature-list li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--teal-main);
+      font-size: 14px;
+    }
+
+    /* Big Hero Stats / Metrics */
+    .metric-value {
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--cyan-main);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Code & Mono blocks */
+    .mono-box {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(10, 14, 23, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #38BDF8;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    /* Footer & Progress Bar */
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(7, 11, 20, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 40;
+    }
+
+    .slide-counter {
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .slide-counter span {
+      color: var(--teal-main);
+      font-weight: 700;
+    }
+
+    .progress-bar-container {
+      width: 280px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal-main), var(--cyan-main));
+      width: 10%;
+      transition: width 0.3s ease;
+    }
+
+    .keys-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-white);
+    }
+
+    /* Speaker Notes Overlay */
+    .speaker-notes-modal {
+      position: fixed;
+      bottom: 60px;
+      right: 40px;
+      width: 420px;
+      max-height: 280px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--teal-main);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+      display: none;
+      overflow-y: auto;
+    }
+
+    .speaker-notes-modal.active {
+      display: block;
+    }
+
+    .speaker-notes-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal-main);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+  <div class="top-glow-line"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">श</div>
+      <div class="brand-title">Saransh <span>सारांश • Healthcare AI</span></div>
+    </div>
+    <div class="track-badge">BPUT HACKATHON 2026 • HEALTHCARE AI TRACK</div>
+    <div class="deck-controls">
+      <button class="btn-icon" onclick="toggleNotes()">🎙️ Notes (<kbd>N</kbd>)</button>
+      <button class="btn-icon" onclick="toggleFullScreen()">⛶ Fullscreen (<kbd>F</kbd>)</button>
+      <button class="btn-icon" onclick="prevSlide()">◀</button>
+      <button class="btn-icon" onclick="nextSlide()">▶</button>
+    </div>
+  </header>
+
+  <!-- Deck Viewport -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: HERO TITLE -->
+    <section class="slide active" data-notes="Opening Pitch: Introduce Saransh as an offline-first, multimodal human-in-the-loop healthcare triage assistant built specifically for frontline government health centres like Odisha PHCs and CHCs. Highlight that AI structures and accelerates intake, but clinical decisions remain strictly in human doctors' hands.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Project Pitch • BPUT Hackathon 2026</div>
+        <h1 class="slide-title">Saransh (सारांश)</h1>
+        <p class="slide-subtitle">Multimodal Human-in-the-Loop Healthcare Triage Assistant for Indian Government Facilities</p>
+      </div>
+      <div class="grid-2">
+        <div class="card highlight-teal" style="justify-content: center; padding: 36px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--teal-main); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;">The Mission</div>
+          <h2 style="font-size: 26px; font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 16px;">
+            Eliminating Triage Bottlenecks in India's Primary Health Centres (PHCs & CHCs)
+          </h2>
+          <p style="font-size: 15px; line-height: 1.6; color: var(--text-offwhite); margin-bottom: 24px;">
+            A production-ready assistive intelligence suite combining Vernacular Voice, 2D Anatomical Touch Mapping, Bento Vitals, and ABDM/FHIR R4 compliance to deliver safe, explainable, and instant triage prioritization.
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <span class="badge-pill badge-teal">Multimodal Voice & Touch</span>
+            <span class="badge-pill badge-red">Deterministic Red Line Rules</span>
+            <span class="badge-pill badge-emerald">ABDM / M1-M3 Ready</span>
+            <span class="badge-pill badge-amber">Offline-First Resilient</span>
+          </div>
+        </div>
+
+        <div class="grid-2" style="grid-template-rows: 1fr 1fr; gap: 16px;">
+          <div class="card">
+            <div class="metric-value">1 : 1,511</div>
+            <div class="metric-label">Doctor to Patient Ratio in India</div>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">Frontline doctors face 300–500 patients per OPD session, spending under 2 minutes per clinical encounter.</p>
+          </div>
+          <div class="card">
+            <div class="metric-value">&lt; 90 Sec</div>
+            <div class="metric-label">Intake to Priority Triage Lane</div>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">Rapid intake with audio dialect transcription and instant red-flag vital detection.</p>
+          </div>
+          <div class="card">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Human-in-the-Loop Autonomy</div>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">Doctors retain absolute authority. AI only drafts, highlights, and structures.</p>
+          </div>
+          <div class="card">
+            <div class="metric-value">M1 – M3</div>
+            <div class="metric-label">Ayushman Bharat Digital Mission</div>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">14-digit ABHA ID integration, FHIR R4 Bundle exports, and official NHM referral slips.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: THE PROBLEM -->
+    <section class="slide" data-notes="Slide 2: Detail the ground reality in Indian healthcare. Highlight the 3 core pain points: Overcrowded OPD queues where critical cases wait behind minor ailments, vernacular language barriers with regional idioms like 'Chhati re bhara laagu chi', and non-existent digital continuity between village PHCs and district hospitals.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">The Healthcare Challenge</div>
+        <h1 class="slide-title">Frontline OPD Breakdown in Public Facilities</h1>
+        <p class="slide-subtitle">Why traditional intake methods fail frontline healthcare workers and patients every day</p>
+      </div>
+      <div class="grid-3">
+        <div class="card highlight-red">
+          <div class="card-title">
+            <span style="font-size: 22px;">🚨</span> Overcrowded & Chaotic Queues
+          </div>
+          <div class="card-body">
+            <p style="margin-bottom: 12px;">Patients queue on a first-come, first-served basis. Critical myocardial infarctions and acute pediatric respiratory distress wait behind simple coughs and prescription refills.</p>
+            <ul class="feature-list">
+              <li>No early triage sorting before meeting the doctor</li>
+              <li>"Golden Hour" lost in registration queues</li>
+              <li>Frontline ASHA/ANM workers overwhelmed by paperwork</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title">
+            <span style="font-size: 22px;">🗣️</span> Dialect & Linguistic Disconnect
+          </div>
+          <div class="card-body">
+            <p style="margin-bottom: 12px;">Rural patients describe symptoms using colloquial metaphors and regional idioms rather than standard medical terminology.</p>
+            <ul class="feature-list">
+              <li><em>"Chhati re bhara laagu chi"</em> (Odia: Chest heaviness / Ischemia)</li>
+              <li><em>"Matha ghurauchi, chhati dhada dhada"</em> (Palpitations / Tachycardia)</li>
+              <li>Standard Western NLP tools misclassify or fail completely</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card highlight-emerald">
+          <div class="card-title">
+            <span style="font-size: 22px;">📉</span> Fractured Referral Continuum
+          </div>
+          <div class="card-body">
+            <p style="margin-bottom: 12px;">When patients are escalated from rural PHCs to District or Tertiary Hospitals (e.g. AIIMS or SCB Cuttack), records are lost.</p>
+            <ul class="feature-list">
+              <li>Handwritten, illegible prescription chits</li>
+              <li>Zero digital continuity or ABHA integration</li>
+              <li>Doctors at receiving tertiary centres repeat vitals from scratch</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: THE SOLUTION ARCHITECTURE -->
+    <section class="slide" data-notes="Slide 3: Explain Saransh's multimodal architecture. Frontline ANM/ASHA staff capture voice, tap anatomical body maps, and enter vitals. The backend orchestrates deterministic safety checks first, followed by AI symptom structuring into SNOMED-CT and ICD-10.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">The Solution Architecture</div>
+        <h1 class="slide-title">Saransh Multimodal Triage Pipeline</h1>
+        <p class="slide-subtitle">High-speed multimodal intake with deterministic safety checks and structured clinical synthesis</p>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <span class="badge-pill badge-teal" style="margin-bottom: 10px;">Step 1: Patient ID</span>
+          <div class="card-title" style="font-size: 16px;">Holographic ABHA ID</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); line-height: 1.5;">
+            Direct ABDM verification with 14-digit ABHA, demographic pre-fill, and QR code scan simulation.
+          </p>
+          <div class="mono-box">ABHA: 91-4820-1945-8821
+Status: Verified active</div>
+        </div>
+
+        <div class="card">
+          <span class="badge-pill badge-teal" style="margin-bottom: 10px;">Step 2: Multimodal Intake</span>
+          <div class="card-title" style="font-size: 16px;">Vernacular Audio & Body Map</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); line-height: 1.5;">
+            ASHA workers speak in Odia, Hindi, or English. Patient pinpoints pain on a 2D interactive anatomical map.
+          </p>
+          <div class="mono-box">Location: Left Anterior Chest
+Radiation: Left Arm & Jaw</div>
+        </div>
+
+        <div class="card">
+          <span class="badge-pill badge-red" style="margin-bottom: 10px;">Step 3: Red Line Engine</span>
+          <div class="card-title" style="font-size: 16px;">Deterministic Guardrails</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); line-height: 1.5;">
+            Non-AI hard-coded rules. If SpO2 &lt; 90%, SBP &gt; 180, or severe chest pain is detected, instant RED triage triggers.
+          </p>
+          <div class="mono-box">RULE #1: SpO2 &lt; 90%
+TRIGGER: Immediate Resus</div>
+        </div>
+
+        <div class="card">
+          <span class="badge-pill badge-emerald" style="margin-bottom: 10px;">Step 4: Clinical Handoff</span>
+          <div class="card-title" style="font-size: 16px;">Doctor Priority Queue</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); line-height: 1.5;">
+            Real-time categorized lanes: 🔴 RED (Immediate), 🟠 YELLOW (Urgent), 🟢 GREEN (Routine) with 1-click counter-sign.
+          </p>
+          <div class="mono-box">FHIR R4 Bundle Drafted
+NHM Slip Generated</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: VERNACULAR & LOCALIZATION -->
+    <section class="slide" data-notes="Slide 4: Show our linguistic intelligence. Rural Odisha case studies: How 'Chhati re bhara laagu chi' is mapped to Angina Pectoris (SNOMED-CT: 225566008) and ICD-10 I20.9. Emphasize that language barriers are dissolved without losing clinical precision.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Vernacular Intelligence</div>
+        <h1 class="slide-title">Dialect & Idiom Normalization Engine</h1>
+        <p class="slide-subtitle">Bridging rural Indian colloquial expressions to international clinical ontologies</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span style="color: var(--teal-main);">🗣️</span> Vernacular Dialect Input (Rural Odisha)
+          </div>
+          <div class="card-body">
+            <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 8px; border-left: 3px solid var(--teal-main); margin-bottom: 16px;">
+              <div style="font-size: 12px; color: var(--teal-main); font-weight: 700; text-transform: uppercase;">ASHA Worker Voice Recording (Odia)</div>
+              <p style="font-size: 14.5px; font-style: italic; color: #fff; margin-top: 4px;">
+                "Dui dina hela chhati re bhara laagu chi, nishaas neba ku kasta heuchi, au matha bhari ghurauchi."
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 8px; border-left: 3px solid var(--cyan-main);">
+              <div style="font-size: 12px; color: var(--cyan-main); font-weight: 700; text-transform: uppercase;">Standardized English Clinical Translation</div>
+              <p style="font-size: 14px; color: var(--text-offwhite); margin-top: 4px;">
+                "Patient reports retrosternal chest heaviness, dyspnea on exertion, and severe presyncope/dizziness persisting for 2 days."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card highlight-teal">
+          <div class="card-title">
+            <span style="color: var(--cyan-main);">🏷️</span> Automated Medical Ontology Mapping
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom: 14px;">
+              <span class="badge-pill badge-red" style="margin-bottom: 6px;">Primary Symptom</span>
+              <div style="font-weight: 700; color: #fff; font-size: 15px;">Angina Pectoris / Ischemic Chest Heaviness</div>
+              <div class="mono-box">SNOMED-CT: 225566008 | ICD-10: I20.9</div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <span class="badge-pill badge-amber" style="margin-bottom: 6px;">Secondary Symptom</span>
+              <div style="font-weight: 700; color: #fff; font-size: 15px;">Dyspnea on Exertion (Shortness of Breath)</div>
+              <div class="mono-box">SNOMED-CT: 267036007 | ICD-10: R06.02</div>
+            </div>
+
+            <div>
+              <span class="badge-pill badge-teal" style="margin-bottom: 6px;">Neurological Marker</span>
+              <div style="font-weight: 700; color: #fff; font-size: 15px;">Presyncope / Episodic Vertigo</div>
+              <div class="mono-box">SNOMED-CT: 404640003 | ICD-10: R42</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: DETERMINISTIC RED LINES & CLINICAL SAFETY -->
+    <section class="slide" data-notes="Slide 5: This is our biggest competitive differentiator for the BPUT hackathon jury. AI models hallucinate, but clinical safety CANNOT tolerate hallucinations. We enforce deterministic non-AI python guardrails: SpO2 < 90% or SBP > 180 immediately locks the patient into RED lane regardless of what LLM output suggests.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Safety-First Rubric (20% Evaluation Weight)</div>
+        <h1 class="slide-title">The Deterministic Red-Line Engine</h1>
+        <p class="slide-subtitle">AI assists, but hard physiological boundaries guarantee patient safety with zero hallucination risk</p>
+      </div>
+      <div class="grid-3">
+        <div class="card highlight-red">
+          <div class="card-title">
+            <span style="font-size: 20px;">🫀</span> Respiratory & Hemodynamic
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13.5px; margin-bottom: 12px;">Instant RED classification if vitals breach critical life-threatening thresholds:</p>
+            <div class="mono-box">IF SpO2 &lt; 90%
+→ LANE: RED (Hypoxia Alert)
+IF Systolic BP &gt; 180 mmHg
+→ LANE: RED (Hypertensive Crisis)
+IF Heart Rate &gt; 130 or &lt; 40 bpm
+→ LANE: RED (Cardiac Arrhythmia)</div>
+          </div>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title">
+            <span style="font-size: 20px;">⚡</span> Symptom Red-Flag Overrides
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13.5px; margin-bottom: 12px;">Pre-programmed clinical keywords force high priority regardless of user input:</p>
+            <ul class="feature-list">
+              <li>Crushing central chest pain radiating to left jaw</li>
+              <li>Acute unilateral facial droop or hemiplegia (FAST stroke)</li>
+              <li>Stridor / severe pediatric respiratory retractions</li>
+              <li>Post-trauma hemorrhage with altered sensorium</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card highlight-teal">
+          <div class="card-title">
+            <span style="font-size: 20px;">🛡️</span> Audit Trails & Explainability
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13.5px; margin-bottom: 12px;">Every triage decision has full transparent reasoning displayed to the medical officer:</p>
+            <div class="mono-box">Reasoning Generated:
+"Deterministic Rule #3 Triggered:
+Patient SpO2 is 88% on room air.
+Immediate High-Flow Oxygen &
+Emergency ECG required."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: DOCTOR DASHBOARD & HUMAN-IN-THE-LOOP -->
+    <section class="slide" data-notes="Slide 6: Walk through the Doctor Dashboard. Highlight the three prioritized triage swimlanes. The doctor can review the AI-suggested triage and override it with 1 click. If the doctor disagrees, the audit log tracks the reason, reinforcing medical liability and human primacy.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Human-in-the-Loop Workflow</div>
+        <h1 class="slide-title">Doctor Command Center & Triage Lanes</h1>
+        <p class="slide-subtitle">Tri-lane queue management giving Medical Officers complete clinical oversight in under 10 seconds</p>
+      </div>
+      <div class="grid-3">
+        <!-- Red Lane -->
+        <div class="card" style="border-top: 4px solid var(--red-alert);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span class="badge-pill badge-red">🔴 RED LANE</span>
+            <span style="font-size: 12px; color: var(--red-alert); font-weight: 700;">IMMEDIATE (&lt; 0 MIN)</span>
+          </div>
+          <div class="card-title" style="font-size: 16px;">Resuscitation / Emergency</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); margin-bottom: 12px;">
+            Direct audio-visual chime in OPD. Directs staff to prepare crash cart, oxygen concentrator, and tele-specialist link.
+          </p>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 6px; font-size: 12px; color: #FDA4AF;">
+            <strong>Patient #201:</strong> 58M • SpO2: 88% • Severe Chest Pain • SCB Referral Ready
+          </div>
+        </div>
+
+        <!-- Yellow Lane -->
+        <div class="card" style="border-top: 4px solid var(--amber-warn);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span class="badge-pill badge-amber">🟠 YELLOW LANE</span>
+            <span style="font-size: 12px; color: var(--amber-warn); font-weight: 700;">URGENT (&lt; 30 MIN)</span>
+          </div>
+          <div class="card-title" style="font-size: 16px;">Urgent Observation</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); margin-bottom: 12px;">
+            Potential complications requiring rapid vitals re-check, basic bedside tests (glucometry, rapid malaria antigen).
+          </p>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 6px; font-size: 12px; color: #FDE68A;">
+            <strong>Patient #204:</strong> 34F • Temp: 102.8°F • Severe Dehydration • Bedside ORS
+          </div>
+        </div>
+
+        <!-- Green Lane -->
+        <div class="card" style="border-top: 4px solid var(--emerald-ok);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span class="badge-pill badge-emerald">🟢 GREEN LANE</span>
+            <span style="font-size: 12px; color: var(--emerald-ok); font-weight: 700;">ROUTINE OPD</span>
+          </div>
+          <div class="card-title" style="font-size: 16px;">Standard Consultation</div>
+          <p style="font-size: 13px; color: var(--text-offwhite); margin-bottom: 12px;">
+            Chronic maintenance, mild symptoms, follow-up medication refills. Patients can rest comfortably in the waiting area.
+          </p>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 6px; font-size: 12px; color: #A7F3D0;">
+            <strong>Patient #209:</strong> 42M • Mild Coryza • Vitals Normal • Awaiting Token #14
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: ABDM & NHM COMPLIANCE -->
+    <section class="slide" data-notes="Slide 7: Discuss India-wide deployment readiness. We align directly with Ayushman Bharat Digital Mission (ABDM) milestones: M1 (ABHA creation), M2 (FHIR R4 bundle generation), and M3 (health data exchange). Plus, we auto-generate standard National Health Mission (NHM) counter-signed referral slips.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">National Integration • ABDM Compliance</div>
+        <h1 class="slide-title">Built for Ayushman Bharat & NHM Ecosystem</h1>
+        <p class="slide-subtitle">Ready for immediate rollout across 160,000+ Ayushman Arogya Mandirs across India</p>
+      </div>
+      <div class="grid-3">
+        <div class="card highlight-teal">
+          <div class="card-title">
+            <span style="font-size: 20px;">💳</span> ABDM Milestone 1 & 2
+          </div>
+          <div class="card-body">
+            <ul class="feature-list">
+              <li><strong>ABHA ID Integration:</strong> Seamless 14-digit patient lookup and biometric link.</li>
+              <li><strong>FHIR R4 Bundle Export:</strong> Compliant JSON schemas for Condition, Encounter, and Observation records.</li>
+              <li><strong>HIP / HIU Ready:</strong> Prepared for National Health Authority data gateway linking.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card highlight-emerald">
+          <div class="card-title">
+            <span style="font-size: 20px;">📜</span> NHM Counter-Signed Referral
+          </div>
+          <div class="card-body">
+            <ul class="feature-list">
+              <li><strong>One-Click Slip Generation:</strong> Formatted to National Health Mission guidelines.</li>
+              <li><strong>Referring Facility Tracking:</strong> PHC Jatni / CHC Tangi to Capital Hospital / SCB Medical College.</li>
+              <li><strong>Doctor Sign-Off:</strong> Includes Medical Officer registration number and timestamped hash.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title">
+            <span style="font-size: 20px;">🔒</span> DPDP Act 2023 Compliance
+          </div>
+          <div class="card-body">
+            <ul class="feature-list">
+              <li><strong>Edge De-Identification:</strong> PII is masked before any cloud LLM inference occurs.</li>
+              <li><strong>Audit Traceability:</strong> Immutable log of all triage status adjustments and timestamps.</li>
+              <li><strong>Offline Data Sovereignty:</strong> Local database syncs only upon encrypted doctor approval.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: TECH STACK & OFFLINE ARCHITECTURE -->
+    <section class="slide" data-notes="Slide 8: Highlight technical rigor and offline resilience. In rural Odisha, 4G/5G connections frequently drop. Saransh runs an offline-first architecture with local SQLite and browser IndexedDB caching, synchronizing back to the district cloud when connectivity returns.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Technical Architecture</div>
+        <h1 class="slide-title">Modern, Resilient & Offline-First Stack</h1>
+        <p class="slide-subtitle">Engineered for zero downtime in rural clinics with spotty broadband connectivity</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Frontend & Intake Layer</div>
+          <div class="card-body">
+            <ul class="feature-list">
+              <li><strong>React 18 + Vite:</strong> Ultra-fast 60 FPS responsive UI optimized for low-end tablets and ASHA kiosks.</li>
+              <li><strong>Lucide Medical Icons & Tailwind CSS:</strong> High contrast dark/light theme readable in bright sunlight.</li>
+              <li><strong>IndexedDB Offline Queue:</strong> Patient intake proceeds without internet; syncs automatically on reconnect.</li>
+              <li><strong>Interactive 2D Canvas:</strong> SVG anatomical mapping with front/back toggle and pain severity sliders.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Backend & Inference Engine</div>
+          <div class="card-body">
+            <ul class="feature-list">
+              <li><strong>FastAPI (Python 3.14):</strong> Asynchronous, typed endpoints with Pydantic v2 schemas and OpenAPI docs.</li>
+              <li><strong>Dual-Mode AI Engine:</strong> Cloud Gemini 2.5 Flash for nuanced vernacular speech + local rule engine fallback.</li>
+              <li><strong>Deterministic Gatekeeper:</strong> Rules execute before and after LLM inference to validate physiological bounds.</li>
+              <li><strong>SQLite / PostgreSQL:</strong> Relational data models with automatic FHIR R4 Bundle conversion.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: BPUT HACKATHON RUBRIC -->
+    <section class="slide" data-notes="Slide 9: Directly map our implementation to every single evaluation criterion of the BPUT Hackathon rubric. Safety (20%), Extraction (20%), Multimodal (15%), India-wide (15%), Human-in-the-loop (15%), Privacy (10%), Demo (5%). Show the judges we built this specifically to score maximum points.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Evaluation Alignment</div>
+        <h1 class="slide-title">100% BPUT Hackathon Rubric Coverage</h1>
+        <p class="slide-subtitle">Engineered specifically against official judging criteria for maximum competitive impact</p>
+      </div>
+      <div class="grid-4" style="grid-template-rows: auto auto; gap: 14px;">
+        <div class="card highlight-red">
+          <div style="font-size: 11px; font-weight: 700; color: var(--red-alert);">RUBRIC WEIGHT: 20%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Clinical Safety</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">Deterministic non-AI red lines for vitals, hypoxia, tachycardia, stroke signs.</p>
+        </div>
+
+        <div class="card highlight-teal">
+          <div style="font-size: 11px; font-weight: 700; color: var(--teal-main);">RUBRIC WEIGHT: 20%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Extraction Quality</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">Precise mapping to SNOMED-CT, ICD-10, duration, severity, and anatomical site.</p>
+        </div>
+
+        <div class="card highlight-cyan">
+          <div style="font-size: 11px; font-weight: 700; color: var(--cyan-main);">RUBRIC WEIGHT: 15%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Multimodal Vernacular</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">Odia/Hindi voice, 2D anatomical touch canvas, Bento vitals grid.</p>
+        </div>
+
+        <div class="card highlight-emerald">
+          <div style="font-size: 11px; font-weight: 700; color: var(--emerald-ok);">RUBRIC WEIGHT: 15%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">India-Wide Usability</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">14-digit ABHA ID, FHIR R4 Bundle, and NHM counter-signed referral slips.</p>
+        </div>
+
+        <div class="card highlight-amber">
+          <div style="font-size: 11px; font-weight: 700; color: var(--amber-warn);">RUBRIC WEIGHT: 15%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Human-in-the-Loop</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">Doctor priority lanes, 1-click status override, permanent audit trail.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">RUBRIC WEIGHT: 10%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Privacy & Security</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">DPDP 2023 compliant, client-side PII sanitization, encrypted local storage.</p>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--teal-main);">RUBRIC WEIGHT: 5%</div>
+          <div class="card-title" style="font-size: 15px; margin-top: 4px;">Live Working Prototype</div>
+          <p style="font-size: 12.5px; color: var(--text-offwhite);">Fully functional React 18 frontend + FastAPI backend running live with real Odisha healthcare facility seed data.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: ROADMAP & CONCLUSION -->
+    <section class="slide" data-notes="Slide 10: Conclude with future vision and impact. Phase 1 is done and running live. Phase 2 integrates eSanjeevani telemedicine bridge and Bluetooth IoT pulse oximeters. Phase 3 provides district epidemiologic heatmaps for Dengue and Malaria surveillance. Finish with our mission quote.">
+      <div class="slide-header">
+        <div class="slide-eyebrow">Future Vision & Implementation</div>
+        <h1 class="slide-title">Roadmap: From Prototype to District Rollout</h1>
+        <p class="slide-subtitle">Scaling assistive intelligence across Odisha's 30 districts and National Health Mission</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <span class="badge-pill badge-emerald" style="margin-bottom: 8px;">Phase 1 • Complete</span>
+          <div class="card-title">Production Prototype</div>
+          <ul class="feature-list">
+            <li>Multimodal voice + touch intake</li>
+            <li>FastAPI backend + deterministic red lines</li>
+            <li>Doctor tri-lane dashboard</li>
+            <li>NHM referral slip generation</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge-pill badge-teal" style="margin-bottom: 8px;">Phase 2 • Next 3 Months</span>
+          <div class="card-title">IoT & Telemedicine</div>
+          <ul class="feature-list">
+            <li>eSanjeevani telemedicine API bridge for instant specialist tele-consults</li>
+            <li>Bluetooth BLE integration with pulse oximeters and digital BP cuffs</li>
+            <li>Edge ONNX deployment on Android tablets for ASHA field kits</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge-pill badge-amber" style="margin-bottom: 8px;">Phase 3 • State Scale</span>
+          <div class="card-title">Public Health Surveillance</div>
+          <ul class="feature-list">
+            <li>De-identified spatial clustering across Odisha blocks</li>
+            <li>Early detection of Dengue, Malaria, and viral fever outbreaks</li>
+            <li>State-level bed allocation and referral coordination</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card highlight-teal" style="margin-top: 18px; padding: 18px 24px; text-align: center;">
+        <p style="font-size: 16px; font-weight: 700; font-style: italic; color: var(--teal-main);">
+          “Our mission: Help frontline healthcare staff prioritize patients faster and safer, while keeping clinical decisions strictly in human hands.”
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Nav & Notes -->
+  <footer>
+    <div class="slide-counter">SLIDE <span id="currentSlideNum">1</span> / 10</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="keys-hint">
+      Navigate: <kbd>◀</kbd> <kbd>▶</kbd> or <kbd>Space</kbd> | Fullscreen: <kbd>F</kbd> | Speaker Notes: <kbd>N</kbd>
+    </div>
+  </footer>
+
+  <!-- Speaker Notes Modal -->
+  <div class="speaker-notes-modal" id="speakerNotesModal">
+    <div class="speaker-notes-header">
+      <span>🎙️ SPEAKER NOTES & PITCH HINTS</span>
+      <button onclick="toggleNotes()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px;">✕</button>
+    </div>
+    <div id="speakerNotesContent" style="font-size: 13.5px; line-height: 1.6; color: var(--text-offwhite);"></div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const currentSlideNumEl = document.getElementById('currentSlideNum');
+    const progressBar = document.getElementById('progressBar');
+    const notesModal = document.getElementById('speakerNotesModal');
+    const notesContent = document.getElementById('speakerNotesContent');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        if (idx === currentSlide) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+      currentSlideNumEl.textContent = currentSlide + 1;
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      progressBar.style.width = progress + '%';
+
+      // Update speaker notes
+      const notes = slides[currentSlide].getAttribute('data-notes') || 'No specific notes for this slide.';
+      notesContent.textContent = notes;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesModal.classList.toggle('active');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key === 'Home') {
+        currentSlide = 0;
+        updateSlide();
+      } else if (e.key === 'End') {
+        currentSlide = totalSlides - 1;
+        updateSlide();
+      }
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    window.addEventListener('touchend', (e) => {
+      let touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) nextSlide();
+      if (touchEndX - touchStartX > 50) prevSlide();
+    });
+
+    // Init
+    updateSlide();
+  </script>
+</body>
+</html>

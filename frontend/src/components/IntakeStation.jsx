@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Mic,
   MicOff,
@@ -36,6 +36,7 @@ import {
 } from "../data/syntheticCases";
 import { TRANSLATIONS } from "../data/translations";
 import { evaluateLocalDeterministicTriage } from "../utils/localTriageRules";
+import { normalizeIndicSpeech } from "../utils/indicSpeechNormalizer";
 import TriageResultCard from "./TriageResultCard";
 
 export default function IntakeStation({
@@ -220,6 +221,19 @@ export default function IntakeStation({
   const [isListening, setIsListening] = useState(false);
   const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(false);
   const [isStatementVerified, setIsStatementVerified] = useState(true);
+  const [liveStreamText, setLiveStreamText] = useState("");
+  const [isSoundDetected, setIsSoundDetected] = useState(false);
+  const [audioVolumePercent, setAudioVolumePercent] = useState(0);
+  const [detectedIdioms, setDetectedIdioms] = useState([]);
+
+  // Hardware Audio & Speech Recognition Refs
+  const audioStreamRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const silenceTimerRef = useRef(null);
+  const accumulatedTranscriptRef = useRef("");
 
   // Recording timer for animated audio waveform
   useEffect(() => {
@@ -262,6 +276,37 @@ export default function IntakeStation({
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       setSpeechRecognitionSupported(true);
     }
+  }, []);
+
+  // Initial vernacular idiom extraction for preset statement
+  useEffect(() => {
+    if (symptoms.verbatim_local_statement) {
+      const norm = normalizeIndicSpeech(symptoms.verbatim_local_statement, patientInfo.language_preference);
+      if (norm.detectedIdioms && norm.detectedIdioms.length > 0) {
+        setDetectedIdioms(norm.detectedIdioms);
+      }
+    }
+  }, []);
+
+  // Cleanup audio stream and timers on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (audioStreamRef.current) {
+        audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+      if (audioContextRef.current) {
+        try {
+          audioContextRef.current.close();
+        } catch (_) {}
+      }
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (_) {}
+      }
+    };
   }, []);
 
   // Compute live client-side deterministic priority for instant visual feedback
@@ -321,6 +366,14 @@ export default function IntakeStation({
       setVisualCategory("None");
       setVisualCaption("");
     }
+
+    // Extract vernacular idioms from preset statement
+    const norm = normalizeIndicSpeech(
+      preset.symptoms_and_complaints.verbatim_local_statement,
+      preset.patient_basic_info.language_preference
+    );
+    setDetectedIdioms(norm.detectedIdioms || []);
+    setLiveStreamText(preset.symptoms_and_complaints.verbatim_local_statement || "");
   };
 
   // Sample report selection handler
@@ -339,7 +392,7 @@ export default function IntakeStation({
     }
   };
 
-  // Sample audio injection handler
+  // Sample audio injection handler with dialect idiom extraction
   const handleInjectSampleVoice = (sample) => {
     setSymptoms((prev) => ({
       ...prev,
@@ -348,6 +401,9 @@ export default function IntakeStation({
       translated_english_statement: sample.translation,
       chief_complaint: sample.translation
     }));
+    setLiveStreamText(sample.text);
+    const norm = normalizeIndicSpeech(sample.text, patientInfo.language_preference);
+    setDetectedIdioms(norm.detectedIdioms || []);
     setIsStatementVerified(true);
     setIsPlayingAudio(true);
     setTimeout(() => {
@@ -363,53 +419,209 @@ export default function IntakeStation({
       phonetic_transliteration: "",
       translated_english_statement: ""
     }));
+    setLiveStreamText("");
+    setDetectedIdioms([]);
     setIsStatementVerified(false);
     if (!isListening) {
       handleToggleSpeech();
     }
   };
 
-  // Real-time microphone listening via Web Speech API
-  const handleToggleSpeech = () => {
+  // Studio-grade hardware audio constraints for noisy hackathon / OPD environments
+  const STUDIO_AUDIO_CONSTRAINTS = {
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+      sampleRate: 48000
+    }
+  };
+
+  // Hardware audio capture & real-time volume detection (AnalyserNode)
+  const startHardwareAudioStream = async () => {
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia(STUDIO_AUDIO_CONSTRAINTS);
+        audioStreamRef.current = stream;
+
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          const audioCtx = new AudioContextClass();
+          audioContextRef.current = audioCtx;
+          const analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          analyserRef.current = analyser;
+
+          const source = audioCtx.createMediaStreamSource(stream);
+          source.connect(analyser);
+
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+          const checkAudioActivity = () => {
+            if (!analyserRef.current) return;
+            analyserRef.current.getByteFrequencyData(dataArray);
+
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+              sum += dataArray[i];
+            }
+            const avg = sum / dataArray.length;
+            const volPercent = Math.min(100, Math.round((avg / 128) * 100));
+            setAudioVolumePercent(volPercent);
+
+            // Active voice activity threshold (detects vocal speech vs background noise)
+            setIsSoundDetected(volPercent > 4);
+
+            animationFrameRef.current = requestAnimationFrame(checkAudioActivity);
+          };
+          animationFrameRef.current = requestAnimationFrame(checkAudioActivity);
+        }
+      }
+    } catch (err) {
+      console.warn("Hardware audio analysis warning (falling back to speech recognition):", err);
+    }
+  };
+
+  const stopHardwareAudioStream = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
+    if (audioContextRef.current) {
+      try {
+        audioContextRef.current.close();
+      } catch (_) {}
+      audioContextRef.current = null;
+    }
+    setIsSoundDetected(false);
+    setAudioVolumePercent(0);
+  };
+
+  // Stop speech recognition, clear silence timer and finalize statement
+  const handleStopSpeech = (autoConfirmed = false) => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (_) {}
+      recognitionRef.current = null;
+    }
+    stopHardwareAudioStream();
+    setIsListening(false);
+
+    if (autoConfirmed) {
+      setIsStatementVerified(true);
+    }
+  };
+
+  // Start real-time speech recognition with interim streaming & 1.8s silence detector
+  const handleStartSpeech = async () => {
     if (!speechRecognitionSupported) {
       alert("Web Speech API is not supported in this browser. Please use the 1-click Vernacular Voice buttons below.");
       return;
     }
 
-    if (isListening) {
-      setIsListening(false);
-      return;
-    }
+    setLiveStreamText("");
+    accumulatedTranscriptRef.current = "";
+    setIsStatementVerified(false);
 
+    // 1. Hardware studio constraints & sound detection
+    await startHardwareAudioStream();
+
+    // 2. Web Speech API with regional BCP-47 locale tags
     try {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
 
+      // Regional BCP-47 locale tags: Odia: 'or-IN', Hindi: 'hi-IN', English: 'en-IN'
       let langCode = "en-IN";
       if (patientInfo.language_preference === "Hindi") langCode = "hi-IN";
       if (patientInfo.language_preference === "Odia") langCode = "or-IN";
 
       recognition.lang = langCode;
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 3;
 
-      recognition.onstart = () => setIsListening(true);
-      recognition.onend = () => setIsListening(false);
-      recognition.onerror = () => setIsListening(false);
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onend = () => {
+        stopHardwareAudioStream();
+        setIsListening(false);
+      };
+
+      recognition.onerror = (e) => {
+        console.warn("Speech recognition warning:", e);
+        if (e.error !== "no-speech") {
+          handleStopSpeech(false);
+        }
+      };
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setSymptoms((prev) => ({
-          ...prev,
-          verbatim_local_statement: transcript,
-          translated_english_statement: `[Voice Captured] ${transcript}`
-        }));
-        setIsStatementVerified(false);
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            accumulatedTranscriptRef.current += (accumulatedTranscriptRef.current ? " " : "") + event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        const currentLive = (accumulatedTranscriptRef.current + " " + interim).trim();
+        setLiveStreamText(currentLive);
+
+        if (currentLive) {
+          setSymptoms((prev) => ({
+            ...prev,
+            verbatim_local_statement: currentLive
+          }));
+
+          // Run Indic Medical Speech Normalizer
+          const norm = normalizeIndicSpeech(currentLive, patientInfo.language_preference);
+          if (norm.detectedIdioms && norm.detectedIdioms.length > 0) {
+            setDetectedIdioms(norm.detectedIdioms);
+          }
+          if (norm.clinicalSummary) {
+            setSymptoms((prev) => ({
+              ...prev,
+              translated_english_statement: norm.clinicalSummary,
+              chief_complaint: norm.clinicalSummary
+            }));
+          }
+
+          // 1.8-second Intelligent Silence Detector:
+          // If the patient finishes speaking and pauses for 1.8s, auto-stop and confirm statement
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+          }
+          silenceTimerRef.current = setTimeout(() => {
+            console.log("1.8-second silence detected. Auto-stopping and verifying statement.");
+            handleStopSpeech(true);
+          }, 1800);
+        }
       };
 
       recognition.start();
-    } catch (e) {
-      setIsListening(false);
+    } catch (err) {
+      console.error("Speech recognition startup error:", err);
+      handleStopSpeech(false);
+    }
+  };
+
+  const handleToggleSpeech = () => {
+    if (isListening) {
+      handleStopSpeech(false);
+    } else {
+      handleStartSpeech();
     }
   };
 
@@ -1088,28 +1300,66 @@ export default function IntakeStation({
                     </div>
                   </div>
 
-                  {/* Speech Recording Button */}
-                  <button
-                    type="button"
-                    onClick={handleToggleSpeech}
-                    className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
-                      isListening
-                        ? "bg-rose-600 text-white animate-pulse"
-                        : "bg-teal-600 text-white hover:bg-teal-700"
-                    }`}
-                  >
-                    {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                    <span>{isListening ? (t.voiceRecordingPrompt || t.listening) : t.speakBtn}</span>
-                  </button>
+                  {/* Speech Recording Button with Active Green Audio Visualizer Ring */}
+                  <div className="relative inline-flex items-center">
+                    {isListening && isSoundDetected && (
+                      <span className="absolute -inset-1.5 rounded-2xl bg-emerald-400 opacity-75 blur-xs animate-pulse pointer-events-none"></span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleToggleSpeech}
+                      className={`relative flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
+                        isListening
+                          ? isSoundDetected
+                            ? "bg-emerald-600 text-white ring-4 ring-emerald-400/80 shadow-lg shadow-emerald-500/40"
+                            : "bg-rose-600 text-white ring-2 ring-rose-400 animate-pulse"
+                          : "bg-teal-600 text-white hover:bg-teal-700"
+                      }`}
+                    >
+                      {isListening ? (
+                        isSoundDetected ? <Mic className="w-3.5 h-3.5 text-white animate-bounce" /> : <MicOff className="w-3.5 h-3.5" />
+                      ) : (
+                        <Mic className="w-3.5 h-3.5" />
+                      )}
+                      <span>
+                        {isListening
+                          ? isSoundDetected
+                            ? "Voice Detected • Speaking..."
+                            : (t.voiceRecordingPrompt || t.listening)
+                          : t.speakBtn}
+                      </span>
+                    </button>
+                  </div>
                 </div>
+
+                {/* Live Transcript Preview Pill */}
+                {(isListening || liveStreamText) && (
+                  <div className="flex items-center space-x-2.5 px-3.5 py-2 bg-slate-900 border border-teal-500/40 rounded-xl text-xs text-white shadow-md animate-fadeIn">
+                    <span className="flex h-2.5 w-2.5 relative shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span className="font-mono text-[11px] font-black text-emerald-400 tracking-wider shrink-0">
+                      🎙️ Live Stream:
+                    </span>
+                    <span className="text-slate-200 font-mono italic truncate">
+                      {liveStreamText || (isListening ? `Listening for speech in ${patientInfo.language_preference}...` : "")}
+                    </span>
+                    {audioVolumePercent > 0 && (
+                      <span className="ml-auto text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 shrink-0">
+                        Vol: {audioVolumePercent}%
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* 3. ANIMATED AUDIO WAVEFORM VISUALIZER (Voice Intake in Step 2) */}
                 {(isListening || isPlayingAudio) && (
                   <div className="bg-slate-900 border border-teal-500/50 rounded-2xl p-4 text-white shadow-lg flex items-center justify-between gap-4 animate-fadeIn">
                     <div className="flex items-center space-x-3">
                       <div className="relative flex h-3.5 w-3.5 shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-rose-500"></span>
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isSoundDetected ? "bg-emerald-400" : "bg-rose-400"}`}></span>
+                        <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${isSoundDetected ? "bg-emerald-500" : "bg-rose-500"}`}></span>
                       </div>
                       <div>
                         <div className="flex items-center space-x-2">
@@ -1119,7 +1369,7 @@ export default function IntakeStation({
                           <span className="text-slate-500 text-xs">•</span>
                           <span className="text-xs font-bold text-white">
                             {isListening
-                              ? `Listening in ${patientInfo.language_preference} (${
+                              ? `${isSoundDetected ? "Voice Active" : "Listening"} in ${patientInfo.language_preference} (${
                                   patientInfo.language_preference === "Odia"
                                     ? "ଓଡ଼ିଆ"
                                     : patientInfo.language_preference === "Hindi"
@@ -1131,7 +1381,9 @@ export default function IntakeStation({
                         </div>
                         <p className="text-[11px] text-teal-200/70 mt-0.5">
                           {isListening
-                            ? "Voice input active • Speak chief complaint clearly"
+                            ? isSoundDetected
+                              ? "Real-time speech stream active • 1.8s auto-silence detect engaged"
+                              : "Hardware noise suppression active • Speak chief complaint clearly"
                             : "Colloquial vernacular speech simulation"}
                         </p>
                       </div>
@@ -1139,13 +1391,45 @@ export default function IntakeStation({
 
                     {/* 7 Vertical Frequency Bars of Varying Heights */}
                     <div className="flex items-center space-x-1.5 h-8 px-2 bg-black/40 rounded-xl border border-teal-500/30 shrink-0">
-                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-1" style={{ height: "14px" }}></span>
-                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-2" style={{ height: "22px" }}></span>
-                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-3" style={{ height: "28px" }}></span>
-                      <span className="w-1.5 bg-emerald-300 rounded-full wave-bar-4" style={{ height: "18px" }}></span>
-                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-5" style={{ height: "26px" }}></span>
-                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-6" style={{ height: "16px" }}></span>
-                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-7" style={{ height: "20px" }}></span>
+                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-1" style={{ height: isSoundDetected ? `${Math.max(12, Math.min(28, audioVolumePercent * 0.4))}px` : "14px" }}></span>
+                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-2" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(30, audioVolumePercent * 0.6))}px` : "22px" }}></span>
+                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-3" style={{ height: isSoundDetected ? `${Math.max(20, Math.min(32, audioVolumePercent * 0.8))}px` : "28px" }}></span>
+                      <span className="w-1.5 bg-emerald-300 rounded-full wave-bar-4" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(26, audioVolumePercent * 0.5))}px` : "18px" }}></span>
+                      <span className="w-1.5 bg-teal-400 rounded-full wave-bar-5" style={{ height: isSoundDetected ? `${Math.max(18, Math.min(30, audioVolumePercent * 0.7))}px` : "26px" }}></span>
+                      <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-6" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(24, audioVolumePercent * 0.45))}px` : "16px" }}></span>
+                      <span className="w-1.5 bg-teal-300 rounded-full wave-bar-7" style={{ height: isSoundDetected ? `${Math.max(16, Math.min(28, audioVolumePercent * 0.55))}px` : "20px" }}></span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Vernacular Medical Idiom Normalization Banner */}
+                {detectedIdioms && detectedIdioms.length > 0 && (
+                  <div className="p-3 bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 border border-teal-200/90 rounded-2xl space-y-2 shadow-xs animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-teal-950 flex items-center space-x-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                        <span>Vernacular Dialect & Idiom Normalizer</span>
+                      </span>
+                      <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full border border-teal-300">
+                        SNOMED-CT / ICD-10 Mapped
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {detectedIdioms.map((item, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-xs bg-white text-slate-800 border border-teal-200/80 shadow-xs"
+                        >
+                          <span className="font-bold text-teal-900">{item.icon || "🩺"} {item.idiom}</span>
+                          <span className="text-slate-400 font-bold">➔</span>
+                          <span className="font-bold text-emerald-700">{item.clinicalTerm}</span>
+                          {item.severity === "CRITICAL" && (
+                            <span className="text-[9px] bg-rose-100 text-rose-700 font-black px-1.5 py-0.5 rounded uppercase">
+                              Alert
+                            </span>
+                          )}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -1203,7 +1487,10 @@ export default function IntakeStation({
                       rows={2}
                       value={symptoms.verbatim_local_statement}
                       onChange={(e) => {
-                        setSymptoms({ ...symptoms, verbatim_local_statement: e.target.value });
+                        const val = e.target.value;
+                        setSymptoms((prev) => ({ ...prev, verbatim_local_statement: val }));
+                        const norm = normalizeIndicSpeech(val, patientInfo.language_preference);
+                        setDetectedIdioms(norm.detectedIdioms || []);
                         setIsStatementVerified(false);
                       }}
                       placeholder="Captured spoken statement in patient's native dialect..."

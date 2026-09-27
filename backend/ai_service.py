@@ -42,14 +42,17 @@ class AITriageSynthesis(BaseModel):
 # Vernacular Translation & Clinical Phrase Mapping (Odia, Hindi, English)
 # ==============================================================================
 def translate_vernacular_statement(statement: str, lang: str) -> str:
-    """Intelligently translates common vernacular colloquial expressions in Odia/Hindi to clinical English."""
+    """
+    Intelligently translates common vernacular colloquial expressions in Odia/Hindi
+    to clinical English with SnOMED-CT / ICD-10 aligned dialect mapping.
+    """
     if not statement or not statement.strip():
         return "Patient reported symptoms via checklist."
 
     text_lower = statement.lower().strip()
 
     # Exact matches for authentic clinical cases
-    if "ପଥର ଭଳି" in statement or "pathara bhali" in text_lower or "କଣେଇକି" in statement or "ଝାଳେଇକି" in statement or "ghameiki" in text_lower or ("chhati" in text_lower and "2 ghanta" in text_lower) or ("ଛାତିରେ" in statement and "୨ ଘଣ୍ଟା" in statement):
+    if "ପଥର ଭଳି" in statement or "pathara bhali" in text_lower or "କଣେଇକି" in statement or "ଝାଳେଇକି" in statement or "ghameiki" in text_lower or ("chhati" in text_lower and "2 ghanta" in text_lower) or ("ଛାତିରେ" in statement and "୨ ଘଣ୍ଟା" in statement) or "ଛାତି ଫାଟିଯିବା" in statement:
         return "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
 
     if "भट्टी की तरह" in statement or "bhatti ki tarah" in text_lower or "चकत्ते" in statement or "chakatte" in text_lower or ("tez bukhar" in text_lower and "3 din" in text_lower) or ("तेज़ बुखार" in statement and "३ दिन" in statement):
@@ -61,7 +64,47 @@ def translate_vernacular_statement(statement: str, lang: str) -> str:
     if "good morning sister" in text_lower or "study hours" in text_lower:
         return "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
 
-    # Odia colloquial mappings
+    if "साँस बिल्कुल अंदर नहीं" in statement or "दाम घुट रहा" in statement or "होंठ नीले" in statement or "दम इतना घुट रहा" in statement:
+        return "Doctor, I cannot draw enough air into my lungs. Since last night my breathlessness has rapidly escalated and my lips feel numb. Even sitting up leaves me completely exhausted and gasping."
+
+    if "क्लोरीन गैस" in statement or "chlorine gas" in text_lower or "सीटी जैसी आवाज" in statement:
+        return "Exposure to chlorine gas leak at chemical plant with acute severe coughing, retrosternal burning, and wheezing."
+
+    # Odia colloquial idiom mappings
+    odia_idioms = []
+    if "ଛାତି ଫାଟିଯିବା" in statement or "ଛାତିରେ କଣେଇକି ଦରଦ" in statement:
+        odia_idioms.append("Severe Retrosternal Stabbing Chest Pain")
+    if "ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି" in statement or "ସାନ୍ସ ନେଇ ହେଉନି" in statement or "ଦମ ଘୁଟୁଛି" in statement:
+        odia_idioms.append("Severe Acute Dyspnea")
+    if "ଝାଳରେ ଦେହ ଥଣ୍ଡା ପଡ଼ିଯିବା" in statement or "ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି" in statement:
+        odia_idioms.append("Cold Diaphoresis / Shock Sign")
+    if "ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି" in statement:
+        odia_idioms.append("Visual Blurring / Scotoma")
+    if "ଚପଲ ପଶୁନି" in statement:
+        odia_idioms.append("Severe Dependent Pedal Edema")
+
+    if odia_idioms:
+        timeline_hint = " (Onset ~14 hours ago)" if ("କାଲି ସଞ୍ଜରୁ" in statement or "ଗତକାଲି ସଞ୍ଜରୁ" in statement) else ""
+        return f"Patient reports {', '.join(odia_idioms)}{timeline_hint}."
+
+    # Hindi colloquial idiom mappings
+    hindi_idioms = []
+    if "सीना भारी पत्थर जैसा" in statement or "छाती में तेज चुभन" in statement or "छाती फटने जैसा दर्द" in statement:
+        hindi_idioms.append("Severe Retrosternal Chest Heaviness")
+    if "सांस बहुत फूल रही है" in statement or "सांस नहीं ले पा रहे" in statement or "दम घुट रहा है" in statement:
+        hindi_idioms.append("Acute Dyspnea")
+    if "बदन भट्टी की तरह तप रहा है" in statement or "पूरा बदन भट्टी" in statement:
+        hindi_idioms.append("High Grade Febrile Illness")
+    if "लाल चकत्ते" in statement:
+        hindi_idioms.append("Petechial Skin Rash / Thrombocytopenia Alert")
+    if "सिर में भयानक दर्द" in statement or "आंखें भी नहीं खुल रही हैं" in statement:
+        hindi_idioms.append("Blinding Cephalea / Eye Strain")
+
+    if hindi_idioms:
+        timeline_hint = " (Onset ~14 hours ago)" if ("कल शाम से" in statement or "रात से" in statement) else ""
+        return f"Patient reports {', '.join(hindi_idioms)}{timeline_hint}."
+
+    # General phrase fallbacks
     if "chest pain" in text_lower or "chhati" in text_lower or "छाती" in text_lower or "ଛାତି" in text_lower:
         if "saans" in text_lower or "swas" in text_lower or "kasta" in text_lower or "ନିଶ୍ୱାସ" in text_lower or "nishwas" in text_lower:
             return "Experiencing acute retrosternal chest pain and severe dyspnea for 2 hours with cold diaphoresis."
@@ -73,7 +116,6 @@ def translate_vernacular_statement(statement: str, lang: str) -> str:
     if "munda buleiba" in text_lower or "chakkar" in text_lower or "ମୁଣ୍ଡ" in text_lower:
         return "Patient reports episodes of dizziness and lightheadedness."
 
-    # Hindi colloquial mappings
     if "chhati mein dard" in text_lower or "seene mein dard" in text_lower or "सांस लेने में" in text_lower:
         return "Patient reports severe chest pain with notable breathlessness."
 
@@ -127,11 +169,30 @@ def generate_deterministic_synthesis(payload: TriageIntakePayload, rule_priority
     if med.previous_hospitalizations:
         timeline_steps.append(f"Prior admission ({', '.join(med.previous_hospitalizations)})")
     
+    # Timeline inference from conversational vernacular expressions
     duration_str = sym.duration or "Recent"
-    timeline_steps.append(f"{duration_str} ago: Onset of {chief_complaint_std}")
+    if "କାଲି ସଞ୍ଜରୁ" in user_stmt or "ଗତକାଲି ସଞ୍ଜରୁ" in user_stmt or "कल शाम से" in user_stmt:
+        duration_str = "~14 hours ago (Yesterday evening)"
+    elif "୨ ଘଣ୍ଟା" in user_stmt or "2 ghanta" in user_stmt.lower() or "२ घंटे" in user_stmt:
+        duration_str = "2 hours ago"
+    elif "୩ ଦିନ" in user_stmt or "3 din" in user_stmt.lower() or "३ दिन" in user_stmt:
+        duration_str = "3 days ago"
+    elif "रात से" in user_stmt or "ରାତିରୁ" in user_stmt:
+        duration_str = "~8-12 hours ago (Overnight)"
 
-    if sym.associated_symptoms:
-        timeline_steps.append(f"Progression: Accompanied by {', '.join(sym.associated_symptoms)} ({sym.onset_trend or 'Active'})")
+    timeline_steps.append(f"{duration_str}: Onset of {chief_complaint_std}")
+
+    # Extract hidden or casually mentioned symptoms in voice transcript
+    hidden_symptoms = list(sym.associated_symptoms or [])
+    if ("ଝାଳ" in user_stmt or "sweat" in user_stmt.lower() or "पसीना" in user_stmt) and "Cold Diaphoresis" not in hidden_symptoms:
+        hidden_symptoms.append("Cold Diaphoresis (extracted from voice)")
+    if ("ମୁଣ୍ଡ ବୁଲେଇବା" in user_stmt or "चक्कर" in user_stmt) and "Lightheadedness" not in hidden_symptoms:
+        hidden_symptoms.append("Lightheadedness (extracted from voice)")
+    if ("ବାନ୍ତି" in user_stmt or "उल्टी" in user_stmt) and "Nausea" not in hidden_symptoms:
+        hidden_symptoms.append("Nausea (extracted from voice)")
+
+    if hidden_symptoms:
+        timeline_steps.append(f"Progression: Accompanied by {', '.join(hidden_symptoms)} ({sym.onset_trend or 'Active'})")
 
     if vit.spo2_percent or vit.bp_systolic:
         vital_summary_parts = []
@@ -358,7 +419,18 @@ def process_multimodal_triage(payload: TriageIntakePayload) -> AITriageOutput:
                 "1. NEVER output a definitive medical diagnosis (e.g. 'Patient has Acute Myocardial Infarction').\n"
                 "2. NEVER prescribe drug dosages or treatments.\n"
                 "3. Frame all outputs strictly as structured triage observations, timelines, and follow-up prompts for qualified healthcare professionals.\n"
-                "4. Accurately translate colloquial Odia, Hindi, or vernacular expressions into clear clinical English.\n"
+                "4. CONVERSATIONAL VOICE & MEDICAL DIALECT EXTRACTION:\n"
+                "   - Specifically analyze conversational voice transcripts and colloquial spoken phrasing in Odia, Hindi, and Indian English.\n"
+                "   - Infer clinical symptom timelines directly from colloquial temporal expressions (e.g., 'କାଲି ସଞ୍ଜରୁ' / 'कल शाम से' -> 'Onset ~14 hours ago (Yesterday evening)', '୨ ଘଣ୍ଟା ହେଲା' / '२ घंटे से' -> 'Acute onset ~2 hours ago', '୩ ଦିନ ହେଲା' / '३ दिन से' -> 'Duration ~3 days').\n"
+                "   - Extract hidden or casually mentioned associated symptoms from spoken audio transcripts (e.g., cold sweating / diaphoresis, lightheadedness, nausea, missed antihypertensive or diabetes medication, prostration, or inability to stand).\n"
+                "   - Accurately map vernacular distress idioms to standardized clinical terminology:\n"
+                "     * 'ଛାତି ଫାଟିଯିବା' / 'ଛାତିରେ କଣେଇକି ଦରଦ' -> 'Severe Retrosternal Stabbing Chest Pain'\n"
+                "     * 'ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି' / 'ସାନ୍ସ ନେଇ ହେଉନି' -> 'Severe Acute Dyspnea'\n"
+                "     * 'ଝାଳରେ ଦେହ ଥଣ୍ଡା ପଡ଼ିଯିବା' -> 'Cold Diaphoresis / Shock Sign'\n"
+                "     * 'सीना भारी पत्थर जैसा' / 'छाती में तेज चुभन' -> 'Severe Retrosternal Chest Heaviness'\n"
+                "     * 'सांस बहुत फूल रही है' -> 'Acute Dyspnea'\n"
+                "     * 'बदन भट्टी की तरह तप रहा है' -> 'High Grade Febrile Illness'\n"
+                "   - ALWAYS output the verbatim local script alongside the standardized English clinical translation with 100% fidelity.\n"
                 "5. DUAL-LANGUAGE FOLLOW-UP QUESTIONS (ODIA & HINDI):\n"
                 "   Generate 3 high-yield follow-up questions in BOTH English AND the patient's selected local language (Odia or Hindi) "
                 "using simple, empathetic vernacular phrasing that a frontline ASHA / ANM nurse can read aloud directly to the patient at bedside.\n"

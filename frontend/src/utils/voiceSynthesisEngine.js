@@ -20,7 +20,37 @@ let voicesLoadedPromise = null;
 
 // Keep a global reference to prevent Chromium garbage collection bug during playback
 let activeUtteranceRef = null;
+let activeAudioElementRef = null;
 let speechWatchdogTimer = null;
+
+// Registry of high-fidelity Neural / ElevenLabs studio Indian voice audio files
+const PRE_RENDERED_STUDIO_AUDIO = [
+  {
+    id: "RAMESH_ODIA",
+    keywords: ["chhatita", "pathara", "bhari", "darada", "kaneiki", "fatijiba", "ଛାତିଟା"],
+    url: "/audio/ramesh_cardiac.mp3"
+  },
+  {
+    id: "RAMESH_ENGLISH",
+    keywords: ["crushed under heavy stone", "tearing", "cold sweat", "unbearable stabbing"],
+    url: "/audio/ramesh_english.mp3"
+  },
+  {
+    id: "PRIYA_FEVER",
+    keywords: ["nia bhali tatichhi", "petechial", "dengue", "blinding", "burning with high fever", "ନିଆଁ ଭଳି"],
+    url: "/audio/priya_fever.mp3"
+  },
+  {
+    id: "LIPU_PEDIATRIC",
+    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop"],
+    url: "/audio/lipu_pediatric.mp3"
+  },
+  {
+    id: "NURSE_ADVISORY",
+    keywords: ["registered with abha", "high-flow oxygen", "emergency ecg", "bedside"],
+    url: "/audio/nurse_advisory.mp3"
+  }
+];
 
 // Extensive dictionary of TTS voice gender tags and known personas
 const FEMALE_VOICE_KEYWORDS = [
@@ -448,25 +478,59 @@ export async function speakHumanVoice(text, {
     // 1. Stop any currently active speech & clear watchdog
     stopHumanVoice();
 
-    // 2. Fetch available voices
+    // 2. Priority Check: Match Pre-rendered Neural Indian / ElevenLabs Studio Audio Assets
+    const textLower = text.toLowerCase();
+    const matchedStudioAudio = PRE_RENDERED_STUDIO_AUDIO.find((asset) =>
+      asset.keywords.some((kw) => textLower.includes(kw.toLowerCase()))
+    );
+
+    if (matchedStudioAudio) {
+      try {
+        const audio = new Audio(matchedStudioAudio.url);
+        activeAudioElementRef = audio;
+
+        audio.onplay = () => {
+          const acoustics = getVocalAcoustics({ age, gender, role, language });
+          if (onStart) onStart({ acoustics, isStudio: true });
+        };
+
+        audio.onended = () => {
+          activeAudioElementRef = null;
+          if (onEnd) onEnd();
+        };
+
+        audio.onerror = () => {
+          console.warn("Studio audio file playback failed, falling back to browser speech synthesis...");
+          activeAudioElementRef = null;
+        };
+
+        await audio.play();
+        return true;
+      } catch (audioErr) {
+        console.warn("Audio element play error, proceeding to browser TTS:", audioErr);
+        activeAudioElementRef = null;
+      }
+    }
+
+    // 3. Fetch available browser voices
     const voices = await initVoiceEngine();
 
-    // 3. Compute age & gender acoustics
+    // 4. Compute age & gender acoustics
     const acoustics = getVocalAcoustics({ age, gender, role, language });
 
-    // 4. Select best matching voice (strictly preserving Indian accent and exact gender)
+    // 5. Select best matching voice (strictly preserving Indian accent and exact gender)
     const matchedVoice = findBestMatchingVoice(voices, {
       language,
       isFemalePreferred: acoustics.isFemalePreferred
     });
 
-    // 5. Humanize text with breath pauses
+    // 6. Humanize text with breath pauses
     const humanizedText = humanizeSpeechText(text, { age, role });
 
-    // 6. Build SpeechSynthesisUtterance
+    // 7. Build SpeechSynthesisUtterance
     const utterance = new SpeechSynthesisUtterance(humanizedText);
 
-    // 7. Enforce BCP-47 Indian Locale on Utterance
+    // 8. Enforce BCP-47 Indian Locale on Utterance
     // Instructs synthesizer engines to apply Indian English phonology, stress, and cadence
     const langLower = (language || "english").toLowerCase();
     if (langLower.includes("hindi")) {
@@ -488,10 +552,7 @@ export async function speakHumanVoice(text, {
       utterance.voice = matchedVoice;
     }
 
-    // 8. Acoustic Pitch & Formant Reinforcement
-    // If the device only possesses an opposite-gender voice as absolute fallback,
-    // apply physical formant shifting so male never sounds high-pitched female,
-    // and female never sounds deep male.
+    // 9. Acoustic Pitch & Formant Reinforcement
     const detectedVoiceGender = classifyVoiceGender(matchedVoice);
     if (acoustics.isFemalePreferred && detectedVoiceGender === "male") {
       utterance.pitch = Math.max(acoustics.pitch, 1.28);
@@ -506,7 +567,7 @@ export async function speakHumanVoice(text, {
 
     utterance.volume = acoustics.volume;
 
-    // 9. Event listeners with Chromium GC bug safeguard & Watchdog
+    // 10. Event listeners with Chromium GC bug safeguard & Watchdog
     activeUtteranceRef = utterance;
 
     const cleanupWatchdog = () => {
@@ -517,7 +578,6 @@ export async function speakHumanVoice(text, {
     };
 
     utterance.onstart = () => {
-      // Chromium speech pause watchdog (prevents synthesis halting after 14s)
       cleanupWatchdog();
       speechWatchdogTimer = setInterval(() => {
         if (window.speechSynthesis && window.speechSynthesis.speaking) {
@@ -543,7 +603,7 @@ export async function speakHumanVoice(text, {
       if (onEnd) onEnd();
     };
 
-    // 10. Speak
+    // 11. Speak
     window.speechSynthesis.speak(utterance);
     return true;
   } catch (err) {
@@ -556,9 +616,18 @@ export async function speakHumanVoice(text, {
 }
 
 /**
- * Immediately cancels any playing speech.
+ * Immediately cancels any playing speech or studio audio element.
  */
 export function stopHumanVoice() {
+  if (activeAudioElementRef) {
+    try {
+      activeAudioElementRef.pause();
+      activeAudioElementRef.currentTime = 0;
+    } catch (e) {
+      // ignore
+    }
+    activeAudioElementRef = null;
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }

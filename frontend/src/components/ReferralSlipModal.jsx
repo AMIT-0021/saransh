@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Printer,
   X,
@@ -10,8 +10,13 @@ import {
   PhoneCall,
   Truck,
   HeartPulse,
-  Activity
+  Activity,
+  Volume2
 } from "lucide-react";
+import {
+  speakHumanVoice,
+  stopHumanVoice
+} from "../utils/voiceSynthesisEngine";
 
 // Authentic Odisha National Health Mission (NHM) & All-India 8-Facility Registry & Referral Map
 const FACILITY_MAP = {
@@ -158,16 +163,43 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
   const rr = v.respiratory_rate_min ?? 26;
   const glucose = v.blood_glucose_mg_dl ?? 142;
 
-  // Keyboard shortcut: Escape to close
+  const [isPlayingHandover, setIsPlayingHandover] = useState(false);
+
+  // Keyboard shortcut: Escape to close & speech cleanup
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
+        stopHumanVoice();
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      stopHumanVoice();
+    };
   }, [onClose]);
+
+  const handlePlayHandoverBriefing = () => {
+    if (isPlayingHandover) {
+      stopHumanVoice();
+      setIsPlayingHandover(false);
+      return;
+    }
+
+    const script = `Official 108 Emergency Handover Briefing. Patient ${p.name_or_alias}, ${p.age} years old ${p.sex}. Originating facility: ${facInfo.name}. Destination apex center: ${facInfo.receivingFacility}. Referral priority: ${priority}. Departure vitals: SpO2 ${spo2} percent, Blood Pressure ${sysBp} over ${diaBp}, Pulse rate ${pulse} beats per minute. Clinical reason: ${s.chief_complaint}. Transport corridor: ${facInfo.referralCorridor}. Transfer authorized by Medical Officer.`;
+
+    setIsPlayingHandover(true);
+    speakHumanVoice(script, {
+      role: "doctor",
+      language: "English",
+      age: 45,
+      gender: "Male",
+      onStart: () => setIsPlayingHandover(true),
+      onEnd: () => setIsPlayingHandover(false),
+      onError: () => setIsPlayingHandover(false)
+    });
+  };
 
   const handlePrint = () => {
     window.print();
@@ -224,6 +256,21 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
             </div>
           </div>
           <div className="flex items-center space-x-2.5">
+            <button
+              onClick={handlePlayHandoverBriefing}
+              title="Listen to 108 Emergency Handover Audio Briefing"
+              className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer border ${
+                isPlayingHandover
+                  ? "bg-rose-600 text-white border-rose-500 animate-pulse ring-2 ring-rose-400"
+                  : "bg-slate-800 hover:bg-slate-700 text-teal-300 border-slate-700 hover:border-teal-400"
+              }`}
+            >
+              <Volume2 className={`w-4 h-4 ${isPlayingHandover ? "text-white animate-bounce" : "text-teal-400"}`} />
+              <span className="hidden sm:inline">
+                {isPlayingHandover ? "Stop Briefing" : "🔊 Audio Handover"}
+              </span>
+              <span className="sm:hidden">{isPlayingHandover ? "Stop" : "Audio"}</span>
+            </button>
             <button
               onClick={handlePrint}
               className="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer"

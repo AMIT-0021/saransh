@@ -14,6 +14,11 @@ import {
   Volume2
 } from "lucide-react";
 import { TRANSLATIONS } from "../data/translations";
+import {
+  speakHumanVoice,
+  stopHumanVoice,
+  getVocalAcoustics
+} from "../utils/voiceSynthesisEngine";
 
 export default function TriageResultCard({
   triageRecord,
@@ -36,44 +41,45 @@ export default function TriageResultCard({
 
   const [currentlySpeakingIdx, setCurrentlySpeakingIdx] = useState(null);
 
-  // Audio speech synthesis helper for bedside questions in patient's selected language
+  // Empathetic bedside nurse speech synthesis for follow-up questions
   const handleSpeakQuestion = (text, lang, idx) => {
-    if (!("speechSynthesis" in window)) {
-      alert("Speech synthesis is not supported on this browser.");
+    if (currentlySpeakingIdx === idx) {
+      stopHumanVoice();
+      setCurrentlySpeakingIdx(null);
       return;
     }
-    try {
-      if (currentlySpeakingIdx === idx) {
-        window.speechSynthesis.cancel();
-        setCurrentlySpeakingIdx(null);
-        return;
-      }
 
-      window.speechSynthesis.cancel();
-      setCurrentlySpeakingIdx(idx);
+    setCurrentlySpeakingIdx(idx);
+    speakHumanVoice(text, {
+      role: "nurse",
+      language: lang,
+      age: 32,
+      gender: "Female",
+      onStart: () => setCurrentlySpeakingIdx(idx),
+      onEnd: () => setCurrentlySpeakingIdx(null),
+      onError: () => setCurrentlySpeakingIdx(null)
+    });
+  };
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      if (lang === "Hindi") {
-        utterance.lang = "hi-IN";
-      } else if (lang === "Odia") {
-        utterance.lang = "or-IN";
-      } else {
-        utterance.lang = "en-IN";
-      }
-      utterance.rate = 0.88;
-
-      utterance.onend = () => {
-        setCurrentlySpeakingIdx(null);
-      };
-      utterance.onerror = () => {
-        setCurrentlySpeakingIdx(null);
-      };
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.warn("TTS question playback error:", e);
+  // Authoritative Medical Officer clinical triage audio briefing
+  const handleSpeakTriageSummary = () => {
+    if (currentlySpeakingIdx === "SUMMARY") {
+      stopHumanVoice();
       setCurrentlySpeakingIdx(null);
+      return;
     }
+
+    const summaryText = `Clinical Triage Assessment for token ${triageRecord.token_number || "T-001"}. Priority: ${priority}. Destination: ${ai.suggested_department || "Emergency"}. ${ai.priority_label || ""}.`;
+    setCurrentlySpeakingIdx("SUMMARY");
+    speakHumanVoice(summaryText, {
+      role: "doctor",
+      language: "English",
+      age: 45,
+      gender: "Male",
+      onStart: () => setCurrentlySpeakingIdx("SUMMARY"),
+      onEnd: () => setCurrentlySpeakingIdx(null),
+      onError: () => setCurrentlySpeakingIdx(null)
+    });
   };
 
   const handleChipClick = (questionIdx, text) => {
@@ -163,6 +169,22 @@ export default function TriageResultCard({
               <span>{ai.suggested_department}</span>
             </strong>
           </div>
+
+          <button
+            type="button"
+            onClick={handleSpeakTriageSummary}
+            title="1-Click Audible Clinical Triage Briefing (Medical Officer Voice)"
+            className={`px-3 py-2.5 rounded-xl border text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
+              currentlySpeakingIdx === "SUMMARY"
+                ? "bg-rose-600 text-white border-rose-600 ring-2 ring-rose-400 animate-pulse"
+                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+            }`}
+          >
+            <Volume2 className={`w-3.5 h-3.5 ${currentlySpeakingIdx === "SUMMARY" ? "text-white animate-bounce" : "text-teal-600"}`} />
+            <span className="hidden sm:inline">
+              {currentlySpeakingIdx === "SUMMARY" ? "Stop Briefing" : "Audio Briefing"}
+            </span>
+          </button>
 
           <button
             onClick={onGoToDoctorQueue}

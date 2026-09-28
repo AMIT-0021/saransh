@@ -17,9 +17,14 @@ import {
   Printer,
   ChevronRight,
   Radio,
-  FileCheck
+  FileCheck,
+  Volume2
 } from "lucide-react";
 import { TRANSLATIONS } from "../data/translations";
+import {
+  speakHumanVoice,
+  stopHumanVoice
+} from "../utils/voiceSynthesisEngine";
 
 export default function ClinicianReviewModal({
   record,
@@ -56,6 +61,35 @@ export default function ClinicianReviewModal({
     existingReview.missing_info_resolved || []
   );
   const [validationError, setValidationError] = useState("");
+  const [isPlayingStatement, setIsPlayingStatement] = useState(false);
+
+  // Stop speech when modal closes
+  React.useEffect(() => {
+    return () => {
+      stopHumanVoice();
+    };
+  }, []);
+
+  const handlePlayStatement = () => {
+    if (isPlayingStatement) {
+      stopHumanVoice();
+      setIsPlayingStatement(false);
+      return;
+    }
+
+    if (!s.verbatim_local_statement) return;
+
+    setIsPlayingStatement(true);
+    speakHumanVoice(s.verbatim_local_statement, {
+      age: p.age,
+      gender: p.sex,
+      role: "patient",
+      language: p.language_preference || "Odia",
+      onStart: () => setIsPlayingStatement(true),
+      onEnd: () => setIsPlayingStatement(false),
+      onError: () => setIsPlayingStatement(false)
+    });
+  };
 
   const isOverridden = selectedPriority !== originalAiPriority;
 
@@ -177,9 +211,24 @@ export default function ClinicianReviewModal({
 
               {s.verbatim_local_statement && (
                 <div className="text-xs text-slate-700 bg-teal-50/60 p-2.5 rounded-xl border border-teal-200 font-medium">
-                  <span className="text-[10px] text-teal-800 font-bold block mb-0.5">
-                    Spoken Statement ({p.language_preference}):
-                  </span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-teal-800 font-bold">
+                      Spoken Statement ({p.language_preference}):
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handlePlayStatement}
+                      className={`text-[10px] px-2 py-0.5 rounded-lg font-bold flex items-center space-x-1 border transition shadow-xs cursor-pointer ${
+                        isPlayingStatement
+                          ? "bg-rose-600 text-white border-rose-600 animate-pulse"
+                          : "bg-white text-teal-800 border-teal-300 hover:bg-teal-100"
+                      }`}
+                      title="Listen to original patient audio statement modulated by age and gender"
+                    >
+                      <Volume2 className="w-3 h-3 text-teal-700" />
+                      <span>{isPlayingStatement ? "Stop Audio" : "🔊 Listen Audio"}</span>
+                    </button>
+                  </div>
                   <span>"{s.verbatim_local_statement}"</span>
                 </div>
               )}

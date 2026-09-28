@@ -37,6 +37,11 @@ import {
 import { TRANSLATIONS } from "../data/translations";
 import { evaluateLocalDeterministicTriage } from "../utils/localTriageRules";
 import { normalizeIndicSpeech } from "../utils/indicSpeechNormalizer";
+import {
+  speakHumanVoice,
+  stopHumanVoice,
+  getVocalAcoustics
+} from "../utils/voiceSynthesisEngine";
 import TriageResultCard from "./TriageResultCard";
 
 export default function IntakeStation({
@@ -312,31 +317,38 @@ export default function IntakeStation({
   // Compute live client-side deterministic priority for instant visual feedback
   const localEval = evaluateLocalDeterministicTriage(vitals, redFlags, patientInfo);
 
-  // Speech Synthesis helper for native dialect playback
-  const handlePlaySpeech = (text, langPreference) => {
-    if (!("speechSynthesis" in window)) {
-      alert("Speech synthesis is not supported in this browser.");
+  // Compute live vocal acoustics modulated by age, gender, and regional language
+  const activeVocalAcoustics = getVocalAcoustics({
+    age: patientInfo.age,
+    gender: patientInfo.sex,
+    role: "patient",
+    language: patientInfo.language_preference
+  });
+
+  // Adaptive Human Voice Synthesis modulated by age, gender, and regional dialect
+  const handlePlaySpeech = (text, langPreference, customDemographics = null) => {
+    const age = customDemographics?.age !== undefined ? customDemographics.age : patientInfo.age;
+    const gender = customDemographics?.gender || patientInfo.sex;
+    const language = langPreference || patientInfo.language_preference;
+
+    if (!text || !text.trim()) return;
+
+    if (isPlayingAudio) {
+      stopHumanVoice();
+      setIsPlayingAudio(false);
       return;
     }
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      if (langPreference === "Hindi") {
-        utterance.lang = "hi-IN";
-      } else if (langPreference === "Odia") {
-        utterance.lang = "or-IN";
-      } else {
-        utterance.lang = "en-IN";
-      }
-      utterance.rate = 0.88;
-      utterance.onstart = () => setIsPlayingAudio(true);
-      utterance.onend = () => setIsPlayingAudio(false);
-      utterance.onerror = () => setIsPlayingAudio(false);
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.warn("TTS playback error:", e);
-      setIsPlayingAudio(false);
-    }
+
+    setIsPlayingAudio(true);
+    speakHumanVoice(text, {
+      age,
+      gender,
+      role: "patient",
+      language,
+      onStart: () => setIsPlayingAudio(true),
+      onEnd: () => setIsPlayingAudio(false),
+      onError: () => setIsPlayingAudio(false)
+    });
   };
 
   // Load a 1-click synthetic preset
@@ -392,8 +404,16 @@ export default function IntakeStation({
     }
   };
 
-  // Sample audio injection handler with dialect idiom extraction
+  // Sample audio injection handler with dialect idiom extraction and age/gender adaptation
   const handleInjectSampleVoice = (sample) => {
+    if (sample.age !== undefined || sample.gender !== undefined) {
+      setPatientInfo((prev) => ({
+        ...prev,
+        age: sample.age !== undefined ? sample.age : prev.age,
+        sex: sample.gender || prev.sex
+      }));
+    }
+
     setSymptoms((prev) => ({
       ...prev,
       verbatim_local_statement: sample.text,
@@ -405,10 +425,12 @@ export default function IntakeStation({
     const norm = normalizeIndicSpeech(sample.text, patientInfo.language_preference);
     setDetectedIdioms(norm.detectedIdioms || []);
     setIsStatementVerified(true);
-    setIsPlayingAudio(true);
-    setTimeout(() => {
-      setIsPlayingAudio(false);
-    }, 4500);
+
+    // Speak with human voice tailored to this sample's age, gender, and language
+    handlePlaySpeech(sample.text, patientInfo.language_preference, {
+      age: sample.age !== undefined ? sample.age : patientInfo.age,
+      gender: sample.gender || patientInfo.sex
+    });
   };
 
   // Re-record action handler
@@ -1498,9 +1520,8 @@ export default function IntakeStation({
                             onClick={(e) => {
                               e.stopPropagation();
                               handleInjectSampleVoice(sample);
-                              handlePlaySpeech(sample.text, patientInfo.language_preference);
                             }}
-                            title="1-Click Instant Audio Playback (Odia/Hindi/English)"
+                            title="1-Click Instant Audio Playback (Modulated by Age & Gender)"
                             className="text-[10px] bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1 rounded-lg font-bold flex items-center space-x-1 shadow-xs transition cursor-pointer"
                           >
                             <Volume2 className="w-3 h-3 text-teal-100" />
@@ -1519,6 +1540,46 @@ export default function IntakeStation({
                   </div>
                 </div>
 
+                {/* Adaptive Voice Persona Telemetry Strip */}
+                <div className="bg-gradient-to-r from-teal-50/90 via-slate-50 to-indigo-50/70 rounded-2xl p-3.5 border border-teal-200/90 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-teal-200/90 flex items-center justify-center text-lg shadow-2xs shrink-0">
+                      {activeVocalAcoustics.personaIcon}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <strong className="text-xs font-black text-slate-900 truncate">
+                          {activeVocalAcoustics.personaLabel}
+                        </strong>
+                        <span className="text-[10px] bg-teal-100 text-teal-900 font-mono font-bold px-1.5 py-0.5 rounded border border-teal-300 shrink-0">
+                          Pitch: {activeVocalAcoustics.pitch}x • Pace: {activeVocalAcoustics.rate}x
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium truncate">
+                        Modulated for {patientInfo.sex} ({patientInfo.age}y) in {patientInfo.language_preference} dialect
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handlePlaySpeech(
+                        symptoms.verbatim_local_statement || (patientInfo.language_preference === "Hindi" ? "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।" : "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"),
+                        patientInfo.language_preference
+                      )}
+                      className={`text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1.5 border transition shadow-xs cursor-pointer ${
+                        isPlayingAudio
+                          ? "bg-rose-600 text-white border-rose-600 animate-pulse"
+                          : "bg-white text-teal-800 border-teal-300 hover:bg-teal-50 hover:border-teal-400"
+                      }`}
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>{isPlayingAudio ? "Stop Audio" : "🔊 Test Vocal Persona"}</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Dual-Layer Speech Bubble */}
                 <div className="space-y-3 pt-1">
                   {/* Top Layer: Native Vernacular Statement + Audio Playback */}
@@ -1532,10 +1593,14 @@ export default function IntakeStation({
                       <button
                         type="button"
                         onClick={() => handlePlaySpeech(symptoms.verbatim_local_statement, patientInfo.language_preference)}
-                        className="flex items-center space-x-1 bg-white hover:bg-teal-50 text-teal-700 border border-slate-200 px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
+                        className={`flex items-center space-x-1 border px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
+                          isPlayingAudio
+                            ? "bg-rose-50 text-rose-700 border-rose-300 animate-pulse"
+                            : "bg-white hover:bg-teal-50 text-teal-700 border-slate-200"
+                        }`}
                       >
                         <Volume2 className="w-3.5 h-3.5 text-teal-600" />
-                        <span>{t.playAudioBtn}</span>
+                        <span>{isPlayingAudio ? "Stop Audio" : t.playAudioBtn}</span>
                       </button>
                     </div>
 

@@ -648,18 +648,32 @@ export const SAMPLE_AUDIO_SCRIPTS = {
   Odia: [
     {
       label: "🔴 ଛାତିରେ ଭାରି ପଥର ଭଳି ଦରଦ ଓ ଝାଳ (Ramesh - 62M)",
+      age: 62,
+      gender: "Male",
       text: "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
       phonetic: "Doctor babu, 2 ghanta hela chhatita pathara bhali bhari laguchhi au bahut jor re kaneiki darada heuchhi. Nishwas aadou neiparuni, deha sara jhalare thanda padigalani. Tike shighra dekhantu babu, chhati fatijiba bhali laguchhi.",
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
       label: "🟠 ୩ ଦିନ ହେଲା ଭୀଷଣ ଜ୍ୱର ଓ ବିନ୍ଧା (Priya - 34F)",
+      age: 34,
+      gender: "Female",
       text: "ଦିଦି, ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି। ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
       phonetic: "Didi, 3 dina hela deha sara nia bhali tatichhi. Mundata ete jor re bindhuchhi je aakhi kholi heuni. Hata godare laal daga bahari padichhi au chalibaku jama bala pauni.",
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red petechial rashes have appeared on my arms and legs, and I have zero strength to stand."
     },
     {
+      label: "🟡 ପିଲାଙ୍କ ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (Lipu - 7M Child)",
+      age: 7,
+      gender: "Male",
+      text: "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
+      phonetic: "Didi, petata bhisana bindhuchhi. Sakalu 2 thara banti helani au kichhi khai heuni, bahut kasta heuchhi.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
+    },
+    {
       label: "🟢 ସାମାନ୍ୟ ମୁଣ୍ଡବିନ୍ଧା ଓ ଥକାପଣ (Subhash - 24M)",
+      age: 24,
+      gender: "Male",
       text: "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
       phonetic: "Namaskar didi, gatakali raatire aneka samaya dhari patha padhiba pare mathata samanya bindhuchhi. Jwara ki banti kichhi naahi, kebala tike thaka laguchhi.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
@@ -668,18 +682,32 @@ export const SAMPLE_AUDIO_SCRIPTS = {
   Hindi: [
     {
       label: "🔴 सीने में भारी पत्थर जैसा दर्द और पसीना (Ramesh - 62M)",
+      age: 62,
+      gender: "Male",
       text: "डॉक्टर साहब, २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है और बहुत तेज चुभन महसूस हो रही है। सांस बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है। कृपया जल्दी देखें, लग रहा है सीना फट जाएगा।",
       phonetic: "Doctor sahab, 2 ghante se seene mein bhari patthar jaisa dard ho raha hai aur bahut tez chubhan mehsoos ho rahi hai. Saans bilkul nahi aa rahi, shareer paseene se thanda pad gaya hai. Kripya jaldi dekhein, lag raha hai seena phat jayega.",
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
       label: "🟠 पूरा बदन भट्टी जैसा तप रहा है (Priya - 34F)",
+      age: 34,
+      gender: "Female",
       text: "दीदी, ३ दिन से पूरा बदन भट्टी की तरह तप रहा है। सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं और चलने की बिल्कुल ताक़त नहीं बची है।",
       phonetic: "Didi, 3 din se pura badan bhatti ki tarah tap raha hai. Sir mein itna bhayanak dard hai ki aankhein bhi nahi khul rahi hain. Pure haath-pairon mein laal chakatte nikal aaye hain aur chalne ki bilkul taaqat nahi bachi hai.",
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
     },
     {
+      label: "🟡 बच्चे के पेट में तेज दर्द व उल्टी (Aarav - 8M Child)",
+      age: 8,
+      gender: "Male",
+      text: "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
+      phonetic: "Didi, pet mein bahut tez dard ho raha hai. Subah se do baar ulti ho gayi aur kuch bhi khaya nahi ja raha, bahut rona aa raha hai.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
+    },
+    {
       label: "🟢 हल्की थकान व पढ़ाई से सिरदर्द (Subhash - 24M)",
+      age: 24,
+      gender: "Male",
       text: "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
       phonetic: "Namaste didi, kal der raat tak screen par padhai karne ke baad se maathe mein halka-halka dard hai. Koi bukhar ya ulti nahi hai, bas thodi thakan mehsoos ho rahi hai.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
@@ -688,18 +716,32 @@ export const SAMPLE_AUDIO_SCRIPTS = {
   English: [
     {
       label: "🔴 Sudden Crushing Chest Pain & Sweating (Ramesh - 62M)",
+      age: 62,
+      gender: "Male",
       text: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
       phonetic: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
       label: "🟠 Burning High Fever & Body Ache (Priya - 34F)",
+      age: 34,
+      gender: "Female",
       text: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
       phonetic: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
     },
     {
+      label: "🟡 Severe Tummy Pain & Vomiting (Aarav - 8M Child)",
+      age: 8,
+      gender: "Male",
+      text: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
+      phonetic: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
+      translation: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad."
+    },
+    {
       label: "🟢 Mild Screen Fatigue & Study Headache (Subhash - 24M)",
+      age: 24,
+      gender: "Male",
       text: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       phonetic: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."

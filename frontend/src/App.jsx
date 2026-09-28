@@ -11,7 +11,7 @@ import {
 } from "./utils/offlineQueue";
 import { evaluateLocalDeterministicTriage } from "./utils/localTriageRules";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_BACKEND_URL) || "http://localhost:8000";
 
 function getBilingualFollowups(lang) {
   if (lang === "Hindi" || lang === "हिन्दी") {

@@ -189,25 +189,29 @@ export default function ClinicianReviewModal({
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs">
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">SpO₂</span>
-                <strong className={`text-xs font-black ${v.spo2_percent < 90 ? "text-rose-600" : "text-slate-900"}`}>
-                  {v.spo2_percent}%
+                <strong className={`text-xs font-black ${v.spo2_percent && v.spo2_percent < 90 ? "text-rose-600" : "text-slate-900"}`}>
+                  {v.spo2_percent != null ? `${v.spo2_percent}%` : "--"}
                 </strong>
               </div>
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">HR</span>
-                <strong className="text-xs font-black text-slate-900">{v.heart_rate_bpm}</strong>
+                <strong className="text-xs font-black text-slate-900">{v.heart_rate_bpm ?? "--"}</strong>
               </div>
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">BP</span>
-                <strong className="text-xs font-black text-slate-900">{v.bp_systolic}/{v.bp_diastolic}</strong>
+                <strong className="text-xs font-black text-slate-900">
+                  {v.bp_systolic && v.bp_diastolic ? `${v.bp_systolic}/${v.bp_diastolic}` : "--"}
+                </strong>
               </div>
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">Temp</span>
-                <strong className="text-xs font-black text-slate-900">{v.temperature_f}°F</strong>
+                <strong className="text-xs font-black text-slate-900">
+                  {v.temperature_f != null ? `${v.temperature_f}°F` : "--"}
+                </strong>
               </div>
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">RR</span>
-                <strong className="text-xs font-black text-slate-900">{v.respiratory_rate_min}</strong>
+                <strong className="text-xs font-black text-slate-900">{v.respiratory_rate_min ?? "--"}</strong>
               </div>
               <div className="bg-white p-2 rounded-xl border border-slate-200">
                 <span className="text-[10px] text-slate-400 block font-semibold">Glucose</span>

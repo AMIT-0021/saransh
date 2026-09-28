@@ -34,7 +34,9 @@ export function evaluateLocalDeterministicTriage(vitals = {}, redFlags = {}, pat
   const rr = Number(vitals.respiratory_rate_min);
   const temp = Number(vitals.temperature_f);
   const glucose = Number(vitals.blood_glucose_mg_dl);
-  const age = Number(patientInfo.age) || 30;
+  const age = (patientInfo.age !== undefined && patientInfo.age !== null && !isNaN(Number(patientInfo.age)))
+    ? Math.max(0, Math.abs(Number(patientInfo.age)))
+    : 30;
   const facility = patientInfo.facility_type || "PHC_OPD";
 
   // 1. Critical Vital Sign Thresholds -> RED

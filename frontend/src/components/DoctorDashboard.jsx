@@ -64,9 +64,9 @@ export default function DoctorDashboard({
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchToken = item.token_number.toLowerCase().includes(q);
-      const matchName = item.name_or_alias.toLowerCase().includes(q);
-      const matchComplaint = item.chief_complaint.toLowerCase().includes(q);
+      const matchToken = (item.token_number || "").toLowerCase().includes(q);
+      const matchName = (item.name_or_alias || "").toLowerCase().includes(q);
+      const matchComplaint = (item.chief_complaint || "").toLowerCase().includes(q);
       if (!matchToken && !matchName && !matchComplaint) return false;
     }
     return true;
@@ -79,12 +79,12 @@ export default function DoctorDashboard({
   const totalEmergency = facilityStats.emergency_beds_total || 5;
   const availableEmergency = facilityStats.emergency_beds_available ?? 4;
   const occupiedEmergency = Math.max(0, totalEmergency - availableEmergency);
-  const emergencyOccupancyPct = Math.round((occupiedEmergency / totalEmergency) * 100);
+  const emergencyOccupancyPct = totalEmergency > 0 ? Math.round((occupiedEmergency / totalEmergency) * 100) : 0;
 
   const totalGeneral = facilityStats.general_beds_total || 24;
   const availableGeneral = facilityStats.general_beds_available ?? 24;
   const occupiedGeneral = Math.max(0, totalGeneral - availableGeneral);
-  const generalOccupancyPct = Math.round((occupiedGeneral / totalGeneral) * 100);
+  const generalOccupancyPct = totalGeneral > 0 ? Math.round((occupiedGeneral / totalGeneral) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -783,7 +783,7 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
 
           <div className="flex items-center space-x-1 text-[11px] text-slate-500 font-semibold bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200">
             <Clock className="w-3 h-3 text-slate-400" />
-            <span>{item.wait_time_minutes}m {t?.waitLabel || "Wait"}</span>
+            <span>{item.wait_time_minutes ?? 0}m {t?.waitLabel || "Wait"}</span>
           </div>
         </div>
 

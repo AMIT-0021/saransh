@@ -5,6 +5,11 @@ File: backend/test_api_autonomous.py
 """
 import sys
 import json
+
+# Ensure UTF-8 stdout encoding on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from fastapi.testclient import TestClient
 from main import app, triage_db, init_db
 

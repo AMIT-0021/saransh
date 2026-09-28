@@ -26,7 +26,7 @@ export default function TriageResultCard({
 
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
   const ai = triageRecord.ai_triage_output;
-  const p = triageRecord.patient_basic_info;
+  const p = triageRecord.patient_basic_info || {};
   const priority = ai.final_computed_priority || "GREEN";
 
   const patientPrefLang = p?.language_preference || selectedLanguage || "English";

@@ -117,7 +117,7 @@ export default function ClinicianReviewModal({
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                {p.name_or_alias} • {p.age}y/{p.sex} • {p.facility_type}
+                {p.name_or_alias} • {Math.max(0, Math.abs(Number(p.age) || 0))}y/{p.sex} • {p.facility_type}
               </p>
             </div>
           </div>

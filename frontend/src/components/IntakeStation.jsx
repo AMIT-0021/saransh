@@ -665,7 +665,10 @@ export default function IntakeStation({
     }
 
     const payload = {
-      patient_basic_info: patientInfo,
+      patient_basic_info: {
+        ...patientInfo,
+        age: Math.max(0, Math.min(125, Math.abs(Number(patientInfo.age) || 30)))
+      },
       symptoms_and_complaints: symptoms,
       vital_signs: vitals,
       medical_history: {
@@ -930,7 +933,7 @@ export default function IntakeStation({
                       </span>
                     </div>
                     <p className="text-xs text-slate-300 mt-0.5">
-                      {patientInfo.age} Yrs • {patientInfo.sex} • {patientInfo.location_state || "Odisha - Khordha"}
+                      {Math.max(0, Math.abs(Number(patientInfo.age) || 0))} Yrs • {patientInfo.sex} • {patientInfo.location_state || "Odisha - Khordha"}
                     </p>
                   </div>
                 </div>
@@ -1173,8 +1176,35 @@ export default function IntakeStation({
                 <label className="text-slate-600 font-semibold block mb-1.5">{t.ageLabel}</label>
                 <input
                   type="number"
-                  value={patientInfo.age}
-                  onChange={(e) => setPatientInfo({ ...patientInfo, age: Number(e.target.value) })}
+                  min="0"
+                  max="125"
+                  step="1"
+                  value={patientInfo.age === "" ? "" : patientInfo.age}
+                  onKeyDown={(e) => {
+                    // Prevent typing negative sign, exponential notation, or plus
+                    if (e.key === "-" || e.key === "e" || e.key === "E" || e.key === "+") {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "") {
+                      setPatientInfo({ ...patientInfo, age: "" });
+                      return;
+                    }
+                    const num = parseInt(val, 10);
+                    if (isNaN(num)) return;
+                    setPatientInfo({
+                      ...patientInfo,
+                      age: Math.max(0, Math.min(125, Math.abs(num)))
+                    });
+                  }}
+                  onBlur={() => {
+                    if (patientInfo.age === "" || isNaN(patientInfo.age) || Number(patientInfo.age) < 0) {
+                      setPatientInfo({ ...patientInfo, age: 30 });
+                    }
+                  }}
+                  placeholder="30"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 font-medium"
                 />
               </div>
@@ -1909,8 +1939,11 @@ export default function IntakeStation({
                     </div>
                     <input
                       type="number"
+                      min="0"
+                      max="100"
                       value={vitals.spo2_percent}
-                      onChange={(e) => setVitals({ ...vitals, spo2_percent: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, spo2_percent: Math.max(0, Math.min(100, Math.abs(Number(e.target.value) || 0))) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">
@@ -1938,8 +1971,11 @@ export default function IntakeStation({
                     </div>
                     <input
                       type="number"
+                      min="0"
+                      max="300"
                       value={vitals.heart_rate_bpm}
-                      onChange={(e) => setVitals({ ...vitals, heart_rate_bpm: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, heart_rate_bpm: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">
@@ -1967,8 +2003,11 @@ export default function IntakeStation({
                     </div>
                     <input
                       type="number"
+                      min="0"
+                      max="350"
                       value={vitals.bp_systolic}
-                      onChange={(e) => setVitals({ ...vitals, bp_systolic: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, bp_systolic: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">
@@ -1988,8 +2027,11 @@ export default function IntakeStation({
                     </div>
                     <input
                       type="number"
+                      min="0"
+                      max="250"
                       value={vitals.bp_diastolic}
-                      onChange={(e) => setVitals({ ...vitals, bp_diastolic: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, bp_diastolic: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">
@@ -2016,8 +2058,11 @@ export default function IntakeStation({
                     <input
                       type="number"
                       step="0.1"
+                      min="70"
+                      max="115"
                       value={vitals.temperature_f}
-                      onChange={(e) => setVitals({ ...vitals, temperature_f: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, temperature_f: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">
@@ -2037,8 +2082,11 @@ export default function IntakeStation({
                     </div>
                     <input
                       type="number"
+                      min="0"
+                      max="100"
                       value={vitals.respiratory_rate_min}
-                      onChange={(e) => setVitals({ ...vitals, respiratory_rate_min: Number(e.target.value) })}
+                      onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
+                      onChange={(e) => setVitals({ ...vitals, respiratory_rate_min: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
                       className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
                     />
                     <span className="text-[10px] font-semibold block mt-1">

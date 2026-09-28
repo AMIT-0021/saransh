@@ -790,7 +790,7 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
         {/* Demographics & Facility Tags */}
         <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
           <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">
-            {item.age}y / {item.sex}
+            {Math.max(0, Math.abs(Number(item.age) || 0))}y / {item.sex}
           </span>
           <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">
             {item.language_preference}

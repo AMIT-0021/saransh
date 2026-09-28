@@ -121,7 +121,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
   const p = record.patient_basic_info || {
     name_or_alias: record.name_or_alias || "Ramesh K. (Synthetic)",
-    age: record.age || 62,
+    age: Math.max(0, Math.abs(Number(record.age ?? 62))),
     sex: record.sex || "Male",
     facility_type: record.facility_type || "PHC_JATNI",
     token_number: record.token_number || "T-024",
@@ -405,7 +405,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
               <strong className="text-sm sm:text-base font-extrabold text-slate-900 block truncate">
                 {p.name_or_alias}
               </strong>
-              <span className="text-xs sm:text-sm text-slate-700 font-medium">{p.age} Yrs • {p.sex} • {p.language_preference || "Odia"}</span>
+              <span className="text-xs sm:text-sm text-slate-700 font-medium">{Math.max(0, Math.abs(Number(p.age) || 0))} Yrs • {p.sex} • {p.language_preference || "Odia"}</span>
             </div>
 
             <div>

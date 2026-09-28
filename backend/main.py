@@ -104,6 +104,10 @@ def analyze_triage(payload: TriageIntakePayload):
     """
     global token_counter
 
+    # Ensure patient has non-negative age
+    if payload.patient_basic_info.age is not None:
+        payload.patient_basic_info.age = max(0, min(125, abs(int(payload.patient_basic_info.age))))
+
     # Ensure patient has token
     if not payload.patient_basic_info.token_number or payload.patient_basic_info.token_number == "T-001":
         token_counter += 1

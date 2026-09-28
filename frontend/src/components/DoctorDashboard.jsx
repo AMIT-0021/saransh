@@ -487,6 +487,7 @@ export default function DoctorDashboard({
               </div>
               <button
                 onClick={() => setActiveModal(null)}
+                aria-label="Close emergency resuscitation bay modal"
                 className="p-1.5 rounded-xl hover:bg-rose-800 text-white/80 hover:text-white transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -667,6 +668,7 @@ export default function DoctorDashboard({
               </div>
               <button
                 onClick={() => setActiveModal(null)}
+                aria-label="Close on-duty clinical staff modal"
                 className="p-1.5 rounded-xl hover:bg-teal-800 text-white/80 hover:text-white transition cursor-pointer"
               >
                 <X className="w-5 h-5" />

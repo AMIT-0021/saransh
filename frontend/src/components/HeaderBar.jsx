@@ -105,6 +105,7 @@ export default function HeaderBar({
           <button
             onClick={onToggleOffline}
             title="Toggle between Live API and Offline Mode"
+            aria-label="Toggle between Live API and Offline Mode"
             className={`flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border transition-all shadow-xs ${
               isOffline
                 ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
@@ -135,6 +136,8 @@ export default function HeaderBar({
             <button
               onClick={onSyncOffline}
               disabled={isSyncing}
+              title="Sync offline queued records with central hospital server"
+              aria-label={`Sync ${pendingSyncCount} offline queued records with central hospital server`}
               className="bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 transition shadow-xs"
             >
               <RefreshCw className={`w-3 h-3 ${isSyncing ? "animate-spin" : ""}`} />
@@ -153,6 +156,7 @@ export default function HeaderBar({
               <button
                 key={lang.code}
                 onClick={() => onLanguageChange(lang.code)}
+                aria-label={`Switch application language to ${lang.label}`}
                 className={`text-xs px-2.5 py-1 rounded-lg transition font-medium ${
                   selectedLanguage === lang.code
                     ? "bg-white text-teal-800 shadow-xs font-bold"
@@ -168,6 +172,7 @@ export default function HeaderBar({
           <button
             onClick={onResetDemo}
             title="Reset and reload standard synthetic clinical presets"
+            aria-label="Reset and reload standard synthetic clinical presets"
             className="flex items-center space-x-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl border border-slate-200 transition shadow-xs font-medium"
           >
             <RotateCcw className="w-3 h-3 text-slate-500" />
@@ -178,6 +183,7 @@ export default function HeaderBar({
           <button
             onClick={() => setIsPrivacyModalOpen(true)}
             title="View India DPDP Act 2023, ABDM Safeguards & NMC Clinical Terms"
+            aria-label="View India DPDP Act 2023, ABDM Safeguards and NMC Clinical Terms"
             className="flex items-center space-x-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-xl border border-emerald-200 transition shadow-xs font-semibold"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -281,6 +287,7 @@ export default function HeaderBar({
               </div>
               <button
                 onClick={() => setIsPrivacyModalOpen(false)}
+                aria-label="Close privacy and legal terms modal"
                 className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition"
               >
                 <X className="w-4 h-4" />

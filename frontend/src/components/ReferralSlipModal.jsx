@@ -190,6 +190,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
             </button>
             <button
               onClick={onClose}
+              aria-label="Close referral slip modal"
               className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
@@ -261,7 +262,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
                 </div>
                 {/* Visual Barcode Pattern */}
                 <div className="mt-1 bg-white p-1 rounded border border-slate-300">
-                  <svg className="w-32 h-6" viewBox="0 0 144 24">
+                  <svg className="w-32 h-6" viewBox="0 0 144 24" role="img" aria-label="Official NHM Referral Verification Barcode">
                     <rect x="0" y="0" width="3" height="24" fill="#111" />
                     <rect x="5" y="0" width="1" height="24" fill="#111" />
                     <rect x="8" y="0" width="4" height="24" fill="#111" />

@@ -1308,6 +1308,7 @@ export default function IntakeStation({
                     <button
                       type="button"
                       onClick={handleToggleSpeech}
+                      aria-label={isListening ? "Stop microphone recording" : "Start microphone voice recording"}
                       className={`relative flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
                         isListening
                           ? isSoundDetected

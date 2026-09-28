@@ -133,6 +133,7 @@ export default function ClinicianReviewModal({
             </button>
             <button
               onClick={onClose}
+              aria-label="Close clinician review modal"
               className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition cursor-pointer"
             >
               <X className="w-5 h-5" />

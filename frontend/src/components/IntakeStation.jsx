@@ -908,13 +908,15 @@ export default function IntakeStation({
           {/* ========================================================================= */}
           {/* 1. HOLOGRAPHIC ABHA DIGITAL HEALTH CARD (NHA / ABDM STYLE) */}
           {/* ========================================================================= */}
-          <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-xl bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white group transition-all duration-300 hover:shadow-2xl">
+          {/* 🪪 NATIONAL HEALTH AUTHORITY • OFFICIAL DIGITAL ABHA SMART CARD          */}
+          {/* ========================================================================= */}
+          <div className="relative rounded-3xl overflow-hidden border border-blue-500/25 shadow-2xl bg-gradient-to-br from-[#060d1d] via-[#0b1a36] to-[#070f22] text-white group transition-all duration-300 hover:shadow-blue-900/20">
             {/* Holographic iridescent light sheen overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/10 via-amber-400/5 to-sky-400/10 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 via-amber-400/5 to-cyan-400/10 pointer-events-none"></div>
 
             {/* Laser Scan line when isScanningAbha is true */}
             {isScanningAbha && (
-              <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_20px_#34d399] animate-laserScan z-30 pointer-events-none"></div>
+              <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_25px_#38bdf8] animate-laserScan z-30 pointer-events-none"></div>
             )}
 
             {/* Top Tricolor Accent Bar (Saffron #FF9933, White #FFFFFF, Green #138808) */}
@@ -925,15 +927,15 @@ export default function IntakeStation({
             </div>
 
             {/* National Health Authority • ABDM Sub-bar */}
-            <div className="bg-black/50 backdrop-blur-md px-5 py-2 flex flex-wrap items-center justify-between border-b border-white/10 text-xs">
+            <div className="bg-[#050b17]/80 backdrop-blur-md px-5 py-2.5 flex flex-wrap items-center justify-between border-b border-white/10 text-xs">
               <div className="flex items-center space-x-2">
                 <span className="text-base leading-none">🏛️</span>
-                <span className="font-extrabold tracking-widest text-[11px] text-amber-200">
+                <span className="font-black tracking-widest text-[11px] text-amber-300">
                   {t.nationalHealthAuthority || "NATIONAL HEALTH AUTHORITY • ABDM VERIFIED"}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="inline-flex items-center space-x-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                <span className="inline-flex items-center space-x-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                   <span>ABDM LIVE SANDBOX</span>
                 </span>
@@ -947,7 +949,7 @@ export default function IntakeStation({
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 min-w-0 w-full md:w-auto">
                   {/* Photorealistic Gold Microchip Graphic */}
                   <div className="relative shrink-0 hidden xs:block">
-                    <div className="w-12 h-9 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-700/80 shadow-inner flex flex-col justify-between p-1">
+                    <div className="w-12 h-9 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-500/90 shadow-md flex flex-col justify-between p-1">
                       <div className="w-full h-[1px] bg-amber-900/40"></div>
                       <div className="flex justify-between items-center h-full px-1">
                         <div className="w-2 h-full border-r border-amber-900/40"></div>
@@ -957,17 +959,17 @@ export default function IntakeStation({
                       <div className="w-full h-[1px] bg-amber-900/40"></div>
                     </div>
                     {/* Contactless waves graphic */}
-                    <div className="absolute -top-1 -right-2 text-[10px] font-mono text-amber-300/80 font-bold select-none">
+                    <div className="absolute -top-1 -right-2 text-[10px] font-mono text-amber-300 font-bold select-none">
                       )))
                     </div>
                   </div>
 
                   {/* Verified Checkmark Avatar */}
                   <div className="relative shrink-0">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/25 flex items-center justify-center text-teal-200 shadow-inner">
+                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-sky-200 shadow-inner">
                       <User className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 sm:p-1 border-2 border-slate-900 shadow-sm" title="ABDM Verified Citizen">
+                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 sm:p-1 border-2 border-[#060d1d] shadow-sm" title="ABDM Verified Citizen">
                       <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                     </div>
                   </div>
@@ -978,7 +980,7 @@ export default function IntakeStation({
                       <h3 className="text-sm sm:text-lg font-black text-white tracking-tight truncate max-w-[200px] sm:max-w-none">
                         {patientInfo.name_or_alias || "Ramesh Kumar (ABHA Verified)"}
                       </h3>
-                      <span className="text-[9px] sm:text-[10px] bg-teal-500/20 text-teal-300 border border-teal-400/40 px-1.5 sm:px-2 py-0.5 rounded-md font-bold shrink-0">
+                      <span className="text-[9px] sm:text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-md font-bold shrink-0">
                         CITIZEN
                       </span>
                     </div>
@@ -994,7 +996,7 @@ export default function IntakeStation({
                     type="button"
                     onClick={handleMockScanAbha}
                     disabled={isScanningAbha}
-                    className="w-full sm:w-auto bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-300 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-lg shadow-teal-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
+                    className="w-full sm:w-auto bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-lg shadow-orange-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
                   >
                     <span className="text-sm">{isScanningAbha ? "⚡" : "🪪"}</span>
                     <span>
@@ -1007,23 +1009,23 @@ export default function IntakeStation({
               </div>
 
               {/* Formatted ABHA Number Pill & Digital Health ID Bar */}
-              <div className="bg-black/35 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0 max-w-full">
+              <div className="bg-[#050d1a]/80 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-blue-400/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0 max-w-full shadow-inner">
                 <div className="flex flex-col xs:flex-row xs:items-center gap-2 min-w-0 max-w-full">
-                  <span className="text-[11px] text-teal-300 font-bold uppercase tracking-wider shrink-0">
+                  <span className="text-[11px] text-sky-300 font-bold uppercase tracking-wider shrink-0">
                     {t.abhaIdLabel || "ABHA ID"}:
                   </span>
-                  <div className="bg-teal-950/80 border border-teal-400/50 px-2.5 sm:px-3.5 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-black text-teal-200 tracking-wider shadow-inner flex items-center space-x-1.5 sm:space-x-2 max-w-full min-w-0">
-                    <span className="text-emerald-400 shrink-0">ABHA:</span>
+                  <div className="bg-[#08152e] border border-sky-400/40 px-2.5 sm:px-3.5 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-black text-sky-200 tracking-wider shadow-inner flex items-center space-x-1.5 sm:space-x-2 max-w-full min-w-0">
+                    <span className="text-cyan-400 shrink-0">ABHA:</span>
                     <span className="text-white tracking-wider sm:tracking-widest truncate">{patientInfo.abha_id || "91-4821-9923-0192"}</span>
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-auto" />
                   </div>
                 </div>
 
                 {/* Mock QR Matrix Graphic */}
-                <div className="flex items-center space-x-2 text-[10px] text-slate-400 font-mono shrink-0">
+                <div className="flex items-center space-x-2 text-[10px] text-slate-300 font-mono shrink-0">
                   <div className="w-6 h-6 bg-white p-0.5 rounded flex items-center justify-center shadow-xs">
-                    <div className="w-full h-full bg-slate-950 rounded-[2px] flex items-center justify-center">
-                      <span className="text-[7px] text-teal-300 font-bold">QR</span>
+                    <div className="w-full h-full bg-[#08152e] rounded-[2px] flex items-center justify-center">
+                      <span className="text-[7px] text-sky-300 font-bold">QR</span>
                     </div>
                   </div>
                   <span>NHA SCAN-READY</span>
@@ -1033,7 +1035,7 @@ export default function IntakeStation({
               {/* Synced Medical History Pills */}
               <div className="space-y-2 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
-                  <span className="text-teal-200/90 font-bold uppercase tracking-wider flex items-center space-x-1.5">
+                  <span className="text-sky-200/90 font-bold uppercase tracking-wider flex items-center space-x-1.5">
                     <span>⚡</span>
                     <span>ABDM Synced Medical History & Clinical Alerts:</span>
                   </span>
@@ -1041,17 +1043,17 @@ export default function IntakeStation({
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <span className="bg-teal-500/20 text-teal-200 border border-teal-400/40 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                  <span className="bg-blue-500/15 text-blue-200 border border-blue-400/30 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
                     <span>Essential Hypertension (ICD-10 I10)</span>
                   </span>
 
-                  <span className="bg-sky-500/20 text-sky-200 border border-sky-400/40 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                  <span className="bg-cyan-500/15 text-cyan-200 border border-cyan-400/30 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
                     <span>Type 2 Diabetes</span>
                   </span>
 
-                  <span className="bg-rose-500/25 text-rose-200 border border-rose-400/60 font-black px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 ring-1 ring-rose-500/40 shadow-xs animate-pulse">
+                  <span className="bg-rose-500/20 text-rose-200 border border-rose-400/50 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 ring-1 ring-rose-500/30 shadow-xs animate-pulse">
                     <span>🚨</span>
                     <span>Penicillin Allergy Alert</span>
                   </span>

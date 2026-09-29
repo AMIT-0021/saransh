@@ -439,24 +439,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-100 selection:text-teal-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-100 selection:text-teal-900 w-full max-w-full overflow-x-hidden">
       {/* 🚨 FLOATING HIGH-CONTRAST EMERGENCY ESCALATION ALERT TOAST (TOP-RIGHT CORNER) */}
       {emergencyNotification && (
         <aside
           aria-live="assertive"
           role="alert"
-          className="fixed top-5 right-5 z-50 w-[92vw] sm:w-[460px] animate-slideInRight"
+          className="fixed top-3 sm:top-5 inset-x-3 sm:inset-x-auto sm:right-5 z-50 sm:w-[460px] animate-slideInRight"
         >
           <div className="bg-rose-700/95 backdrop-blur-md text-white rounded-2xl p-4 shadow-2xl border-2 border-rose-300 ring-4 ring-rose-500/30 emergency-glow flex flex-col space-y-3">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg shrink-0 shadow-inner mt-0.5">
                   <span className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
                   </span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 min-w-0">
                   <div className="flex items-center space-x-2">
                     <span className="font-mono text-[10px] font-black uppercase tracking-wider bg-black/30 text-rose-200 px-2 py-0.5 rounded border border-rose-400/40">
                       LIVE ESCALATION
@@ -465,7 +465,7 @@ export default function App() {
                       {emergencyNotification.timestamp}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm font-extrabold text-white leading-snug">
+                  <p className="text-xs sm:text-sm font-extrabold text-white leading-snug break-words">
                     {emergencyNotification.message}
                   </p>
                 </div>
@@ -529,7 +529,7 @@ export default function App() {
       )}
 
       {/* 2. Main Clinical Workspace */}
-      <main className="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+      <main className="max-w-7xl mx-auto px-2.5 sm:px-4 py-4 sm:py-6 flex-1 w-full space-y-4 sm:space-y-6 overflow-x-hidden">
         {activeRole === "NURSE" ? (
           <IntakeStation
             selectedFacility={selectedFacility}
@@ -578,7 +578,7 @@ export default function App() {
       )}
 
       {/* 5. Minimalist Healthcare Footer */}
-      <footer className="border-t border-slate-200 bg-white text-slate-500 text-xs py-4 px-6 text-center shadow-xs">
+      <footer className="border-t border-slate-200 bg-white text-slate-500 text-[11px] sm:text-xs py-3 sm:py-4 px-3 sm:px-6 text-center shadow-xs break-words w-full max-w-full">
         Saransh (सारांश) — Multimodal Human-in-the-Loop Healthcare Triage Assistant | Government & Institutional Health Facilities Edition | Non-Diagnostic Clinical Decision Support
       </footer>
     </div>

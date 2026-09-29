@@ -118,10 +118,10 @@ export default function TriageResultCard({
     .filter(Boolean);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-card overflow-hidden space-y-6 p-6 animate-fadeIn">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-card overflow-hidden space-y-4 sm:space-y-6 p-3.5 sm:p-6 animate-fadeIn min-w-0 max-w-full">
       {/* 1. Urgency Classification Banner */}
       <div
-        className={`p-6 rounded-2xl border transition-all flex flex-wrap items-center justify-between gap-4 ${
+        className={`p-3.5 sm:p-6 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 min-w-0 max-w-full ${
           priority === "RED"
             ? "bg-rose-50 border-rose-300 text-rose-950 emergency-pulse ring-1 ring-rose-400/40"
             : priority === "YELLOW"
@@ -129,10 +129,10 @@ export default function TriageResultCard({
             : "bg-emerald-50 border-emerald-200 text-emerald-950"
         }`}
       >
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 min-w-0 flex-1">
           <div className="flex items-center space-x-2.5">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 shadow-xs ${
+              className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center space-x-1.5 shadow-xs shrink-0 ${
                 priority === "RED"
                   ? "bg-rose-600 text-white"
                   : priority === "YELLOW"
@@ -146,27 +146,27 @@ export default function TriageResultCard({
               <span>{priority} PRIORITY</span>
             </span>
 
-            <span className="text-xs bg-white/80 text-slate-700 px-2.5 py-0.5 rounded-lg border border-slate-200 font-mono font-bold shadow-xs">
+            <span className="text-xs bg-white/80 text-slate-700 px-2.5 py-0.5 rounded-lg border border-slate-200 font-mono font-bold shadow-xs shrink-0">
               Token: {triageRecord.token_number}
             </span>
           </div>
 
-          <h2 className="text-2xl font-black tracking-tight text-slate-900">
-            {priority === "RED" && (t.redPriority ? `${t.redPriority} — ${t.redDescription}` : "🔴 Emergency (P1) — Immediate Medical Officer Care")}
-            {priority === "YELLOW" && (t.yellowPriority ? `${t.yellowPriority} — ${t.yellowDescription}` : "🟠 Urgent (P2) — Priority Outpatient Evaluation")}
-            {priority === "GREEN" && (t.greenPriority ? `${t.greenPriority} — ${t.greenDescription}` : "🟢 Routine (P3) — Standard Outpatient Queue")}
+          <h2 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 break-words leading-tight">
+            {priority === "RED" && (t.redPriority ? `${t.redPriority} — ${t.redDescription}` : "🔴 Emergency (P1) — Immediate Care")}
+            {priority === "YELLOW" && (t.yellowPriority ? `${t.yellowPriority} — ${t.yellowDescription}` : "🟠 Urgent (P2) — Priority Outpatient")}
+            {priority === "GREEN" && (t.greenPriority ? `${t.greenPriority} — ${t.greenDescription}` : "🟢 Routine (P3) — Standard Queue")}
           </h2>
-          <p className="text-xs text-slate-600 font-medium">{ai.priority_label}</p>
+          <p className="text-xs text-slate-600 font-medium truncate">{ai.priority_label}</p>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <div className="bg-white/90 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs text-right">
+        <div className="w-full md:w-auto flex flex-wrap items-center gap-2 min-w-0">
+          <div className="bg-white/90 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 shadow-xs text-left sm:text-right flex-1 sm:flex-none min-w-[120px]">
             <span className="block text-[10px] uppercase text-slate-500 font-bold">
               Routing Destination
             </span>
-            <strong className="text-xs text-slate-900 flex items-center justify-end space-x-1">
-              <Building2 className="w-3.5 h-3.5 text-teal-600 mr-1" />
-              <span>{ai.suggested_department}</span>
+            <strong className="text-xs text-slate-900 flex items-center sm:justify-end space-x-1">
+              <Building2 className="w-3.5 h-3.5 text-teal-600 mr-1 shrink-0" />
+              <span className="truncate">{ai.suggested_department}</span>
             </strong>
           </div>
 
@@ -174,24 +174,24 @@ export default function TriageResultCard({
             type="button"
             onClick={handleSpeakTriageSummary}
             title="1-Click Audible Clinical Triage Briefing (Medical Officer Voice)"
-            className={`px-3 py-2.5 rounded-xl border text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
+            className={`px-3 py-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-xs cursor-pointer min-h-[44px] ${
               currentlySpeakingIdx === "SUMMARY"
                 ? "bg-rose-600 text-white border-rose-600 ring-2 ring-rose-400 animate-pulse"
                 : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
             }`}
           >
             <Volume2 className={`w-3.5 h-3.5 ${currentlySpeakingIdx === "SUMMARY" ? "text-white animate-bounce" : "text-teal-600"}`} />
-            <span className="hidden sm:inline">
-              {currentlySpeakingIdx === "SUMMARY" ? "Stop Briefing" : "Audio Briefing"}
+            <span>
+              {currentlySpeakingIdx === "SUMMARY" ? "Stop" : "Audio"}
             </span>
           </button>
 
           <button
             onClick={onGoToDoctorQueue}
-            className="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-md shadow-teal-700/20 flex items-center space-x-2 shrink-0 cursor-pointer"
+            className="flex-1 sm:flex-none bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-md shadow-teal-700/20 flex items-center justify-center space-x-2 shrink-0 cursor-pointer min-h-[44px]"
           >
             <span>Doctor Queue</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 shrink-0" />
           </button>
         </div>
       </div>
@@ -216,7 +216,7 @@ export default function TriageResultCard({
       </div>
 
       {/* 3. Vertical Chronological Timeline Stepper */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
+      <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-4 min-w-0 max-w-full overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <div className="flex items-center space-x-2 text-xs font-bold text-slate-900 uppercase tracking-wider">
             <Clock className="w-4 h-4 text-teal-600" />
@@ -249,50 +249,52 @@ export default function TriageResultCard({
       </div>
 
       {/* 4. AI Insights & Bilingual Follow-Up Questions (Soft Indigo Card) */}
-      <div className="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-6 space-y-5 shadow-xs text-indigo-950">
+      <div className="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-3.5 sm:p-6 space-y-4 sm:space-y-5 shadow-xs text-indigo-950 min-w-0 max-w-full overflow-hidden">
         <div className="flex flex-wrap items-center justify-between border-b border-indigo-200/60 pb-3 gap-3">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 rounded-xl bg-indigo-100 text-indigo-700">
+          <div className="flex items-center space-x-2 min-w-0">
+            <div className="p-2 rounded-xl bg-indigo-100 text-indigo-700 shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div>
-              <h4 className="text-sm font-bold text-indigo-950">
+            <div className="min-w-0">
+              <h4 className="text-sm font-bold text-indigo-950 truncate">
                 AI Clinical Insights & Follow-Up Bedside Questions
               </h4>
-              <p className="text-xs text-indigo-800">
+              <p className="text-xs text-indigo-800 truncate">
                 Empathetic vernacular phrasing for frontline ASHA / ANM nurse bedside screening
               </p>
             </div>
           </div>
 
           {/* Interactive Language Toggle Chips */}
-          <div className="flex items-center space-x-1.5 bg-white p-1 rounded-xl border border-indigo-200 shadow-xs">
+          <div className="grid grid-cols-3 gap-1 bg-white p-1 rounded-xl border border-indigo-200 shadow-xs w-full sm:w-auto">
             <button
               type="button"
               onClick={() => setAskLang("Odia")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-center ${
                 askLang === "Odia"
                   ? "bg-teal-600 text-white shadow-xs"
                   : "text-slate-700 hover:bg-slate-100"
               }`}
             >
-              ଓଡ଼ିଆ ରେ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ
+              <span className="sm:hidden">ଓଡ଼ିଆ</span>
+              <span className="hidden sm:inline">ଓଡ଼ିଆ ରେ ପଚାରନ୍ତୁ</span>
             </button>
             <button
               type="button"
               onClick={() => setAskLang("Hindi")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-center ${
                 askLang === "Hindi"
                   ? "bg-teal-600 text-white shadow-xs"
                   : "text-slate-700 hover:bg-slate-100"
               }`}
             >
-              हिन्दी में पूछें
+              <span className="sm:hidden">हिन्दी</span>
+              <span className="hidden sm:inline">हिन्दी में पूछें</span>
             </button>
             <button
               type="button"
               onClick={() => setAskLang("English")}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-center ${
                 askLang === "English"
                   ? "bg-teal-600 text-white shadow-xs"
                   : "text-slate-700 hover:bg-slate-100"
@@ -359,19 +361,19 @@ export default function TriageResultCard({
                 key={idx}
                 className="bg-white p-4 rounded-xl border border-indigo-200/90 shadow-xs space-y-3 text-xs"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center justify-center shrink-0">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 min-w-0">
+                  <div className="space-y-1 min-w-0 flex-1">
+                    <div className="flex items-start space-x-2">
+                      <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
                       </span>
-                      <p className="font-bold text-slate-900 text-sm leading-snug">
+                      <p className="font-bold text-slate-900 text-xs sm:text-sm leading-snug break-words">
                         {primaryText}
                       </p>
                     </div>
 
                     {secondaryText && secondaryText !== primaryText && (
-                      <p className="text-slate-500 text-xs italic pl-7">
+                      <p className="text-slate-500 text-xs italic pl-7 break-words">
                         "{secondaryText}"
                       </p>
                     )}
@@ -380,7 +382,7 @@ export default function TriageResultCard({
                   <button
                     type="button"
                     onClick={() => handleSpeakQuestion(primaryText, askLang, idx)}
-                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition shrink-0 cursor-pointer shadow-xs ${
+                    className={`self-start sm:self-auto flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition shrink-0 cursor-pointer shadow-xs min-h-[38px] ${
                       currentlySpeakingIdx === idx
                         ? "bg-indigo-600 text-white border-indigo-600 ring-2 ring-indigo-400 animate-pulse"
                         : "bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-indigo-200"

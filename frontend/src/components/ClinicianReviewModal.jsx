@@ -179,7 +179,7 @@ export default function ClinicianReviewModal({
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 space-y-4 sm:space-y-5 min-w-0 max-w-full">
           {/* 1. Structured Clinical Summary Card */}
           <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3 shadow-xs">
             <div className="flex items-center justify-between">

@@ -62,17 +62,17 @@ export default function HeaderBar({
       </div>
 
       {/* 2. Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-4 py-2 sm:py-3 w-full max-w-full overflow-hidden">
         {/* Top Header Row */}
-        <div className="flex items-center justify-between gap-2.5">
+        <div className="flex items-center justify-between gap-2 min-w-0">
           {/* Brand Logo & Subtitle */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 text-white shrink-0">
-              <Activity className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 text-white shrink-0">
+              <Activity className="w-4 h-4 sm:w-6 sm:h-6 stroke-[2.5]" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center space-x-1.5 sm:space-x-2">
-                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
+              <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0">
+                <h1 className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate">
                   {t.appTitle || "Saransh"}
                 </h1>
                 <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md font-semibold tracking-wide border border-teal-200 hidden sm:inline-flex whitespace-nowrap">
@@ -194,13 +194,13 @@ export default function HeaderBar({
           </div>
 
           {/* Mobile Right Action Icons (< lg) */}
-          <div className="flex lg:hidden items-center space-x-1.5 shrink-0">
+          <div className="flex lg:hidden items-center gap-1 sm:gap-1.5 shrink-0">
             {/* Mobile Online/Offline Compact Pill */}
             <button
               onClick={onToggleOffline}
               title={isOffline ? "Offline Mode (Queued locally)" : "Online Mode (Connected)"}
               aria-label={isOffline ? "Offline Mode" : "Online Mode"}
-              className={`flex items-center space-x-1 text-[11px] font-bold px-2.5 py-1.5 rounded-xl border transition shadow-xs min-h-[44px] min-w-[44px] justify-center ${
+              className={`flex items-center space-x-1 text-[11px] font-bold px-2 sm:px-2.5 py-1.5 rounded-xl border transition shadow-xs min-h-[38px] sm:min-h-[44px] min-w-[38px] sm:min-w-[44px] justify-center ${
                 isOffline
                   ? "bg-amber-50 text-amber-800 border-amber-300"
                   : "bg-emerald-50 text-emerald-800 border-emerald-300"
@@ -230,7 +230,7 @@ export default function HeaderBar({
                 onClick={onSyncOffline}
                 disabled={isSyncing}
                 title={`Sync ${pendingSyncCount} offline records`}
-                className="bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-2 py-1.5 rounded-xl flex items-center space-x-1 shadow-xs min-h-[44px] min-w-[44px] justify-center"
+                className="bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-2 py-1.5 rounded-xl flex items-center space-x-1 shadow-xs min-h-[38px] sm:min-h-[44px] min-w-[38px] sm:min-w-[44px] justify-center"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
                 <span>{pendingSyncCount}</span>
@@ -242,7 +242,7 @@ export default function HeaderBar({
               onClick={onResetDemo}
               title="Reset synthetic clinical cases"
               aria-label="Reset synthetic clinical cases"
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 min-h-[44px] min-w-[44px] flex items-center justify-center transition shadow-xs"
+              className="p-1.5 sm:p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 min-h-[38px] sm:min-h-[44px] min-w-[38px] sm:min-w-[44px] flex items-center justify-center transition shadow-xs"
             >
               <RotateCcw className="w-4 h-4 text-slate-600" />
             </button>
@@ -252,7 +252,7 @@ export default function HeaderBar({
               onClick={() => setIsPrivacyModalOpen(true)}
               title="DPDP Privacy & NMC Terms"
               aria-label="View Privacy & Clinical Terms"
-              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 min-h-[44px] min-w-[44px] flex items-center justify-center transition shadow-xs"
+              className="p-1.5 sm:p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 min-h-[38px] sm:min-h-[44px] min-w-[38px] sm:min-w-[44px] flex items-center justify-center transition shadow-xs"
             >
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
             </button>

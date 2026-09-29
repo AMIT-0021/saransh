@@ -88,48 +88,48 @@ export default function DoctorDashboard({
   const generalOccupancyPct = totalGeneral > 0 ? Math.round((occupiedGeneral / totalGeneral) * 100) : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full overflow-hidden">
       {/* 1. Hospital Resource & Capacity Bar (Apple Health Style Live Telemetry) */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm transition-all">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-teal-50 text-teal-700 relative border border-teal-100">
-              <Activity className="w-5 h-5 stroke-[2.5]" />
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm transition-all min-w-0 max-w-full overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-100 pb-3 sm:pb-4 min-w-0">
+          <div className="flex items-center space-x-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-teal-50 text-teal-700 relative border border-teal-100 shrink-0">
+              <Activity className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
               </span>
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
-                  {t.telemetryTitle || "HOSPITAL TELEMETRY & CAPACITY LIVE COUNTERS"}
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide truncate">
+                  {t.telemetryTitle || "HOSPITAL TELEMETRY & CAPACITY"}
                 </h3>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-200 shadow-2xs">
+                <span className="bg-emerald-100 text-emerald-800 text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-200 shadow-2xs shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>LIVE STREAMING</span>
+                  <span>LIVE</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
-                {facilityStats.facility_name || "PHC Jatni"} ({facilityStats.facility_nin || "OD-KHD-PHC-102"}) • Last telemetry sync: <strong className="font-mono text-slate-800">{facilityStats.last_updated || "Just now"}</strong> • Auto-syncing every 5s
+              <p className="text-[11px] sm:text-xs text-slate-500 truncate">
+                {facilityStats.facility_name || "PHC Jatni"} ({facilityStats.facility_nin || "OD-KHD-PHC-102"}) • Sync: <strong className="font-mono text-slate-800">{facilityStats.last_updated || "Just now"}</strong>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="w-full sm:w-auto flex flex-wrap sm:flex-nowrap items-center gap-2">
             <button
               onClick={onRefreshQueue}
-              className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition border border-slate-200 cursor-pointer shadow-2xs"
+              className="flex-1 sm:flex-none px-3 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition border border-slate-200 cursor-pointer shadow-2xs min-h-[38px] sm:min-h-[40px]"
               title="Force Real-Time Telemetry Refresh"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-teal-700 ${isRefreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-teal-700 shrink-0 ${isRefreshing ? "animate-spin" : ""}`} />
               <span>{isRefreshing ? "Syncing..." : "Sync Live Data"}</span>
             </button>
             <button
               onClick={() => setActiveModal("BAYS")}
-              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition cursor-pointer shadow-2xs"
+              className="flex-1 sm:flex-none px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition cursor-pointer shadow-2xs min-h-[38px] sm:min-h-[40px]"
             >
-              <Bed className="w-3.5 h-3.5" />
+              <Bed className="w-3.5 h-3.5 shrink-0" />
               <span>View Bay Roster</span>
             </button>
           </div>
@@ -872,13 +872,13 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
       </div>
 
       {/* Card Action & Routing */}
-      <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-        <div className="text-[11px] text-slate-500 truncate max-w-[110px] sm:max-w-[130px]">
+      <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 min-w-0">
+        <div className="text-[11px] text-slate-500 truncate max-w-[120px] min-w-0">
           <span className="text-[10px] text-slate-400 block font-bold uppercase">{t?.unitLabel || "Unit"}</span>
           <span className="font-semibold text-slate-700 truncate block">{item.department}</span>
         </div>
 
-        <div className="flex items-center space-x-1.5">
+        <div className="flex items-center space-x-1.5 shrink-0 ml-auto">
           {onOpenReferralSlip && (
             <button
               onClick={(e) => {
@@ -886,9 +886,9 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
                 onOpenReferralSlip(item.visit_id);
               }}
               title="1-Click Official Government Referral Slip"
-              className="min-h-[44px] px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 shadow-xs cursor-pointer"
+              className="min-h-[38px] sm:min-h-[44px] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1 border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 shadow-xs cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-teal-700 shrink-0" />
+              <FileText className="w-3.5 h-3.5 text-teal-700 shrink-0" />
               <span>Slip</span>
             </button>
           )}
@@ -896,7 +896,7 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
           <button
             onClick={onReview}
             title="1-Click Clinician Review & Counter-Sign"
-            className={`min-h-[44px] px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
+            className={`min-h-[38px] sm:min-h-[44px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
               isRed
                 ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-950/20 ring-1 ring-rose-400"
                 : isYellow
@@ -904,8 +904,8 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
                 : "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-950/20 ring-1 ring-teal-400"
             }`}
           >
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>Counter-Sign</span>
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="truncate">Counter-Sign</span>
             <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           </button>
         </div>

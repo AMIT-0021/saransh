@@ -936,18 +936,18 @@ export default function IntakeStation({
             </div>
 
             {/* Main Card Body */}
-            <div className="p-6 relative z-10 space-y-5">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="p-3.5 sm:p-6 relative z-10 space-y-4 sm:space-y-5 min-w-0 max-w-full overflow-hidden">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 min-w-0">
                 {/* Left side: Chip & Contactless & Avatar */}
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 min-w-0 w-full md:w-auto">
                   {/* Photorealistic Gold Microchip Graphic */}
-                  <div className="relative shrink-0">
-                    <div className="w-13 h-10 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-700/80 shadow-inner flex flex-col justify-between p-1">
+                  <div className="relative shrink-0 hidden xs:block">
+                    <div className="w-12 h-9 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-700/80 shadow-inner flex flex-col justify-between p-1">
                       <div className="w-full h-[1px] bg-amber-900/40"></div>
                       <div className="flex justify-between items-center h-full px-1">
-                        <div className="w-2.5 h-full border-r border-amber-900/40"></div>
-                        <div className="w-3.5 h-3.5 rounded-full border border-amber-900/40"></div>
-                        <div className="w-2.5 h-full border-l border-amber-900/40"></div>
+                        <div className="w-2 h-full border-r border-amber-900/40"></div>
+                        <div className="w-3 h-3 rounded-full border border-amber-900/40"></div>
+                        <div className="w-2 h-full border-l border-amber-900/40"></div>
                       </div>
                       <div className="w-full h-[1px] bg-amber-900/40"></div>
                     </div>
@@ -959,25 +959,25 @@ export default function IntakeStation({
 
                   {/* Verified Checkmark Avatar */}
                   <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/25 flex items-center justify-center text-teal-200 shadow-inner">
-                      <User className="w-7 h-7" />
+                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/25 flex items-center justify-center text-teal-200 shadow-inner">
+                      <User className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-1 border-2 border-slate-900 shadow-sm" title="ABDM Verified Citizen">
-                      <Check className="w-3 h-3 stroke-[3]" />
+                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 sm:p-1 border-2 border-slate-900 shadow-sm" title="ABDM Verified Citizen">
+                      <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                     </div>
                   </div>
 
                   {/* Citizen Basic Info */}
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <h3 className="text-sm sm:text-lg font-black text-white tracking-tight truncate max-w-[200px] sm:max-w-none">
                         {patientInfo.name_or_alias || "Ramesh Kumar (ABHA Verified)"}
                       </h3>
-                      <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-400/40 px-2 py-0.5 rounded-md font-bold">
+                      <span className="text-[9px] sm:text-[10px] bg-teal-500/20 text-teal-300 border border-teal-400/40 px-1.5 sm:px-2 py-0.5 rounded-md font-bold shrink-0">
                         CITIZEN
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-slate-300 mt-0.5 truncate">
                       {Math.max(0, Math.abs(Number(patientInfo.age) || 0))} Yrs • {patientInfo.sex} • {patientInfo.location_state || "Odisha - Khordha"}
                     </p>
                   </div>
@@ -989,7 +989,7 @@ export default function IntakeStation({
                     type="button"
                     onClick={handleMockScanAbha}
                     disabled={isScanningAbha}
-                    className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-300 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black text-xs px-5 py-3 rounded-xl transition shadow-lg shadow-teal-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
+                    className="w-full sm:w-auto bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-300 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-lg shadow-teal-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
                   >
                     <span className="text-sm">{isScanningAbha ? "⚡" : "🪪"}</span>
                     <span>
@@ -1002,32 +1002,32 @@ export default function IntakeStation({
               </div>
 
               {/* Formatted ABHA Number Pill & Digital Health ID Bar */}
-              <div className="bg-black/35 backdrop-blur-md rounded-2xl p-3.5 border border-white/10 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center space-x-3">
-                  <span className="text-[11px] text-teal-300 font-bold uppercase tracking-wider">
-                    {t.abhaIdLabel || "ABHA ID (NHA Health Account)"}:
+              <div className="bg-black/35 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0 max-w-full">
+                <div className="flex flex-col xs:flex-row xs:items-center gap-2 min-w-0 max-w-full">
+                  <span className="text-[11px] text-teal-300 font-bold uppercase tracking-wider shrink-0">
+                    {t.abhaIdLabel || "ABHA ID"}:
                   </span>
-                  <div className="bg-teal-950/80 border border-teal-400/50 px-3.5 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-black text-teal-200 tracking-wider shadow-inner flex items-center space-x-2">
-                    <span className="text-emerald-400">ABHA:</span>
-                    <span className="text-white tracking-widest">{patientInfo.abha_id || "91-4821-9923-0192"}</span>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div className="bg-teal-950/80 border border-teal-400/50 px-2.5 sm:px-3.5 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-black text-teal-200 tracking-wider shadow-inner flex items-center space-x-1.5 sm:space-x-2 max-w-full min-w-0">
+                    <span className="text-emerald-400 shrink-0">ABHA:</span>
+                    <span className="text-white tracking-wider sm:tracking-widest truncate">{patientInfo.abha_id || "91-4821-9923-0192"}</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-auto" />
                   </div>
                 </div>
 
                 {/* Mock QR Matrix Graphic */}
-                <div className="flex items-center space-x-2 text-[10px] text-slate-400 font-mono">
-                  <div className="w-7 h-7 bg-white p-0.5 rounded flex items-center justify-center shadow-xs">
+                <div className="flex items-center space-x-2 text-[10px] text-slate-400 font-mono shrink-0">
+                  <div className="w-6 h-6 bg-white p-0.5 rounded flex items-center justify-center shadow-xs">
                     <div className="w-full h-full bg-slate-950 rounded-[2px] flex items-center justify-center">
                       <span className="text-[7px] text-teal-300 font-bold">QR</span>
                     </div>
                   </div>
-                  <span className="hidden sm:inline">NHA SCAN-READY</span>
+                  <span>NHA SCAN-READY</span>
                 </div>
               </div>
 
               {/* Synced Medical History Pills */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-[11px]">
+              <div className="space-y-2 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
                   <span className="text-teal-200/90 font-bold uppercase tracking-wider flex items-center space-x-1.5">
                     <span>⚡</span>
                     <span>ABDM Synced Medical History & Clinical Alerts:</span>
@@ -1056,8 +1056,8 @@ export default function IntakeStation({
           </div>
 
           {/* 1-Click Demo Quick Fill Profiles */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 space-y-3">
-            <div className="flex items-center justify-between">
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-5 space-y-3 min-w-0 max-w-full overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
               <div className="flex items-center space-x-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
                 <Sparkles className="w-4 h-4 text-teal-600" />
                 <span>{t.quickFillTitle || "1-Click Demo Quick Fill Profiles:"}</span>
@@ -1067,12 +1067,12 @@ export default function IntakeStation({
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
               {/* Ramesh (Odia RED) */}
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[0])}
-                className="text-left p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3 sm:p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
               >
                 <div>
                   <div className="font-bold text-xs text-rose-950 flex items-center justify-between">
@@ -1095,7 +1095,7 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[1])}
-                className="text-left p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3 sm:p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
               >
                 <div>
                   <div className="font-bold text-xs text-amber-950 flex items-center justify-between">
@@ -1118,7 +1118,7 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[2])}
-                className="text-left p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:border-emerald-400 hover:bg-emerald-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3 sm:p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:border-emerald-400 hover:bg-emerald-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
               >
                 <div>
                   <div className="font-bold text-xs text-emerald-950 flex items-center justify-between">
@@ -1141,7 +1141,7 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[3])}
-                className="text-left p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3 sm:p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
               >
                 <div>
                   <div className="font-bold text-xs text-rose-950 flex items-center justify-between">
@@ -1163,7 +1163,7 @@ export default function IntakeStation({
           </div>
 
           {/* Minimal Patient Registration Card */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-5">
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-6 space-y-4 sm:space-y-5 min-w-0 max-w-full overflow-hidden">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div className="flex items-center space-x-2.5">
                 <div className="p-2 rounded-xl bg-teal-50 text-teal-700">
@@ -1177,11 +1177,11 @@ export default function IntakeStation({
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2.5">
-                <span className="text-xs bg-teal-50 text-teal-800 px-3 py-1 rounded-xl border border-teal-200 font-mono font-bold shadow-xs">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs bg-teal-50 text-teal-800 px-2.5 sm:px-3 py-1 rounded-xl border border-teal-200 font-mono font-bold shadow-xs">
                   {t.tokenLabel}: {patientInfo.token_number}
                 </span>
-                <span className="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-xl font-mono">
+                <span className="text-xs bg-slate-100 text-slate-600 px-2 sm:px-2.5 py-1 rounded-xl font-mono">
                   {t.patientIdLabel}: {patientInfo.patient_id}
                 </span>
               </div>
@@ -1364,22 +1364,22 @@ export default function IntakeStation({
             {/* ------------------------------------------------------------- */}
             <div className="space-y-6">
               {/* Quadrant 1: Multilingual Voice & Speech Intake */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700">
+              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-6 space-y-4 min-w-0 max-w-full overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700 shrink-0">
                       <Mic className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-slate-900 truncate">
                         {t.quadrant1Title}
                       </h3>
-                      <p className="text-xs text-slate-500">{t.quadrant1Subtitle}</p>
+                      <p className="text-xs text-slate-500 truncate">{t.quadrant1Subtitle}</p>
                     </div>
                   </div>
 
                   {/* Speech Recording Button with Active Green Audio Visualizer Ring */}
-                  <div className="relative inline-flex items-center">
+                  <div className="relative inline-flex items-center w-full sm:w-auto">
                     {isListening && isSoundDetected && (
                       <span className="absolute -inset-1.5 rounded-2xl bg-emerald-400 opacity-75 blur-xs animate-pulse pointer-events-none"></span>
                     )}
@@ -1387,7 +1387,7 @@ export default function IntakeStation({
                       type="button"
                       onClick={handleToggleSpeech}
                       aria-label={isListening ? "Stop microphone recording" : "Start microphone voice recording"}
-                      className={`relative flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer min-h-[44px] ${
+                      className={`relative w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer min-h-[44px] ${
                         isListening
                           ? isSoundDetected
                             ? "bg-emerald-600 text-white ring-4 ring-emerald-400/80 shadow-lg shadow-emerald-500/40"
@@ -1396,11 +1396,11 @@ export default function IntakeStation({
                       }`}
                     >
                       {isListening ? (
-                        isSoundDetected ? <Mic className="w-4 h-4 text-white animate-bounce" /> : <MicOff className="w-4 h-4" />
+                        isSoundDetected ? <Mic className="w-4 h-4 text-white animate-bounce shrink-0" /> : <MicOff className="w-4 h-4 shrink-0" />
                       ) : (
-                        <Mic className="w-4 h-4" />
+                        <Mic className="w-4 h-4 shrink-0" />
                       )}
-                      <span>
+                      <span className="truncate">
                         {isListening
                           ? isSoundDetected
                             ? "Voice Detected • Speaking..."
@@ -1413,20 +1413,20 @@ export default function IntakeStation({
 
                 {/* Live Transcript Preview Pill */}
                 {(isListening || liveStreamText) && (
-                  <div className="flex items-center space-x-2.5 px-3.5 py-2 bg-slate-900 border border-teal-500/40 rounded-xl text-xs text-white shadow-md animate-fadeIn">
+                  <div className="flex items-center space-x-2.5 px-3 sm:px-3.5 py-2 bg-slate-900 border border-teal-500/40 rounded-xl text-xs text-white shadow-md animate-fadeIn min-w-0 max-w-full">
                     <span className="flex h-2.5 w-2.5 relative shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
                     <span className="font-mono text-[11px] font-black text-emerald-400 tracking-wider shrink-0">
-                      🎙️ Live Stream:
+                      🎙️ Live:
                     </span>
-                    <span className="text-slate-200 font-mono italic truncate">
+                    <span className="text-slate-200 font-mono italic truncate flex-1 min-w-0">
                       {liveStreamText || (isListening ? `Listening for speech in ${patientInfo.language_preference}...` : "")}
                     </span>
                     {audioVolumePercent > 0 && (
-                      <span className="ml-auto text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 shrink-0">
-                        Vol: {audioVolumePercent}%
+                      <span className="ml-auto text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-800 shrink-0">
+                        {audioVolumePercent}%
                       </span>
                     )}
                   </div>
@@ -1434,42 +1434,36 @@ export default function IntakeStation({
 
                 {/* 3. ANIMATED AUDIO WAVEFORM VISUALIZER (Voice Intake in Step 2) */}
                 {(isListening || isPlayingAudio) && (
-                  <div className="bg-slate-900 border border-teal-500/50 rounded-2xl p-4 text-white shadow-lg flex items-center justify-between gap-4 animate-fadeIn">
-                    <div className="flex items-center space-x-3">
+                  <div className="bg-slate-900 border border-teal-500/50 rounded-2xl p-3.5 sm:p-4 text-white shadow-lg flex flex-wrap items-center justify-between gap-3 animate-fadeIn min-w-0 max-w-full">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
                       <div className="relative flex h-3.5 w-3.5 shrink-0">
                         <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isSoundDetected ? "bg-emerald-400" : "bg-rose-400"}`}></span>
                         <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${isSoundDetected ? "bg-emerald-500" : "bg-rose-500"}`}></span>
                       </div>
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <span className="font-mono text-sm font-black text-teal-300 tracking-wider">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-mono text-xs sm:text-sm font-black text-teal-300 tracking-wider">
                             {formatTimerString(recordingSeconds)}
                           </span>
-                          <span className="text-slate-500 text-xs">•</span>
-                          <span className="text-xs font-bold text-white">
+                          <span className="text-slate-500 text-xs hidden xs:inline">•</span>
+                          <span className="text-xs font-bold text-white truncate">
                             {isListening
-                              ? `${isSoundDetected ? "Voice Active" : "Listening"} in ${patientInfo.language_preference} (${
-                                  patientInfo.language_preference === "Odia"
-                                    ? "ଓଡ଼ିଆ"
-                                    : patientInfo.language_preference === "Hindi"
-                                    ? "हिन्दी"
-                                    : "English"
-                                })...`
-                              : `Audio Playback (${patientInfo.language_preference})...`}
+                              ? `${isSoundDetected ? "Voice Active" : "Listening"} (${patientInfo.language_preference})`
+                              : `Audio Playback (${patientInfo.language_preference})`}
                           </span>
                         </div>
-                        <p className="text-[11px] text-teal-200/70 mt-0.5">
+                        <p className="text-[10px] sm:text-[11px] text-teal-200/70 mt-0.5 truncate">
                           {isListening
                             ? isSoundDetected
-                              ? "Real-time speech stream active • 1.8s auto-silence detect engaged"
-                              : "Hardware noise suppression active • Speak chief complaint clearly"
+                              ? "Real-time speech stream active • 1.8s auto-silence detect"
+                              : "Hardware noise suppression active • Speak clearly"
                             : "Colloquial vernacular speech simulation"}
                         </p>
                       </div>
                     </div>
 
                     {/* 7 Vertical Frequency Bars of Varying Heights */}
-                    <div className="flex items-center space-x-1.5 h-8 px-2.5 bg-black/50 rounded-xl border border-teal-500/40 shrink-0 shadow-inner">
+                    <div className="flex items-center space-x-1.5 h-8 px-2 sm:px-2.5 bg-black/50 rounded-xl border border-teal-500/40 shrink-0 shadow-inner ml-auto">
                       <span className="w-1.5 bg-teal-400 rounded-full wave-bar-1 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(14, Math.min(28, audioVolumePercent * 0.45))}px` : "14px" }}></span>
                       <span className="w-1.5 bg-emerald-400 rounded-full wave-bar-2 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(18, Math.min(30, audioVolumePercent * 0.65))}px` : "22px" }}></span>
                       <span className="w-1.5 bg-teal-300 rounded-full wave-bar-3 equalizer-bar" style={{ height: isSoundDetected ? `${Math.max(22, Math.min(32, audioVolumePercent * 0.85))}px` : "28px" }}></span>
@@ -1736,17 +1730,17 @@ export default function IntakeStation({
               </div>
 
               {/* Quadrant 2: Symptoms & Emergency Red-Flags */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-6 space-y-4 min-w-0 max-w-full overflow-hidden">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700">
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700 shrink-0">
                       <Activity className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-slate-900 truncate">
                         {t.quadrant2Title}
                       </h3>
-                      <p className="text-xs text-slate-500">{t.quadrant2Subtitle}</p>
+                      <p className="text-xs text-slate-500 truncate">{t.quadrant2Subtitle}</p>
                     </div>
                   </div>
                 </div>
@@ -2118,14 +2112,14 @@ export default function IntakeStation({
                 </div>
 
                 {/* Longitudinal Medical History & Allergies (ABHA Linked) */}
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5 shadow-xs">
-                  <div className="flex items-center justify-between text-xs">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 sm:p-4 space-y-2.5 shadow-xs min-w-0 max-w-full">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs">
                     <span className="font-bold text-slate-800 flex items-center space-x-1.5">
                       <span>🪪</span>
                       <span>Longitudinal Medical History & Drug Allergies</span>
                     </span>
                     {patientInfo.abha_id && (
-                      <span className="text-[10px] text-teal-800 bg-teal-100 border border-teal-300 font-bold px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] text-teal-800 bg-teal-100 border border-teal-300 font-bold px-2 py-0.5 rounded-full shrink-0">
                         ABHA Synced
                       </span>
                     )}
@@ -2167,22 +2161,22 @@ export default function IntakeStation({
             {/* ------------------------------------------------------------- */}
             <div className="space-y-6">
               {/* Quadrant 3: Vital Signs Bento Grid */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700">
+              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-6 space-y-4 min-w-0 max-w-full overflow-hidden">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3 gap-2">
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700 shrink-0">
                       <Heart className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-slate-900 truncate">
                         {t.quadrant3Title}
                       </h3>
-                      <p className="text-xs text-slate-500">{t.quadrant3Subtitle}</p>
+                      <p className="text-xs text-slate-500 truncate">{t.quadrant3Subtitle}</p>
                     </div>
                   </div>
 
                   <span
-                    className={`text-xs px-3 py-1 rounded-full font-bold shadow-xs ${
+                    className={`text-xs px-2.5 sm:px-3 py-1 rounded-full font-bold shadow-xs shrink-0 ${
                       localEval.priority === "RED"
                         ? "bg-rose-600 text-white"
                         : localEval.priority === "YELLOW"
@@ -2374,17 +2368,17 @@ export default function IntakeStation({
               </div>
 
               {/* Quadrant 4: Reports OCR & Supporting Visual Context */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-6 space-y-4 min-w-0 max-w-full overflow-hidden">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="p-2 rounded-xl bg-purple-50 text-purple-700">
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="p-2 rounded-xl bg-purple-50 text-purple-700 shrink-0">
                       <FileText className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-slate-900 truncate">
                         {t.quadrant4Title}
                       </h3>
-                      <p className="text-xs text-slate-500">{t.quadrant4Subtitle}</p>
+                      <p className="text-xs text-slate-500 truncate">{t.quadrant4Subtitle}</p>
                     </div>
                   </div>
                 </div>

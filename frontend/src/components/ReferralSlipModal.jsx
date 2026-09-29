@@ -327,29 +327,29 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
           <div className="h-1.5 w-full bg-linear-to-r from-amber-500 via-slate-100 to-emerald-600 rounded-full" />
 
           {/* 1. OFFICIAL GOVERNMENT OF ODISHA / NHM HEADER */}
-          <div className="border-b-2 border-slate-900 pb-3.5 space-y-2.5">
-            <div className="flex items-center justify-between gap-4">
+          <div className="border-b-2 border-slate-900 pb-3.5 space-y-2.5 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
               {/* Government Header & Emblem */}
-              <div className="flex items-center space-x-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-teal-900 text-white flex flex-col items-center justify-center font-serif shadow-xs border border-teal-950 shrink-0">
-                  <span className="text-2xl">🏛️</span>
+              <div className="flex items-center space-x-3.5 min-w-0">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-900 text-white flex flex-col items-center justify-center font-serif shadow-xs border border-teal-950 shrink-0">
+                  <span className="text-xl sm:text-2xl">🏛️</span>
                 </div>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-slate-800">
-                    GOVERNMENT OF ODISHA • HEALTH & FAMILY WELFARE DEPARTMENT / NATIONAL HEALTH MISSION
+                <div className="min-w-0">
+                  <h4 className="text-[10px] sm:text-sm font-extrabold uppercase tracking-wide text-slate-800 truncate">
+                    GOVERNMENT OF ODISHA • HEALTH & FAMILY WELFARE DEPARTMENT
                   </h4>
-                  <h1 className="text-base sm:text-xl font-black text-teal-950 uppercase tracking-tight">
+                  <h1 className="text-sm sm:text-xl font-black text-teal-950 uppercase tracking-tight truncate">
                     STATE HEALTHCARE FACILITY REGISTRY & REFERRAL NETWORK
                   </h1>
-                  <p className="text-xs text-slate-600 font-semibold uppercase tracking-wider">
-                    Standardized Clinical Inter-Facility Emergency Transfer Form (NHM-ODISHA-REF-2026)
+                  <p className="text-[10px] sm:text-xs text-slate-600 font-semibold uppercase tracking-wider truncate">
+                    Standardized Clinical Inter-Facility Emergency Transfer Form
                   </p>
                 </div>
               </div>
 
               {/* Barcode & Reference Tracking Code */}
-              <div className="text-right flex flex-col items-end shrink-0">
-                <div className="font-mono text-xs text-slate-500 font-bold uppercase">
+              <div className="text-left sm:text-right flex flex-col items-start sm:items-end shrink-0">
+                <div className="font-mono text-[10px] sm:text-xs text-slate-500 font-bold uppercase">
                   NHM Transfer ID
                 </div>
                 <div className="font-mono font-black text-xs sm:text-sm text-slate-900 tracking-wider">

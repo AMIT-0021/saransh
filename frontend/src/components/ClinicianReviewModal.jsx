@@ -125,7 +125,7 @@ export default function ClinicianReviewModal({
     .filter(Boolean);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 backdrop-blur-xs flex justify-end animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-stretch justify-end animate-fadeIn">
       {/* Backdrop click to dismiss */}
       <div
         className="fixed inset-0 cursor-pointer"
@@ -133,42 +133,45 @@ export default function ClinicianReviewModal({
         aria-label="Close review drawer"
       ></div>
 
-      {/* Slide-over Review Drawer Panel */}
-      <div className="relative z-10 w-full max-w-2xl bg-white shadow-2xl flex flex-col h-full border-l border-slate-200 overflow-hidden">
+      {/* Responsive Review Panel (Bottom Sheet on Mobile < sm, Slide-Over Drawer on Desktop sm:) */}
+      <div className="relative z-10 w-full max-w-2xl bg-white shadow-2xl flex flex-col h-[92vh] sm:h-full rounded-t-3xl sm:rounded-t-none border-t sm:border-t-0 sm:border-l border-slate-200 overflow-hidden">
+        {/* Mobile Pull Indicator Handle */}
+        <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2 sm:hidden shrink-0" />
+
         {/* Drawer Header */}
-        <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 shadow-xs">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+          <div className="flex items-center space-x-3 truncate">
+            <div className="p-2 sm:p-2.5 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 shadow-xs shrink-0">
               <Stethoscope className="w-5 h-5 stroke-[2.5]" />
             </div>
-            <div>
+            <div className="truncate">
               <div className="flex items-center space-x-2">
-                <h3 className="text-sm font-extrabold text-slate-900">
-                  {t.reviewModalTitle || "Clinical Review & Override Drawer"}
+                <h3 className="text-sm font-extrabold text-slate-900 truncate">
+                  {t.reviewModalTitle || "Clinical Review & Override"}
                 </h3>
-                <span className="text-xs bg-teal-50 text-teal-800 font-mono px-2 py-0.5 rounded-lg border border-teal-200 font-black">
+                <span className="text-xs bg-teal-50 text-teal-800 font-mono px-2 py-0.5 rounded-lg border border-teal-200 font-black shrink-0">
                   {record.token_number}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 truncate">
                 {p.name_or_alias} • {Math.max(0, Math.abs(Number(p.age) || 0))}y/{p.sex} • {p.facility_type}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 shrink-0">
             <button
               onClick={() => onOpenReferralSlip(record)}
               title="Print Official Referral Slip"
-              className="bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition shadow-xs cursor-pointer"
+              className="min-h-[40px] bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition shadow-xs cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5 text-teal-700" />
-              <span className="hidden sm:inline">{t.printOfficialReferralSlip || "[ 📄 Print Official Referral Slip ]"}</span>
+              <Printer className="w-3.5 h-3.5 text-teal-700 shrink-0" />
+              <span className="hidden sm:inline">{t.printOfficialReferralSlip || "Slip"}</span>
             </button>
             <button
               onClick={onClose}
               aria-label="Close clinician review modal"
-              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition cursor-pointer"
+              className="min-h-[40px] min-w-[40px] p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition cursor-pointer flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
@@ -427,13 +430,13 @@ export default function ClinicianReviewModal({
         </div>
 
         {/* Fixed Bottom Action Drawer Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2.5 shrink-0">
+        <div className="p-3 sm:p-4 bg-slate-50 border-t border-slate-200 space-y-2 shrink-0">
           <button
             type="button"
             onClick={handleConfirmReview}
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-extrabold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow-md shadow-teal-700/20 cursor-pointer"
+            className="min-h-[44px] w-full bg-teal-600 hover:bg-teal-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow-md shadow-teal-700/20 cursor-pointer"
           >
-            <CheckCircle2 className="w-4 h-4" />
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>
               {isOverridden
                 ? `${t.overrideCareBtn || "Log Override & Authorize Care"} (${selectedPriority})`
@@ -444,7 +447,7 @@ export default function ClinicianReviewModal({
           <button
             type="button"
             onClick={() => onOpenReferralSlip(record)}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-3.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow-md shadow-slate-900/20 cursor-pointer border border-slate-700"
+            className="min-h-[44px] w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-3 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow-md shadow-slate-900/20 cursor-pointer border border-slate-700"
           >
             <span>📄</span>
             <span>{t.printOfficialReferralSlip || "[ 📄 Print Official Referral Slip ]"}</span>

@@ -16,7 +16,12 @@ dist/
 build/
 
 # IDE & OS
-.vscode/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Vercel
+.vercel/
+
+.vercel
+.env*

@@ -219,7 +219,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex justify-center items-start p-2 sm:p-4 md:py-6 animate-fadeIn"
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 md:py-6 animate-fadeIn"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -234,38 +234,41 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
         <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
       </button>
 
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300 overflow-hidden text-slate-800 my-2 sm:my-4 relative">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300 overflow-hidden text-slate-800 my-0 sm:my-4 relative max-h-[92vh] sm:max-h-[90vh] flex flex-col">
+        {/* Mobile Pull Handle */}
+        <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2 sm:hidden shrink-0" />
+
         {/* Sticky Header Toolbar (Stays pinned at top as user scrolls down) */}
-        <div className="no-print sticky top-0 z-30 bg-slate-900 text-white px-5 sm:px-7 py-3.5 flex items-center justify-between border-b border-slate-800 shadow-md">
-          <div className="flex items-center space-x-3">
+        <div className="no-print sticky top-0 z-30 bg-slate-900 text-white px-3 sm:px-7 py-3 flex items-center justify-between border-b border-slate-800 shadow-md shrink-0">
+          <div className="flex items-center space-x-2.5 truncate mr-2">
             <div className="p-2 rounded-xl bg-teal-600 text-white shadow-xs shrink-0">
               <FileText className="w-5 h-5" />
             </div>
-            <div>
+            <div className="truncate">
               <div className="flex items-center space-x-2">
-                <h3 className="font-extrabold text-sm sm:text-base text-white">
-                  Official National Health Mission Referral Slip
+                <h3 className="font-extrabold text-xs sm:text-base text-white truncate">
+                  NHM Referral Slip
                 </h3>
-                <span className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold">
+                <span className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-[11px] font-mono px-2 py-0.5 rounded-md font-bold shrink-0">
                   {tokenNumber}
                 </span>
               </div>
-              <p className="text-xs text-slate-300">
+              <p className="text-[11px] sm:text-xs text-slate-300 truncate hidden sm:block">
                 Government of Odisha • Standardized Inter-Facility Emergency Transfer Form (NHM-ODISHA-REF-2026)
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
             <button
               onClick={handlePlayHandoverBriefing}
               title="Listen to 108 Emergency Handover Audio Briefing"
-              className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer border ${
+              className={`min-h-[40px] px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer border ${
                 isPlayingHandover
                   ? "bg-rose-600 text-white border-rose-500 animate-pulse ring-2 ring-rose-400"
                   : "bg-slate-800 hover:bg-slate-700 text-teal-300 border-slate-700 hover:border-teal-400"
               }`}
             >
-              <Volume2 className={`w-4 h-4 ${isPlayingHandover ? "text-white animate-bounce" : "text-teal-400"}`} />
+              <Volume2 className={`w-4 h-4 shrink-0 ${isPlayingHandover ? "text-white animate-bounce" : "text-teal-400"}`} />
               <span className="hidden sm:inline">
                 {isPlayingHandover ? "Stop Briefing" : "🔊 Audio Handover"}
               </span>
@@ -273,25 +276,25 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
             </button>
             <button
               onClick={handlePrint}
-              className="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer"
+              className="min-h-[40px] bg-teal-600 hover:bg-teal-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer"
             >
-              <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Print / Save as PDF</span>
+              <Printer className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline">Print / PDF</span>
               <span className="sm:hidden">Print</span>
             </button>
             <button
               onClick={onClose}
               aria-label="Close referral slip modal"
-              className="bg-slate-800 hover:bg-rose-600 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition border border-slate-700 hover:border-rose-500 cursor-pointer shadow-xs"
+              className="min-h-[40px] bg-slate-800 hover:bg-rose-600 text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1 transition border border-slate-700 hover:border-rose-500 cursor-pointer shadow-xs"
             >
-              <X className="w-4 h-4" />
-              <span>Close</span>
+              <X className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline">Close</span>
             </button>
           </div>
         </div>
 
-        {/* Printable Document Container */}
-        <div id="printable-referral-slip" className="p-6 sm:p-10 space-y-5 bg-white print:p-0 print:space-y-3 font-sans">
+        {/* Printable Document Container (Scrollable) */}
+        <div id="printable-referral-slip" className="overflow-y-auto flex-1 p-4 sm:p-10 space-y-5 bg-white print:p-0 print:space-y-3 font-sans">
           {/* Print CSS Styles */}
           <style dangerouslySetInnerHTML={{
             __html: `
@@ -731,24 +734,24 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
         </div>
 
         {/* Sticky Bottom Action Bar (hidden when printing) */}
-        <div className="no-print sticky bottom-0 z-30 bg-slate-100/95 backdrop-blur-md border-t border-slate-300 px-5 sm:px-8 py-3.5 flex items-center justify-between shadow-lg">
-          <div className="flex items-center space-x-2 text-xs text-slate-600">
+        <div className="no-print sticky bottom-0 z-30 bg-slate-100/95 backdrop-blur-md border-t border-slate-300 px-4 sm:px-8 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shadow-lg shrink-0">
+          <div className="flex items-center space-x-2 text-xs text-slate-600 truncate">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Official Transfer Form Ready • Press <kbd className="bg-white border border-slate-300 rounded px-1.5 py-0.5 font-mono text-[11px] font-bold text-slate-700 shadow-2xs">Esc</kbd> or click Close to return</span>
+            <span className="truncate">Official NHM Form Ready • Verified</span>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
             <button
               onClick={handlePrint}
-              className="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition shadow-sm cursor-pointer"
+              className="min-h-[44px] bg-teal-700 hover:bg-teal-800 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center space-x-1.5 transition shadow-sm cursor-pointer"
             >
-              <Printer className="w-4 h-4" />
-              <span>Print Document</span>
+              <Printer className="w-4 h-4 shrink-0" />
+              <span>Print / PDF</span>
             </button>
             <button
               onClick={onClose}
-              className="bg-white hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs sm:text-sm transition border border-slate-300 cursor-pointer flex items-center space-x-1.5 shadow-2xs"
+              className="min-h-[44px] bg-white hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition border border-slate-300 cursor-pointer flex items-center justify-center space-x-1.5 shadow-2xs"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 shrink-0" />
               <span>Close Slip</span>
             </button>
           </div>

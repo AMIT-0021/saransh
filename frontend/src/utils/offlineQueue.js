@@ -120,7 +120,7 @@ export function clearOfflineQueue() {
   }
 }
 
-export async function syncOfflineQueueWithBackend(backendUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_BACKEND_URL) || "http://localhost:8000") {
+export async function syncOfflineQueueWithBackend(backendUrl = ((typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_BACKEND_URL) ? import.meta.env.VITE_BACKEND_URL : (import.meta.env.DEV ? "http://localhost:8000" : ""))) {
   const queue = getOfflineQueue();
   if (queue.length === 0) return { synced: 0, failed: 0 };
 

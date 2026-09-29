@@ -35,6 +35,7 @@ export default function DoctorDashboard({
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeModal, setActiveModal] = useState(null); // null | "BAYS" | "STAFF"
+  const [activeMobileLane, setActiveMobileLane] = useState("RED"); // "RED" | "YELLOW" | "GREEN" for mobile tab bar
 
   const activeQueue = queueData?.active_queue || [];
   const facilityStats = queueData?.facility_stats || {
@@ -311,10 +312,10 @@ export default function DoctorDashboard({
         </div>
       </div>
 
-      {/* 2. Search & Priority Filter Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200/90 p-4 rounded-2xl shadow-sm">
-        <div className="flex items-center space-x-2.5 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 w-full sm:w-80 shadow-xs">
-          <Search className="w-4 h-4 text-slate-400" />
+      {/* 2. Search & Filter Controls */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white border border-slate-200/90 p-4 rounded-2xl shadow-sm">
+        <div className="flex items-center space-x-2.5 bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 w-full sm:w-80 shadow-xs min-h-[44px]">
+          <Search className="w-4 h-4 text-slate-400 shrink-0" />
           <input
             type="text"
             placeholder={t.searchPlaceholder || "Search by token, patient name, complaint..."}
@@ -324,8 +325,8 @@ export default function DoctorDashboard({
           />
         </div>
 
-        {/* Priority Filter Tabs */}
-        <div className="flex items-center space-x-1.5 text-xs">
+        {/* Priority Filter Tabs (Desktop lg:flex) */}
+        <div className="hidden lg:flex items-center space-x-1.5 text-xs">
           {[
             { id: "ALL", label: `${t.allQueue || "All"} (${activeQueue.length})` },
             { id: "RED", label: `${t.emergencyLabel} (${queueData?.red_count || 0})` },
@@ -335,7 +336,7 @@ export default function DoctorDashboard({
             <button
               key={tab.id}
               onClick={() => setPriorityFilter(tab.id)}
-              className={`px-3.5 py-1.5 rounded-xl font-semibold transition cursor-pointer ${
+              className={`min-h-[40px] px-3.5 py-1.5 rounded-xl font-semibold transition cursor-pointer ${
                 priorityFilter === tab.id
                   ? "bg-teal-600 text-white shadow-xs"
                   : "bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200"
@@ -347,11 +348,62 @@ export default function DoctorDashboard({
         </div>
       </div>
 
-      {/* 3. Sleek 3-Column Clinical Queue Layout */}
+      {/* Mobile Segmented Lane Tab Bar (< lg:) */}
+      <div className="flex lg:hidden items-center bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1.5 min-h-[48px]">
+        <button
+          type="button"
+          onClick={() => {
+            setActiveMobileLane("RED");
+            setPriorityFilter("ALL");
+          }}
+          className={`flex-1 min-h-[42px] px-2 py-2 rounded-xl font-black text-xs flex items-center justify-center space-x-1.5 transition cursor-pointer ${
+            activeMobileLane === "RED"
+              ? "bg-rose-600 text-white shadow-md shadow-rose-950/20"
+              : "text-slate-700 hover:text-rose-700 hover:bg-white/70"
+          }`}
+        >
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shrink-0"></span>
+          <span className="truncate">🔴 Emergency ({redItems.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveMobileLane("YELLOW");
+            setPriorityFilter("ALL");
+          }}
+          className={`flex-1 min-h-[42px] px-2 py-2 rounded-xl font-black text-xs flex items-center justify-center space-x-1.5 transition cursor-pointer ${
+            activeMobileLane === "YELLOW"
+              ? "bg-amber-500 text-white shadow-md shadow-amber-950/20"
+              : "text-slate-700 hover:text-amber-700 hover:bg-white/70"
+          }`}
+        >
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-300 shrink-0"></span>
+          <span className="truncate">🟠 Urgent ({yellowItems.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveMobileLane("GREEN");
+            setPriorityFilter("ALL");
+          }}
+          className={`flex-1 min-h-[42px] px-2 py-2 rounded-xl font-black text-xs flex items-center justify-center space-x-1.5 transition cursor-pointer ${
+            activeMobileLane === "GREEN"
+              ? "bg-emerald-600 text-white shadow-md shadow-emerald-950/20"
+              : "text-slate-700 hover:text-emerald-700 hover:bg-white/70"
+          }`}
+        >
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 shrink-0"></span>
+          <span className="truncate">🟢 Routine ({greenItems.length})</span>
+        </button>
+      </div>
+
+      {/* 3. Sleek 3-Column Clinical Queue Layout (Tri-lane on Desktop lg:, Single Lane Tab on Mobile < lg:) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Column 1: RED EMERGENCY QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "RED") && (
-          <div className="bg-rose-950/[0.03] border border-rose-300/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden ring-1 ring-rose-400/20">
+          <div className={`${activeMobileLane === "RED" ? "block" : "hidden"} lg:block bg-rose-950/[0.03] border border-rose-300/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden ring-1 ring-rose-400/20`}>
             <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-center justify-between shadow-xs emergency-pulse">
               <div className="flex items-center space-x-2.5">
                 <span className="w-3 h-3 rounded-full bg-rose-600 animate-ping"></span>
@@ -390,7 +442,7 @@ export default function DoctorDashboard({
 
         {/* Column 2: YELLOW URGENT QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "YELLOW") && (
-          <div className="bg-amber-950/[0.02] border border-amber-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden">
+          <div className={`${activeMobileLane === "YELLOW" ? "block" : "hidden"} lg:block bg-amber-950/[0.02] border border-amber-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden`}>
             <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
               <div className="flex items-center space-x-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
@@ -429,7 +481,7 @@ export default function DoctorDashboard({
 
         {/* Column 3: GREEN ROUTINE QUEUE */}
         {(priorityFilter === "ALL" || priorityFilter === "GREEN") && (
-          <div className="bg-emerald-950/[0.02] border border-emerald-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden">
+          <div className={`${activeMobileLane === "GREEN" ? "block" : "hidden"} lg:block bg-emerald-950/[0.02] border border-emerald-200/80 rounded-3xl p-4 space-y-4 shadow-sm relative overflow-hidden`}>
             <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-xs">
               <div className="flex items-center space-x-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
@@ -834,17 +886,17 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
                 onOpenReferralSlip(item.visit_id);
               }}
               title="1-Click Official Government Referral Slip"
-              className="px-2 py-1.5 rounded-xl text-[11px] font-bold transition flex items-center space-x-1 border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 shadow-xs cursor-pointer"
+              className="min-h-[44px] px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 shadow-xs cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5 text-teal-700" />
-              <span className="hidden sm:inline">Slip</span>
+              <FileText className="w-4 h-4 text-teal-700 shrink-0" />
+              <span>Slip</span>
             </button>
           )}
 
           <button
             onClick={onReview}
             title="1-Click Clinician Review & Counter-Sign"
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
+            className={`min-h-[44px] px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer ${
               isRed
                 ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-950/20 ring-1 ring-rose-400"
                 : isYellow
@@ -852,9 +904,9 @@ function QueueCard({ item, onReview, onOpenReferralSlip, t }) {
                 : "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-950/20 ring-1 ring-teal-400"
             }`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>Counter-Sign</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           </button>
         </div>
       </div>

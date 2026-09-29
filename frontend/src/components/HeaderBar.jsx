@@ -62,36 +62,212 @@ export default function HeaderBar({
       </div>
 
       {/* 2. Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap lg:flex-nowrap">
-        {/* Brand Logo & Subtitle */}
-        <div className="flex items-center space-x-3 min-w-0 shrink">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 text-white shrink-0">
-            <Activity className="w-6 h-6 stroke-[2.5]" />
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center space-x-2">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
-                {t.appTitle || "Saransh"}
-              </h1>
-              <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md font-semibold tracking-wide border border-teal-200 hidden sm:inline-flex whitespace-nowrap">
-                {t.edition || "National Healthcare Innovation Edition"}
-              </span>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
+        {/* Top Header Row */}
+        <div className="flex items-center justify-between gap-2.5">
+          {/* Brand Logo & Subtitle */}
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 text-white shrink-0">
+              <Activity className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </div>
-            <p className="text-xs text-slate-500 hidden xl:block truncate max-w-sm">
-              {t.appSubtitle || "Multimodal Human-in-the-Loop Healthcare Triage Assistant"}
-            </p>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
+                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
+                  {t.appTitle || "Saransh"}
+                </h1>
+                <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md font-semibold tracking-wide border border-teal-200 hidden sm:inline-flex whitespace-nowrap">
+                  {t.edition || "National Healthcare Innovation Edition"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 hidden xl:block truncate max-w-sm">
+                {t.appSubtitle || "Multimodal Human-in-the-Loop Healthcare Triage Assistant"}
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop Right Action Controls (Hidden on < lg) */}
+          <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-auto justify-end">
+            {/* Facility Scenario Switcher */}
+            <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-xs min-h-[38px]">
+              <Building2 className="w-3.5 h-3.5 text-teal-600 mr-1.5 shrink-0" />
+              <select
+                value={selectedFacility}
+                onChange={(e) => onFacilityChange(e.target.value)}
+                className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer pr-1 max-w-[190px] truncate"
+              >
+                {FACILITY_SCENARIOS.map((fac) => (
+                  <option key={fac.id} value={fac.id} className="bg-white text-slate-900">
+                    {t[fac.id.toLowerCase()] || fac.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Online / Offline Mode Toggle */}
+            <button
+              onClick={onToggleOffline}
+              title="Toggle between Live API and Offline Mode"
+              aria-label="Toggle between Live API and Offline Mode"
+              className={`flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border transition-all shadow-xs min-h-[38px] ${
+                isOffline
+                  ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
+                  : "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
+              }`}
+            >
+              {isOffline ? (
+                <>
+                  <WifiOff className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                  <span className="font-bold">⚡ Offline Mode</span>
+                  {pendingSyncCount > 0 && (
+                    <span className="bg-amber-600 text-white px-1.5 py-0.5 rounded-full text-[10px] font-black">
+                      {pendingSyncCount}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <Wifi className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{t.onlineSync || "Online Sync"}</span>
+                </>
+              )}
+            </button>
+
+            {/* Sync button when offline queue has items */}
+            {pendingSyncCount > 0 && (
+              <button
+                onClick={onSyncOffline}
+                disabled={isSyncing}
+                title="Sync offline queued records with central hospital server"
+                aria-label={`Sync ${pendingSyncCount} offline queued records with central hospital server`}
+                className="bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 transition shadow-xs min-h-[38px]"
+              >
+                <RefreshCw className={`w-3 h-3 ${isSyncing ? "animate-spin" : ""}`} />
+                <span>{t.syncBtn || "Sync"} ({pendingSyncCount})</span>
+              </button>
+            )}
+
+            {/* Language Switcher Pill (Desktop) */}
+            <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200 shrink-0 min-h-[38px]">
+              <Globe className="w-3.5 h-3.5 text-slate-500 ml-1.5 mr-1" />
+              {[
+                { code: "English", label: "EN English" },
+                { code: "Hindi", label: "हिन्दी Hindi" },
+                { code: "Odia", label: "ଓଡ଼ିଆ Odia" },
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => onLanguageChange(lang.code)}
+                  aria-label={`Switch application language to ${lang.label}`}
+                  className={`text-xs px-2.5 py-1 rounded-lg transition font-medium ${
+                    selectedLanguage === lang.code
+                      ? "bg-white text-teal-800 shadow-xs font-bold"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Demo Reset Button */}
+            <button
+              onClick={onResetDemo}
+              title="Reset and reload standard synthetic clinical presets"
+              aria-label="Reset and reload standard synthetic clinical presets"
+              className="flex items-center space-x-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl border border-slate-200 transition shadow-xs font-medium min-h-[38px]"
+            >
+              <RotateCcw className="w-3 h-3 text-slate-500" />
+              <span>{t.resetBtn || "Reset Cases"}</span>
+            </button>
+
+            {/* Privacy & Clinical Terms Modal Button */}
+            <button
+              onClick={() => setIsPrivacyModalOpen(true)}
+              title="View India DPDP Act 2023, ABDM Safeguards & NMC Clinical Terms"
+              aria-label="View India DPDP Act 2023, ABDM Safeguards and NMC Clinical Terms"
+              className="flex items-center space-x-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-xl border border-emerald-200 transition shadow-xs font-semibold min-h-[38px]"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Privacy & Terms</span>
+            </button>
+          </div>
+
+          {/* Mobile Right Action Icons (< lg) */}
+          <div className="flex lg:hidden items-center space-x-1.5 shrink-0">
+            {/* Mobile Online/Offline Compact Pill */}
+            <button
+              onClick={onToggleOffline}
+              title={isOffline ? "Offline Mode (Queued locally)" : "Online Mode (Connected)"}
+              aria-label={isOffline ? "Offline Mode" : "Online Mode"}
+              className={`flex items-center space-x-1 text-[11px] font-bold px-2.5 py-1.5 rounded-xl border transition shadow-xs min-h-[44px] min-w-[44px] justify-center ${
+                isOffline
+                  ? "bg-amber-50 text-amber-800 border-amber-300"
+                  : "bg-emerald-50 text-emerald-800 border-emerald-300"
+              }`}
+            >
+              {isOffline ? (
+                <>
+                  <WifiOff className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="hidden xs:inline text-[10px]">Offline</span>
+                  {pendingSyncCount > 0 && (
+                    <span className="bg-amber-600 text-white px-1.5 rounded-full text-[9px] font-black">
+                      {pendingSyncCount}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="hidden xs:inline text-[10px]">Online</span>
+                </>
+              )}
+            </button>
+
+            {/* Mobile Sync Pill (If pending items) */}
+            {pendingSyncCount > 0 && (
+              <button
+                onClick={onSyncOffline}
+                disabled={isSyncing}
+                title={`Sync ${pendingSyncCount} offline records`}
+                className="bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-2 py-1.5 rounded-xl flex items-center space-x-1 shadow-xs min-h-[44px] min-w-[44px] justify-center"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+                <span>{pendingSyncCount}</span>
+              </button>
+            )}
+
+            {/* Mobile Demo Reset Icon Button */}
+            <button
+              onClick={onResetDemo}
+              title="Reset synthetic clinical cases"
+              aria-label="Reset synthetic clinical cases"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 min-h-[44px] min-w-[44px] flex items-center justify-center transition shadow-xs"
+            >
+              <RotateCcw className="w-4 h-4 text-slate-600" />
+            </button>
+
+            {/* Mobile Privacy & Safeguards Icon Button */}
+            <button
+              onClick={() => setIsPrivacyModalOpen(true)}
+              title="DPDP Privacy & NMC Terms"
+              aria-label="View Privacy & Clinical Terms"
+              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 min-h-[44px] min-w-[44px] flex items-center justify-center transition shadow-xs"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            </button>
           </div>
         </div>
 
-        {/* Right Action Controls: Facility, Connectivity, Language Switcher, Reset */}
-        <div className="flex items-center space-x-2 shrink-0 ml-auto justify-end flex-wrap sm:flex-nowrap gap-y-2">
-          {/* Facility Scenario Switcher */}
-          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-xs">
-            <Building2 className="w-3.5 h-3.5 text-teal-600 mr-1.5 shrink-0" />
+        {/* Mobile Sub-Bar: Facility Selector + Language Pills (Aligned neatly, prevents 4-row jagged wrapping) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2.5 lg:hidden">
+          {/* Facility Scenario Dropdown */}
+          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 shadow-xs min-h-[44px]">
+            <Building2 className="w-4 h-4 text-teal-600 mr-2 shrink-0" />
             <select
               value={selectedFacility}
               onChange={(e) => onFacilityChange(e.target.value)}
-              className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none cursor-pointer pr-1 max-w-[150px] sm:max-w-[190px] truncate"
+              className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer w-full truncate"
             >
               {FACILITY_SCENARIOS.map((fac) => (
                 <option key={fac.id} value={fac.id} className="bg-white text-slate-900">
@@ -101,117 +277,54 @@ export default function HeaderBar({
             </select>
           </div>
 
-          {/* Online / Offline Mode Toggle */}
-          <button
-            onClick={onToggleOffline}
-            title="Toggle between Live API and Offline Mode"
-            aria-label="Toggle between Live API and Offline Mode"
-            className={`flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border transition-all shadow-xs ${
-              isOffline
-                ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
-                : "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
-            }`}
-          >
-            {isOffline ? (
-              <>
-                <WifiOff className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
-                <span className="font-bold">⚡ Offline Mode - Queued Locally</span>
-                {pendingSyncCount > 0 && (
-                  <span className="bg-amber-600 text-white px-1.5 py-0.5 rounded-full text-[10px] font-black">
-                    {pendingSyncCount}
-                  </span>
-                )}
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <Wifi className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="hidden sm:inline">{t.onlineSync || "Online Sync"}</span>
-              </>
-            )}
-          </button>
-
-          {/* Sync button when offline queue has items */}
-          {pendingSyncCount > 0 && (
-            <button
-              onClick={onSyncOffline}
-              disabled={isSyncing}
-              title="Sync offline queued records with central hospital server"
-              aria-label={`Sync ${pendingSyncCount} offline queued records with central hospital server`}
-              className="bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 transition shadow-xs"
-            >
-              <RefreshCw className={`w-3 h-3 ${isSyncing ? "animate-spin" : ""}`} />
-              <span>{t.syncBtn || "Sync"} ({pendingSyncCount})</span>
-            </button>
-          )}
-
-          {/* Language Switcher Pill (Apple-style Segmented Control) */}
-          <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200 shrink-0">
-            <Globe className="w-3.5 h-3.5 text-slate-500 ml-1.5 mr-1" />
-            {[
-              { code: "English", label: "EN English" },
-              { code: "Hindi", label: "हिन्दी Hindi" },
-              { code: "Odia", label: "ଓଡ଼ିଆ Odia" },
-            ].map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => onLanguageChange(lang.code)}
-                aria-label={`Switch application language to ${lang.label}`}
-                className={`text-xs px-2.5 py-1 rounded-lg transition font-medium ${
-                  selectedLanguage === lang.code
-                    ? "bg-white text-teal-800 shadow-xs font-bold"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {lang.label}
-              </button>
-            ))}
+          {/* Language Switcher Pills */}
+          <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200 min-h-[44px]">
+            <Globe className="w-3.5 h-3.5 text-slate-500 ml-2 mr-1.5 shrink-0" />
+            <div className="grid grid-cols-3 gap-1 flex-1">
+              {[
+                { code: "English", label: "EN", full: "English" },
+                { code: "Hindi", label: "हिन्दी", full: "Hindi" },
+                { code: "Odia", label: "ଓଡ଼ିଆ", full: "Odia" },
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => onLanguageChange(lang.code)}
+                  aria-label={`Switch language to ${lang.full}`}
+                  className={`text-xs py-1.5 px-1 rounded-lg transition font-bold min-h-[36px] flex items-center justify-center ${
+                    selectedLanguage === lang.code
+                      ? "bg-white text-teal-800 shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
           </div>
-
-          {/* Demo Reset Button */}
-          <button
-            onClick={onResetDemo}
-            title="Reset and reload standard synthetic clinical presets"
-            aria-label="Reset and reload standard synthetic clinical presets"
-            className="flex items-center space-x-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl border border-slate-200 transition shadow-xs font-medium"
-          >
-            <RotateCcw className="w-3 h-3 text-slate-500" />
-            <span className="hidden md:inline">{t.resetBtn || "Reset Cases"}</span>
-          </button>
-
-          {/* Privacy & Clinical Terms Modal Button */}
-          <button
-            onClick={() => setIsPrivacyModalOpen(true)}
-            title="View India DPDP Act 2023, ABDM Safeguards & NMC Clinical Terms"
-            aria-label="View India DPDP Act 2023, ABDM Safeguards and NMC Clinical Terms"
-            className="flex items-center space-x-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-xl border border-emerald-200 transition shadow-xs font-semibold"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="hidden sm:inline">Privacy & Terms</span>
-          </button>
         </div>
       </div>
 
-      {/* 3. Top-Level Segmented Navigation Bar (Clear Separation of Concerns) */}
-      <div className="bg-slate-50/90 px-4 py-2 border-t border-slate-200">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-200 shadow-inner">
+      {/* 3. Top-Level Role Navigation Bar (Mobile Thumb-Friendly & Sticky) */}
+      <div className="bg-slate-50/95 backdrop-blur-md px-3 sm:px-4 py-2 border-t border-slate-200">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+          {/* Role Switcher Container */}
+          <div className="w-full lg:w-auto grid grid-cols-2 lg:inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-200/90 shadow-inner gap-1">
             {/* Tab 1: Patient Intake Station */}
             <button
               type="button"
               onClick={() => onRoleChange("NURSE")}
-              className={`flex items-center space-x-2.5 py-2.5 px-5 text-xs rounded-xl font-bold transition-all ${
+              className={`flex items-center justify-center space-x-2 py-2.5 px-3 sm:px-5 text-xs rounded-xl font-bold transition-all min-h-[44px] cursor-pointer ${
                 activeRole === "NURSE"
                   ? "bg-teal-600 text-white shadow-md shadow-teal-700/25"
                   : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
               }`}
             >
               <ClipboardList className="w-4 h-4 shrink-0" />
-              <span>{t.tabIntake || "🩺 Patient Intake Station"}</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+              <span className="truncate">{t.tabIntake || "🩺 Patient Intake"}</span>
+              <span className={`hidden md:inline-flex text-[10px] px-2 py-0.5 rounded-full font-medium ${
                 activeRole === "NURSE" ? "bg-teal-700/60 text-teal-100" : "bg-slate-300/60 text-slate-700"
               }`}>
-                {t.frontlineNurseBadge || "Frontline Nurse / ASHA"}
+                {t.frontlineNurseBadge || "ASHA"}
               </span>
             </button>
 
@@ -219,15 +332,15 @@ export default function HeaderBar({
             <button
               type="button"
               onClick={() => onRoleChange("DOCTOR")}
-              className={`flex items-center space-x-2.5 py-2.5 px-5 text-xs rounded-xl font-bold transition-all ${
+              className={`flex items-center justify-center space-x-2 py-2.5 px-3 sm:px-5 text-xs rounded-xl font-bold transition-all min-h-[44px] cursor-pointer ${
                 activeRole === "DOCTOR"
                   ? "bg-teal-600 text-white shadow-md shadow-teal-700/25"
                   : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
               }`}
             >
               <Stethoscope className="w-4 h-4 shrink-0" />
-              <span>{t.tabDoctorQueue || "🏥 Doctor Queue & Review Dashboard"}</span>
-              <span className={`flex items-center space-x-1.5 text-[10px] px-2.5 py-0.5 rounded-full font-black ${
+              <span className="truncate">{t.tabDoctorQueue || "🏥 Doctor Queue"}</span>
+              <span className={`inline-flex items-center space-x-1 text-[10px] px-2 py-0.5 rounded-full font-black ${
                 activeRole === "DOCTOR"
                   ? "bg-white text-teal-900 shadow-xs"
                   : "bg-teal-100 text-teal-800"
@@ -235,9 +348,7 @@ export default function HeaderBar({
                 {redCount > 0 && (
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
                 )}
-                <span>
-                  {t.doctorQueueBadge || "Doctor Queue"} ({totalWaiting})
-                </span>
+                <span>({totalWaiting})</span>
               </span>
             </button>
           </div>
@@ -259,12 +370,12 @@ export default function HeaderBar({
 
       {/* 4. DPDP Act 2023 & ABDM Privacy & Security Safeguards Modal */}
       {isPrivacyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 overflow-hidden relative max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full p-5 sm:p-8 shadow-2xl border-t sm:border border-slate-200 overflow-hidden relative max-h-[92vh] sm:max-h-[90vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-slate-100 shrink-0">
+            <div className="flex items-start justify-between pb-3.5 border-b border-slate-100 shrink-0">
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-xs ${
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-xs shrink-0 ${
                   activeModalTab === "PRIVACY"
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                     : "bg-indigo-50 text-indigo-700 border border-indigo-200"
@@ -272,51 +383,51 @@ export default function HeaderBar({
                   {activeModalTab === "PRIVACY" ? <ShieldCheck className="w-6 h-6" /> : <Scale className="w-6 h-6" />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                    {activeModalTab === "PRIVACY" ? "Clinical Security & Privacy Safeguards" : "Clinical Terms & Institutional Disclaimers"}
-                    <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold border border-emerald-300">
-                      {activeModalTab === "PRIVACY" ? "DPDP ACT 2023 COMPLIANT" : "CDSCO SaMD CLASS A"}
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-1.5 flex-wrap">
+                    <span>{activeModalTab === "PRIVACY" ? "Clinical Security & Privacy" : "Clinical Terms & NMC Disclaimers"}</span>
+                    <span className="text-[9px] sm:text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold border border-emerald-300">
+                      {activeModalTab === "PRIVACY" ? "DPDP ACT 2023" : "CDSCO CLASS A"}
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[11px] sm:text-xs text-slate-500">
                     {activeModalTab === "PRIVACY"
-                      ? "National Health Mission (NHM) & Ayushman Bharat Digital Mission (ABDM) HDMP Standard"
-                      : "National Medical Commission (NMC) Registered Medical Practitioner Liability Framework"}
+                      ? "NHM & ABDM Health Data Management Policy Standard"
+                      : "NMC Registered Medical Practitioner Liability Framework"}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsPrivacyModalOpen(false)}
                 aria-label="Close privacy and legal terms modal"
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shrink-0 min-h-[44px] min-w-[44px]"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Segmented Control Tabs */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl mt-3 border border-slate-200 shrink-0">
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl mt-3 border border-slate-200 shrink-0 gap-1">
               <button
                 onClick={() => setActiveModalTab("PRIVACY")}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-2 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 min-h-[44px] ${
                   activeModalTab === "PRIVACY"
                     ? "bg-white text-emerald-800 shadow-xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>1. DPDP Act 2023 & ABDM Privacy</span>
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="truncate">1. DPDP Privacy</span>
               </button>
               <button
                 onClick={() => setActiveModalTab("TERMS")}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-2 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 min-h-[44px] ${
                   activeModalTab === "TERMS"
                     ? "bg-white text-indigo-800 shadow-xs"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                <Scale className="w-3.5 h-3.5 text-indigo-600" />
-                <span>2. Clinical Terms & NMC SaMD Disclaimers</span>
+                <Scale className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span className="truncate">2. Clinical Terms</span>
               </button>
             </div>
 
@@ -410,13 +521,13 @@ export default function HeaderBar({
             </div>
 
             {/* Modal Footer */}
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Lock className="w-3.5 h-3.5 text-teal-600" /> CDSCO Medical Device Rules 2017 &bull; NMC Professional Conduct Guidelines
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 shrink-0">
+              <span className="flex items-center gap-1.5 font-medium text-center sm:text-left">
+                <Lock className="w-3.5 h-3.5 text-teal-600 shrink-0" /> CDSCO Medical Device Rules 2017 &bull; NMC Guidelines
               </span>
               <button
                 onClick={() => setIsPrivacyModalOpen(false)}
-                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition shadow-xs text-xs"
+                className="w-full sm:w-auto px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition shadow-xs text-xs min-h-[44px] flex items-center justify-center"
               >
                 Close Safeguards
               </button>

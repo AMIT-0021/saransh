@@ -771,13 +771,39 @@ export default function IntakeStation({
   return (
     <div className="space-y-6">
       {/* 3-STEP SEQUENTIAL WIZARD PROGRESS BAR */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4">
-        <div className="flex items-center justify-between max-w-3xl mx-auto">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4">
+        {/* Mobile Step Progress Indicator (< sm:) */}
+        <div className="sm:hidden space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-extrabold text-teal-800 flex items-center space-x-1.5">
+              <span className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center text-[10px] font-black">
+                {wizardStep}
+              </span>
+              <span>Step {wizardStep} of 3</span>
+            </span>
+            <span className="text-slate-600 font-bold text-[11px] truncate max-w-[200px]">
+              {wizardStep === 1
+                ? (t.wizardStep1Short || "Registration & Consent")
+                : wizardStep === 2
+                ? (t.wizardStep2Short || "Symptoms & Vitals")
+                : (t.wizardStep3Short || "Triage & Handover")}
+            </span>
+          </div>
+          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-teal-600 to-teal-500 h-full rounded-full transition-all duration-300"
+              style={{ width: `${(wizardStep / 3) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Desktop Step Stepper (sm:) */}
+        <div className="hidden sm:flex items-center justify-between max-w-3xl mx-auto">
           {/* Step 1 Pill */}
           <button
             type="button"
             onClick={() => setWizardStep(1)}
-            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer ${
+            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer min-h-[44px] ${
               wizardStep === 1
                 ? "text-teal-700"
                 : wizardStep > 1
@@ -796,8 +822,7 @@ export default function IntakeStation({
             >
               {wizardStep > 1 ? <Check className="w-4 h-4" /> : "1"}
             </span>
-            <span className="hidden sm:inline">{t.wizardStep1 || "1. Patient Registration & Consent"}</span>
-            <span className="sm:hidden">Step 1</span>
+            <span>{t.wizardStep1 || "1. Patient Registration & Consent"}</span>
           </button>
 
           <div
@@ -812,7 +837,7 @@ export default function IntakeStation({
             onClick={() => {
               if (patientInfo.consent_given || patientInfo.unconscious_bypass) setWizardStep(2);
             }}
-            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer ${
+            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer min-h-[44px] ${
               wizardStep === 2
                 ? "text-teal-700"
                 : wizardStep > 2
@@ -831,8 +856,7 @@ export default function IntakeStation({
             >
               {wizardStep > 2 ? <Check className="w-4 h-4" /> : "2"}
             </span>
-            <span className="hidden sm:inline">{t.wizardStep2 || "2. Multimodal Symptoms, Vitals & Reports"}</span>
-            <span className="sm:hidden">Step 2</span>
+            <span>{t.wizardStep2 || "2. Multimodal Symptoms, Vitals & Reports"}</span>
           </button>
 
           <div
@@ -847,7 +871,7 @@ export default function IntakeStation({
             onClick={() => {
               if (triageResult) setWizardStep(3);
             }}
-            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer ${
+            className={`flex items-center space-x-2 text-xs font-bold transition cursor-pointer min-h-[44px] ${
               wizardStep === 3
                 ? "text-teal-700"
                 : triageResult
@@ -866,8 +890,7 @@ export default function IntakeStation({
             >
               3
             </span>
-            <span className="hidden sm:inline">{t.wizardStep3 || "3. Structured Triage Note & Handover"}</span>
-            <span className="sm:hidden">Step 3</span>
+            <span>{t.wizardStep3 || "3. Structured Triage Note & Handover"}</span>
           </button>
         </div>
       </div>
@@ -1312,12 +1335,15 @@ export default function IntakeStation({
             </div>
           </div>
 
-          {/* Step 1 Continue Action */}
-          <div className="flex justify-end">
+          {/* Step 1 Sticky Bottom Navigation Action */}
+          <div className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md p-3.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-xl flex items-center justify-between gap-3">
+            <span className="text-xs text-slate-500 hidden sm:inline font-medium">
+              Step 1 of 3: Citizen identity & consent verified
+            </span>
             <button
               type="button"
               onClick={handleContinueToStep2}
-              className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-8 py-3.5 rounded-2xl transition shadow-md shadow-teal-700/25 flex items-center space-x-2 text-sm cursor-pointer"
+              className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 sm:px-8 py-3.5 rounded-xl transition shadow-md shadow-teal-700/25 flex items-center justify-center space-x-2 text-sm min-h-[44px] cursor-pointer ml-auto"
             >
               <span>{t.continueToStep2 || "Continue to Symptoms & Vitals ➔"}</span>
               <ArrowRight className="w-4 h-4" />
@@ -1361,7 +1387,7 @@ export default function IntakeStation({
                       type="button"
                       onClick={handleToggleSpeech}
                       aria-label={isListening ? "Stop microphone recording" : "Start microphone voice recording"}
-                      className={`relative flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
+                      className={`relative flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer min-h-[44px] ${
                         isListening
                           ? isSoundDetected
                             ? "bg-emerald-600 text-white ring-4 ring-emerald-400/80 shadow-lg shadow-emerald-500/40"
@@ -1370,9 +1396,9 @@ export default function IntakeStation({
                       }`}
                     >
                       {isListening ? (
-                        isSoundDetected ? <Mic className="w-3.5 h-3.5 text-white animate-bounce" /> : <MicOff className="w-3.5 h-3.5" />
+                        isSoundDetected ? <Mic className="w-4 h-4 text-white animate-bounce" /> : <MicOff className="w-4 h-4" />
                       ) : (
-                        <Mic className="w-3.5 h-3.5" />
+                        <Mic className="w-4 h-4" />
                       )}
                       <span>
                         {isListening
@@ -1568,13 +1594,13 @@ export default function IntakeStation({
                         symptoms.verbatim_local_statement || (patientInfo.language_preference === "Hindi" ? "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।" : "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"),
                         patientInfo.language_preference
                       )}
-                      className={`text-xs px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1.5 border transition shadow-xs cursor-pointer ${
+                      className={`text-xs px-3.5 py-2.5 rounded-xl font-bold flex items-center space-x-1.5 border transition shadow-xs cursor-pointer min-h-[44px] ${
                         isPlayingAudio
                           ? "bg-rose-600 text-white border-rose-600 animate-pulse"
                           : "bg-white text-teal-800 border-teal-300 hover:bg-teal-50 hover:border-teal-400"
                       }`}
                     >
-                      <Volume2 className="w-3.5 h-3.5" />
+                      <Volume2 className="w-4 h-4" />
                       <span>{isPlayingAudio ? "Stop Audio" : "🔊 Test Vocal Persona"}</span>
                     </button>
                   </div>
@@ -1593,13 +1619,13 @@ export default function IntakeStation({
                       <button
                         type="button"
                         onClick={() => handlePlaySpeech(symptoms.verbatim_local_statement, patientInfo.language_preference)}
-                        className={`flex items-center space-x-1 border px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer ${
+                        className={`flex items-center space-x-1 border px-3 py-2 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer min-h-[44px] ${
                           isPlayingAudio
                             ? "bg-rose-50 text-rose-700 border-rose-300 animate-pulse"
                             : "bg-white hover:bg-teal-50 text-teal-700 border-slate-200"
                         }`}
                       >
-                        <Volume2 className="w-3.5 h-3.5 text-teal-600" />
+                        <Volume2 className="w-4 h-4 text-teal-600" />
                         <span>{isPlayingAudio ? "Stop Audio" : t.playAudioBtn}</span>
                       </button>
                     </div>
@@ -1615,7 +1641,7 @@ export default function IntakeStation({
                         setIsStatementVerified(false);
                       }}
                       placeholder="Captured spoken statement in patient's native dialect..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20"
                     />
 
                     {/* Phonetic Transliteration */}
@@ -1628,23 +1654,23 @@ export default function IntakeStation({
                         value={symptoms.phonetic_transliteration || ""}
                         onChange={(e) => setSymptoms({ ...symptoms, phonetic_transliteration: e.target.value })}
                         placeholder="English phonetic romanization..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 font-mono italic focus:outline-none"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 font-mono italic focus:outline-none min-h-[40px]"
                       />
                     </div>
 
                     {/* Spoken Nuance Verification & Record Again Action Buttons */}
                     <div className="pt-2 border-t border-slate-200/90 flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 w-full sm:w-auto">
                         <button
                           type="button"
                           onClick={() => setIsStatementVerified(true)}
-                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer shadow-xs ${
+                          className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs min-h-[44px] ${
                             isStatementVerified
                               ? "bg-emerald-600 text-white shadow-emerald-600/20 ring-2 ring-emerald-500/30"
                               : "bg-white text-emerald-800 border border-emerald-300 hover:bg-emerald-50"
                           }`}
                         >
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-4 h-4" />
                           <span>
                             {patientInfo.language_preference === "Odia"
                               ? "ହଁ, ଠିକ୍ ଅଛି"
@@ -1657,9 +1683,9 @@ export default function IntakeStation({
                         <button
                           type="button"
                           onClick={handleRecordAgain}
-                          className="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 flex items-center space-x-1.5 cursor-pointer shadow-xs"
+                          className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs min-h-[44px]"
                         >
-                          <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                          <RotateCcw className="w-4 h-4 text-slate-500" />
                           <span>
                             {patientInfo.language_preference === "Odia"
                               ? "ପୁଣି କୁହନ୍ତୁ"
@@ -1671,7 +1697,7 @@ export default function IntakeStation({
                       </div>
 
                       {isStatementVerified && (
-                        <span className="text-[11px] font-bold text-emerald-700 flex items-center space-x-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                        <span className="text-[11px] font-bold text-emerald-700 flex items-center space-x-1 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           <span>
                             {patientInfo.language_preference === "Odia"
@@ -1735,17 +1761,203 @@ export default function IntakeStation({
                           {t.bodyMapTitle || "Interactive 2D Anatomical Body Map"}
                         </h4>
                         <p className="text-[11px] text-slate-500">
-                          {t.bodyMapSubtitle || "Click any anatomical zone to highlight and auto-select clinical symptoms"}
+                          {t.bodyMapSubtitle || "Tap any anatomical zone to highlight and auto-select clinical symptoms"}
                         </p>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded-full">
-                      6 Anatomical Zones
+                    <span className="text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded-full shrink-0">
+                      6 Touch Zones
                     </span>
                   </div>
 
-                  {/* 6 Clickable Anatomical Zones Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {/* Auto-scaling SVG Anatomical Body Silhouette Figure */}
+                  <div className="w-full max-w-[280px] sm:max-w-[340px] mx-auto py-2 flex items-center justify-center overflow-hidden">
+                    <svg
+                      viewBox="0 0 240 310"
+                      className="w-full h-auto max-h-[250px] drop-shadow-sm select-none"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      {/* Background Ambient Silhouette */}
+                      <path
+                        d="M120 15 C132 15 142 25 142 38 C142 49 135 58 126 60 L126 70 C148 70 162 76 174 88 L192 135 C196 145 190 155 180 153 C174 152 170 146 166 138 L152 96 L152 165 L144 240 C143 252 144 270 148 285 C149 290 143 294 139 290 L128 245 L122 174 L118 174 L112 245 L101 290 C97 294 91 290 92 285 C96 270 97 252 96 240 L88 165 L88 96 L74 138 C70 146 66 152 60 153 C50 155 44 145 48 135 L66 88 C78 76 92 70 114 70 L114 60 C105 58 98 49 98 38 C98 25 108 15 120 15 Z"
+                        className="fill-slate-100 stroke-slate-200 stroke-1"
+                      />
+
+                      {/* Head & Neck Target */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[0])}
+                        className="cursor-pointer group"
+                      >
+                        <circle
+                          cx="120"
+                          cy="38"
+                          r="22"
+                          className={
+                            BODY_REGIONS[0].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-teal-500 stroke-teal-600 stroke-2 filter drop-shadow-md"
+                              : "fill-white/80 hover:fill-teal-100 stroke-slate-300 hover:stroke-teal-400 stroke-1"
+                          }
+                        />
+                        <rect
+                          x="114"
+                          y="58"
+                          width="12"
+                          height="12"
+                          rx="3"
+                          className={
+                            BODY_REGIONS[0].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-teal-600"
+                              : "fill-slate-200"
+                          }
+                        />
+                        <text x="120" y="43" textAnchor="middle" fontSize="13">🧠</text>
+                      </g>
+
+                      {/* Chest & Cardiac Zone */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[1])}
+                        className="cursor-pointer group"
+                      >
+                        <path
+                          d="M96 72 H144 C152 72 155 78 153 86 L148 112 H92 L87 86 C85 78 88 72 96 72 Z"
+                          className={
+                            BODY_REGIONS[1].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-rose-500/80 stroke-rose-600 stroke-2 filter drop-shadow-md"
+                              : "fill-white/80 hover:fill-rose-100 stroke-slate-300 hover:stroke-rose-400 stroke-1"
+                          }
+                        />
+                        <text x="120" y="96" textAnchor="middle" fontSize="14">🫀</text>
+                      </g>
+
+                      {/* Lungs & Breathing Zone */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[2])}
+                        className="cursor-pointer group"
+                      >
+                        <path
+                          d="M74 82 C68 90 68 108 76 114 C82 114 86 106 86 92 Z"
+                          className={
+                            BODY_REGIONS[2].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-sky-500/85 stroke-sky-600 stroke-2"
+                              : "fill-sky-100/70 hover:fill-sky-200 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <path
+                          d="M166 82 C172 90 172 108 164 114 C158 114 154 106 154 92 Z"
+                          className={
+                            BODY_REGIONS[2].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-sky-500/85 stroke-sky-600 stroke-2"
+                              : "fill-sky-100/70 hover:fill-sky-200 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <text x="120" y="79" textAnchor="middle" fontSize="9" fontWeight="bold" className="fill-slate-600">🫁 Lungs</text>
+                      </g>
+
+                      {/* Abdomen & Pelvis Zone */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[3])}
+                        className="cursor-pointer group"
+                      >
+                        <path
+                          d="M92 116 H148 L142 162 C140 168 134 172 128 172 H112 C106 172 100 168 98 162 Z"
+                          className={
+                            BODY_REGIONS[3].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-amber-500/80 stroke-amber-600 stroke-2 filter drop-shadow-md"
+                              : "fill-white/80 hover:fill-amber-100 stroke-slate-300 hover:stroke-amber-400 stroke-1"
+                          }
+                        />
+                        <text x="120" y="146" textAnchor="middle" fontSize="14">🤰</text>
+                      </g>
+
+                      {/* Limbs & Joints (Arms + Legs) */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[4])}
+                        className="cursor-pointer group"
+                      >
+                        <circle
+                          cx="55"
+                          cy="142"
+                          r="12"
+                          className={
+                            BODY_REGIONS[4].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-indigo-500 stroke-indigo-600 stroke-2"
+                              : "fill-white/80 hover:fill-indigo-100 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <circle
+                          cx="185"
+                          cy="142"
+                          r="12"
+                          className={
+                            BODY_REGIONS[4].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-indigo-500 stroke-indigo-600 stroke-2"
+                              : "fill-white/80 hover:fill-indigo-100 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <circle
+                          cx="96"
+                          cy="255"
+                          r="12"
+                          className={
+                            BODY_REGIONS[4].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-indigo-500 stroke-indigo-600 stroke-2"
+                              : "fill-white/80 hover:fill-indigo-100 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <circle
+                          cx="144"
+                          cy="255"
+                          r="12"
+                          className={
+                            BODY_REGIONS[4].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-indigo-500 stroke-indigo-600 stroke-2"
+                              : "fill-white/80 hover:fill-indigo-100 stroke-slate-300 stroke-1"
+                          }
+                        />
+                        <text x="55" y="146" textAnchor="middle" fontSize="10">✋</text>
+                        <text x="185" y="146" textAnchor="middle" fontSize="10">✋</text>
+                        <text x="96" y="259" textAnchor="middle" fontSize="10">🦵</text>
+                        <text x="144" y="259" textAnchor="middle" fontSize="10">🦵</text>
+                      </g>
+
+                      {/* Skin & Surface Floating Pill */}
+                      <g
+                        onClick={() => handleBodyRegionClick(BODY_REGIONS[5])}
+                        className="cursor-pointer group"
+                      >
+                        <rect
+                          x="8"
+                          y="10"
+                          width="52"
+                          height="26"
+                          rx="8"
+                          className={
+                            BODY_REGIONS[5].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-emerald-500 stroke-emerald-600 stroke-2 filter drop-shadow"
+                              : "fill-white hover:fill-emerald-50 stroke-slate-300 hover:stroke-emerald-400 stroke-1 shadow-xs"
+                          }
+                        />
+                        <text
+                          x="34"
+                          y="27"
+                          textAnchor="middle"
+                          fontSize="11"
+                          fontWeight="bold"
+                          className={
+                            BODY_REGIONS[5].symptoms.some((s) => symptoms.selected_symptoms.includes(s))
+                              ? "fill-white font-extrabold"
+                              : "fill-slate-700"
+                          }
+                        >
+                          🩹 Skin
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+
+                  {/* 6 Clickable Anatomical Zones Grid (2-column on mobile < sm, 3-column on sm:) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 pt-1">
                     {BODY_REGIONS.map((region) => {
                       const isRegionActive = region.symptoms.some((s) =>
                         symptoms.selected_symptoms.includes(s)
@@ -1760,7 +1972,7 @@ export default function IntakeStation({
                           type="button"
                           onClick={() => handleBodyRegionClick(region)}
                           title={`Anatomical Zone: ${region.label}\nClick to toggle symptoms: ${region.symptoms.join(", ")}`}
-                          className={`p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-1.5 group relative overflow-hidden ${
+                          className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-1.5 group relative overflow-hidden min-h-[44px] ${
                             isRegionActive
                               ? "bg-teal-500/10 border-teal-500 text-teal-950 ring-2 ring-teal-500 shadow-md shadow-teal-500/25 scale-[1.01]"
                               : "bg-white border-slate-200 text-slate-700 hover:border-teal-400 hover:bg-teal-50/30 hover:shadow-md hover:shadow-teal-500/10 hover:-translate-y-0.5 active:translate-y-0"
@@ -1772,7 +1984,7 @@ export default function IntakeStation({
                           )}
 
                           <div className="flex items-center justify-between">
-                            <span className="text-lg group-hover:scale-110 transition-transform duration-200">{region.icon}</span>
+                            <span className="text-base sm:text-lg group-hover:scale-110 transition-transform duration-200">{region.icon}</span>
                             <span
                               className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full transition-colors ${
                                 isRegionActive
@@ -1780,11 +1992,11 @@ export default function IntakeStation({
                                   : "bg-slate-100 text-slate-500 group-hover:bg-teal-100 group-hover:text-teal-800"
                               }`}
                             >
-                              {activeCount > 0 ? `${activeCount} Active` : "Select"}
+                              {activeCount > 0 ? `${activeCount}` : "Tap"}
                             </span>
                           </div>
                           <div>
-                            <span className="font-black text-xs block leading-tight group-hover:text-teal-900 transition-colors">
+                            <span className="font-black text-[11px] sm:text-xs block leading-tight group-hover:text-teal-900 transition-colors">
                               {region.label}
                             </span>
                             <span className="text-[10px] text-slate-500 truncate block mt-0.5">
@@ -1982,23 +2194,23 @@ export default function IntakeStation({
                   </span>
                 </div>
 
-                {/* Vitals Grid with Live Threshold Color Shifts */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {/* Vitals Grid with Live Threshold Color Shifts (2-col mobile < sm, 3-col sm:) */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
                   {/* SpO2 */}
                   <div
-                    className={`p-4 rounded-2xl border transition-all shadow-xs ${
+                    className={`p-3 sm:p-4 rounded-2xl border transition-all shadow-xs ${
                       vitals.spo2_percent < 90
-                        ? "bg-rose-50 border-rose-300 text-rose-900"
+                        ? "bg-rose-50 border-rose-300 text-rose-950 ring-1 ring-rose-300"
                         : vitals.spo2_percent < 95
-                        ? "bg-amber-50 border-amber-300 text-amber-900"
-                        : "bg-emerald-50 border-emerald-300 text-emerald-900"
+                        ? "bg-amber-50 border-amber-300 text-amber-950 ring-1 ring-amber-300"
+                        : "bg-emerald-50 border-emerald-300 text-emerald-950"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.spo2Label}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         %
                       </span>
                     </div>
@@ -2009,28 +2221,28 @@ export default function IntakeStation({
                       value={vitals.spo2_percent}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, spo2_percent: Math.max(0, Math.min(100, Math.abs(Number(e.target.value) || 0))) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
-                      {vitals.spo2_percent < 90 ? `🔴 ${t.criticalHypoxia || "Critical Hypoxia (<90)"}` : (t.normalOxygen || "Normal Oxygen")}
+                    <span className="text-[10px] font-bold block mt-0.5 truncate">
+                      {vitals.spo2_percent < 90 ? `🔴 ${t.criticalHypoxia || "Critical (<90)"}` : (t.normalOxygen || "Normal Oxygen")}
                     </span>
                   </div>
 
                   {/* Heart Rate */}
                   <div
-                    className={`p-4 rounded-2xl border transition-all shadow-xs ${
+                    className={`p-3 sm:p-4 rounded-2xl border transition-all shadow-xs ${
                       vitals.heart_rate_bpm > 130 || vitals.heart_rate_bpm < 45
-                        ? "bg-rose-50 border-rose-300 text-rose-900"
+                        ? "bg-rose-50 border-rose-300 text-rose-950 ring-1 ring-rose-300"
                         : vitals.heart_rate_bpm > 100
-                        ? "bg-amber-50 border-amber-300 text-amber-900"
-                        : "bg-emerald-50 border-emerald-300 text-emerald-900"
+                        ? "bg-amber-50 border-amber-300 text-amber-950 ring-1 ring-amber-300"
+                        : "bg-emerald-50 border-emerald-300 text-emerald-950"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.hrLabel}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         bpm
                       </span>
                     </div>
@@ -2041,28 +2253,28 @@ export default function IntakeStation({
                       value={vitals.heart_rate_bpm}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, heart_rate_bpm: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
+                    <span className="text-[10px] font-bold block mt-0.5 truncate">
                       {vitals.heart_rate_bpm > 100 ? (t.tachycardia || "Tachycardia") : (t.normalHeartRate || "Normal Rate")}
                     </span>
                   </div>
 
                   {/* Blood Pressure Systolic */}
                   <div
-                    className={`p-4 rounded-2xl border transition-all shadow-xs ${
+                    className={`p-3 sm:p-4 rounded-2xl border transition-all shadow-xs ${
                       vitals.bp_systolic >= 180 || vitals.bp_systolic < 85
-                        ? "bg-rose-50 border-rose-300 text-rose-900"
+                        ? "bg-rose-50 border-rose-300 text-rose-950 ring-1 ring-rose-300"
                         : vitals.bp_systolic >= 140
-                        ? "bg-amber-50 border-amber-300 text-amber-900"
-                        : "bg-emerald-50 border-emerald-300 text-emerald-900"
+                        ? "bg-amber-50 border-amber-300 text-amber-950 ring-1 ring-amber-300"
+                        : "bg-emerald-50 border-emerald-300 text-emerald-950"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.bpSystolicLabel || "BP Systolic"}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         mmHg
                       </span>
                     </div>
@@ -2073,20 +2285,20 @@ export default function IntakeStation({
                       value={vitals.bp_systolic}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, bp_systolic: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
-                      {vitals.bp_systolic >= 180 ? `🔴 ${t.bpCrisis || "Crisis (>=180)"}` : vitals.bp_systolic < 85 ? `🔴 ${t.bpShock || "Shock (<85)"}` : (t.normalBP || "Normal Range")}
+                    <span className="text-[10px] font-bold block mt-0.5 truncate">
+                      {vitals.bp_systolic >= 180 ? `🔴 ${t.bpCrisis || "Crisis (≥180)"}` : vitals.bp_systolic < 85 ? `🔴 ${t.bpShock || "Shock (<85)"}` : (t.normalBP || "Normal Range")}
                     </span>
                   </div>
 
                   {/* Blood Pressure Diastolic */}
-                  <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/70 text-slate-800 shadow-xs">
+                  <div className="p-3 sm:p-4 rounded-2xl border border-slate-200 bg-slate-50/80 text-slate-900 shadow-xs">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.bpDiastolicLabel || "BP Diastolic"}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         mmHg
                       </span>
                     </div>
@@ -2097,26 +2309,26 @@ export default function IntakeStation({
                       value={vitals.bp_diastolic}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, bp_diastolic: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
+                    <span className="text-[10px] font-bold text-slate-500 block mt-0.5 truncate">
                       {t.diastolicUnit || "Diastolic mmHg"}
                     </span>
                   </div>
 
                   {/* Temperature */}
                   <div
-                    className={`p-4 rounded-2xl border transition-all shadow-xs ${
+                    className={`p-3 sm:p-4 rounded-2xl border transition-all shadow-xs ${
                       vitals.temperature_f >= 101.5
-                        ? "bg-amber-50 border-amber-300 text-amber-900"
-                        : "bg-emerald-50 border-emerald-300 text-emerald-900"
+                        ? "bg-amber-50 border-amber-300 text-amber-950 ring-1 ring-amber-300"
+                        : "bg-emerald-50 border-emerald-300 text-emerald-950"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.tempLabel}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         °F
                       </span>
                     </div>
@@ -2128,20 +2340,20 @@ export default function IntakeStation({
                       value={vitals.temperature_f}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, temperature_f: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
-                      {vitals.temperature_f >= 101.5 ? `🟠 ${t.highFever || "High Grade Fever"}` : (t.afebrile || "Afebrile")}
+                    <span className="text-[10px] font-bold block mt-0.5 truncate">
+                      {vitals.temperature_f >= 101.5 ? `🟠 ${t.highFever || "High Fever"}` : (t.afebrile || "Afebrile")}
                     </span>
                   </div>
 
                   {/* Respiratory Rate */}
-                  <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/70 text-slate-800 shadow-xs">
+                  <div className="p-3 sm:p-4 rounded-2xl border border-slate-200 bg-slate-50/80 text-slate-900 shadow-xs">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                      <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
                         {t.rrLabel}
                       </span>
-                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+                      <span className="text-[10px] bg-white px-2 py-0.5 rounded-full font-bold border border-slate-200">
                         /min
                       </span>
                     </div>
@@ -2152,9 +2364,9 @@ export default function IntakeStation({
                       value={vitals.respiratory_rate_min}
                       onKeyDown={(e) => { if (e.key === "-" || e.key === "e") e.preventDefault(); }}
                       onChange={(e) => setVitals({ ...vitals, respiratory_rate_min: Math.max(0, Math.abs(Number(e.target.value) || 0)) })}
-                      className="w-full bg-transparent text-3xl font-extrabold focus:outline-none tracking-tight"
+                      className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-900 focus:outline-none tracking-tight min-h-[44px]"
                     />
-                    <span className="text-[10px] font-semibold block mt-1">
+                    <span className="text-[10px] font-bold text-slate-500 block mt-0.5 truncate">
                       {vitals.respiratory_rate_min >= 24 ? (t.tachypnea || "Tachypnea") : (t.normalEupnea || "Normal Eupnea")}
                     </span>
                   </div>
@@ -2245,24 +2457,24 @@ export default function IntakeStation({
             </div>
           </div>
 
-          {/* Action Footer for Step 2 */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-white border border-slate-200/90 rounded-2xl shadow-card">
+          {/* Action Footer for Step 2 (Sticky Bottom Navigation Bar) */}
+          <div className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md p-3 sm:p-4 border border-slate-200/90 rounded-2xl shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-4">
             <button
               type="button"
               onClick={() => {
                 setWizardStep(1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="text-xs font-bold text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+              className="min-h-[44px] text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 shrink-0" />
               <span>{t.backToStep1 || "⬅ Back to Registration"}</span>
             </button>
 
             <button
               type="submit"
               disabled={isAnalyzing}
-              className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-8 py-4 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2.5 text-sm disabled:opacity-50 cursor-pointer"
+              className="min-h-[44px] w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 sm:px-8 py-3 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2.5 text-sm disabled:opacity-50 cursor-pointer"
             >
               {isAnalyzing ? (
                 <>
@@ -2271,7 +2483,7 @@ export default function IntakeStation({
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-teal-100" />
+                  <Sparkles className="w-4 h-4 text-teal-100 shrink-0" />
                   <span>{t.runAiTriageCta || "🧠 Run AI Triage Analysis ➔"}</span>
                 </>
               )}
@@ -2295,28 +2507,28 @@ export default function IntakeStation({
                 selectedLanguage={selectedLanguage}
               />
 
-              {/* Handover & Action Footer */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-white border border-slate-200/90 rounded-2xl shadow-card">
-                <div className="flex items-center space-x-3">
+              {/* Handover & Action Footer (Sticky Bottom Navigation Bar) */}
+              <div className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md p-3 sm:p-4 border border-slate-200/90 rounded-2xl shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-4">
+                <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
                   <button
                     type="button"
                     onClick={() => {
                       setWizardStep(2);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="text-xs font-bold text-slate-600 hover:text-slate-900 flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                    className="min-h-[44px] text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center justify-center space-x-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>{t.backToStep2 || "⬅ Edit Symptoms & Vitals"}</span>
+                    <ArrowLeft className="w-4 h-4 shrink-0" />
+                    <span>{t.backToStep2 || "⬅ Edit Vitals"}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleResetForm}
-                    className="text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition cursor-pointer"
+                    className="min-h-[44px] text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center justify-center space-x-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 text-teal-600" />
-                    <span>{t.registerNextPatient || "➕ Register Next Patient"}</span>
+                    <Plus className="w-4 h-4 text-teal-600 shrink-0" />
+                    <span>{t.registerNextPatient || "➕ Next Patient"}</span>
                   </button>
                 </div>
 
@@ -2324,11 +2536,11 @@ export default function IntakeStation({
                 <button
                   type="button"
                   onClick={onGoToDoctorQueue}
-                  className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-8 py-4 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2.5 text-sm cursor-pointer"
+                  className="min-h-[44px] w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 sm:px-8 py-3 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2 text-sm cursor-pointer"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4 shrink-0" />
                   <span>{t.addToDoctorQueue || "📨 Add Patient to Doctor Queue"}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </div>
             </>

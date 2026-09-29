@@ -54,6 +54,7 @@ def init_db():
 init_db()
 
 @app.get("/")
+@app.get("/api")
 def root():
     return {
         "app": "Saransh (सारांश) Triage Assistant API",

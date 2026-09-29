@@ -10,17 +10,20 @@
   }
 
   html {
-    overflow-x: clip !important;
+    overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     overflow-x: hidden !important;
+    overscroll-behavior-x: none;
     overscroll-behavior-y: none;
     width: 100% !important;
     max-width: 100% !important;
     position: relative;
+    touch-action: pan-y pinch-zoom;
   }
 
   #root {
@@ -30,6 +33,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   img, svg, video, canvas, audio, iframe, embed, object {

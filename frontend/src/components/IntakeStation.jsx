@@ -769,7 +769,7 @@ export default function IntakeStation({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full overflow-hidden">
       {/* 3-STEP SEQUENTIAL WIZARD PROGRESS BAR */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4">
         {/* Mobile Step Progress Indicator (< sm:) */}

@@ -439,7 +439,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-100 selection:text-teal-900 w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-100 selection:text-teal-900 w-full max-w-full">
       {/* 🚨 FLOATING HIGH-CONTRAST EMERGENCY ESCALATION ALERT TOAST (TOP-RIGHT CORNER) */}
       {emergencyNotification && (
         <aside
@@ -523,13 +523,21 @@ export default function App() {
 
       {/* Backend Status Alert (if offline/fallback) */}
       {backendError && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 text-center font-medium shadow-xs">
-          {backendError}
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 flex items-center justify-between font-medium shadow-xs">
+          <span className="flex-1 text-center">{backendError}</span>
+          <button
+            type="button"
+            onClick={() => setBackendError("")}
+            className="p-1 text-amber-600 hover:text-amber-900 rounded-lg cursor-pointer ml-2 text-xs font-bold"
+            title="Dismiss notice"
+          >
+            ✕
+          </button>
         </div>
       )}
 
       {/* 2. Main Clinical Workspace */}
-      <main className="max-w-7xl mx-auto px-2.5 sm:px-4 py-4 sm:py-6 flex-1 w-full space-y-4 sm:space-y-6 overflow-x-hidden">
+      <main className="max-w-7xl mx-auto px-2.5 sm:px-4 py-4 sm:py-6 flex-1 w-full space-y-4 sm:space-y-6">
         {activeRole === "NURSE" ? (
           <IntakeStation
             selectedFacility={selectedFacility}

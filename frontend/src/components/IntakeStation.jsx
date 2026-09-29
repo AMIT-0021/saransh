@@ -58,6 +58,11 @@ export default function IntakeStation({
   // Wizard Step: 1 = Registration, 2 = Symptoms & Vitals, 3 = Triage Note & Handover
   const [wizardStep, setWizardStep] = useState(1);
 
+  // Smooth scroll to top on step transition
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [wizardStep]);
+
   // Form State
   const [patientInfo, setPatientInfo] = useState({
     patient_id: "PHC-1024",
@@ -769,7 +774,7 @@ export default function IntakeStation({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full overflow-hidden">
+    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
       {/* 3-STEP SEQUENTIAL WIZARD PROGRESS BAR */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4">
         {/* Mobile Step Progress Indicator (< sm:) */}

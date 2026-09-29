@@ -10,30 +10,30 @@
   }
 
   html {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    overflow-x: clip;
+    width: 100%;
+    max-width: 100%;
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
-    overflow-x: hidden !important;
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
-    width: 100% !important;
-    max-width: 100% !important;
-    position: relative;
-    touch-action: pan-y pinch-zoom;
+    overflow-x: clip;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    -webkit-overflow-scrolling: touch;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-teal-100 selection:text-teal-900;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
   }
 
   #root {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
+    max-width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    position: relative;
   }
 
   img, svg, video, canvas, audio, iframe, embed, object {
@@ -43,12 +43,6 @@
 
   input, select, textarea {
     max-width: 100%;
-  }
-
-  body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-teal-100 selection:text-teal-900;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    -webkit-tap-highlight-color: transparent;
   }
   
   .font-mono {

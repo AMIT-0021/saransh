@@ -88,7 +88,7 @@ export default function DoctorDashboard({
   const generalOccupancyPct = totalGeneral > 0 ? Math.round((occupiedGeneral / totalGeneral) * 100) : 0;
 
   return (
-    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full overflow-hidden">
+    <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
       {/* 1. Hospital Resource & Capacity Bar (Apple Health Style Live Telemetry) */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm transition-all min-w-0 max-w-full overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-100 pb-3 sm:pb-4 min-w-0">

@@ -20,33 +20,58 @@ let voicesLoadedPromise = null;
 
 // Keep a global reference to prevent Chromium garbage collection bug during playback
 let activeUtteranceRef = null;
+let activeUtteranceOnEnd = null;
 let activeAudioElementRef = null;
+let activeAudioOnEnd = null;
 let speechWatchdogTimer = null;
+
+/**
+ * Phonetically maps Odia script to Devanagari for Hindi/Indian browser TTS voices.
+ * Ensures Odia sentences are pronounced naturally without silence or engine deadlocks.
+ */
+export function convertOdiaToPhoneticDevanagari(str) {
+  if (!str || typeof str !== "string") return "";
+  return str.replace(/[\u0B00-\u0B7F]/g, (ch) => {
+    const code = ch.charCodeAt(0);
+    if (code === 0x0B5F) return "\u092F"; // Odia YA -> Devanagari YA
+    if (code === 0x0B71) return "\u0935"; // Odia WA -> Devanagari VA
+    if (code === 0x0B5C) return "\u0921\u093C"; // Odia RRA -> Devanagari DA + nukta
+    if (code === 0x0B5D) return "\u0922\u093C"; // Odia RHA -> Devanagari DHA + nukta
+    if (code === 0x0B33) return "\u0932"; // Odia LLA -> Devanagari LA
+    const devCode = code - 0x0200;
+    return String.fromCharCode(devCode);
+  });
+}
 
 // Registry of high-fidelity Neural / ElevenLabs studio Indian voice audio files
 const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ODIA",
+    language: "Odia",
     keywords: ["chhatita", "pathara", "bhari", "darada", "kaneiki", "fatijiba", "ଛାତିଟା", "ଡାକ୍ତର", "ଛାତି", "ପଥର", "ନିଶ୍ୱାସ", "ଦରଦ", "୨ ଘଣ୍ଟା"],
     url: "/audio/ramesh_cardiac.mp3"
   },
   {
     id: "RAMESH_ENGLISH",
+    language: "English",
     keywords: ["crushed under heavy stone", "tearing", "cold sweat", "unbearable stabbing"],
     url: "/audio/ramesh_english.mp3"
   },
   {
-    id: "PRIYA_FEVER",
-    keywords: ["nia bhali tatichhi", "petechial", "dengue", "blinding", "burning with high fever", "ନିଆଁ ଭଳି"],
+    id: "PRIYA_FEVER_ODIA",
+    language: "Odia",
+    keywords: ["nia bhali tatichhi", "ଦେହ ସାରା ନିଆଁ", "ନିଆଁ ଭଳି"],
     url: "/audio/priya_fever.mp3"
   },
   {
-    id: "LIPU_PEDIATRIC",
-    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop"],
+    id: "LIPU_PEDIATRIC_ODIA",
+    language: "Odia",
+    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop", "ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି"],
     url: "/audio/lipu_pediatric.mp3"
   },
   {
     id: "NURSE_ADVISORY",
+    language: "English",
     keywords: ["registered with abha", "high-flow oxygen", "emergency ecg", "bedside"],
     url: "/audio/nurse_advisory.mp3"
   }
@@ -479,15 +504,29 @@ export async function speakHumanVoice(text, {
     stopHumanVoice();
 
     // 2. Priority Check: Match Pre-rendered Neural Indian / ElevenLabs Studio Audio Assets
+    // STRICT LANGUAGE ENFORCEMENT: An Odia studio MP3 must NEVER play when Hindi or English is selected
     const textLower = text.toLowerCase();
-    const matchedStudioAudio = PRE_RENDERED_STUDIO_AUDIO.find((asset) =>
-      asset.keywords.some((kw) => textLower.includes(kw.toLowerCase()))
-    );
+    const targetLangLower = (language || "english").toLowerCase();
+    
+    const matchedStudioAudio = PRE_RENDERED_STUDIO_AUDIO.find((asset) => {
+      const assetLang = (asset.language || "").toLowerCase();
+      if (assetLang) {
+        if (targetLangLower.includes("odia") || targetLangLower.includes("oriya")) {
+          if (assetLang !== "odia") return false;
+        } else if (targetLangLower.includes("hindi")) {
+          if (assetLang !== "hindi") return false;
+        } else if (targetLangLower.includes("english")) {
+          if (assetLang !== "english") return false;
+        }
+      }
+      return asset.keywords.some((kw) => textLower.includes(kw.toLowerCase()));
+    });
 
     if (matchedStudioAudio) {
       try {
         const audio = new Audio(matchedStudioAudio.url);
         activeAudioElementRef = audio;
+        activeAudioOnEnd = onEnd;
 
         audio.onplay = () => {
           const acoustics = getVocalAcoustics({ age, gender, role, language });
@@ -496,12 +535,14 @@ export async function speakHumanVoice(text, {
 
         audio.onended = () => {
           activeAudioElementRef = null;
+          activeAudioOnEnd = null;
           if (onEnd) onEnd();
         };
 
         audio.onerror = () => {
           console.warn("Studio audio file playback failed, falling back to browser speech synthesis...");
           activeAudioElementRef = null;
+          activeAudioOnEnd = null;
         };
 
         await audio.play();
@@ -509,6 +550,7 @@ export async function speakHumanVoice(text, {
       } catch (audioErr) {
         console.warn("Audio element play error, proceeding to browser TTS:", audioErr);
         activeAudioElementRef = null;
+        activeAudioOnEnd = null;
       }
     }
 
@@ -524,19 +566,30 @@ export async function speakHumanVoice(text, {
       isFemalePreferred: acoustics.isFemalePreferred
     });
 
-    // 6. Humanize text with breath pauses
-    const humanizedText = humanizeSpeechText(text, { age, role });
+    // 6. Transliterate or Phonetically map Odia text if system lacks native Odia TTS engine
+    let textToSpeak = text;
+    const vLang = (matchedVoice?.lang || "").toLowerCase().replace("_", "-");
+    const hasOdiaScript = /[\u0B00-\u0B7F]/.test(textToSpeak);
+    let effectiveTargetLang = targetLangLower;
 
-    // 7. Build SpeechSynthesisUtterance
+    if (hasOdiaScript && !vLang.startsWith("or")) {
+      // Browser voice is Hindi or Indian English: convert Odia glyphs to Devanagari phonemes
+      textToSpeak = convertOdiaToPhoneticDevanagari(textToSpeak);
+      if (!effectiveTargetLang.includes("english")) {
+        effectiveTargetLang = "hindi";
+      }
+    }
+
+    // 7. Humanize text with breath pauses
+    const humanizedText = humanizeSpeechText(textToSpeak, { age, role });
+
+    // 8. Build SpeechSynthesisUtterance
     const utterance = new SpeechSynthesisUtterance(humanizedText);
 
-    // 8. Enforce BCP-47 Indian Locale on Utterance
-    // Instructs synthesizer engines to apply Indian English phonology, stress, and cadence
-    const langLower = (language || "english").toLowerCase();
-    if (langLower.includes("hindi")) {
+    // 9. Enforce BCP-47 Indian Locale on Utterance
+    if (effectiveTargetLang.includes("hindi")) {
       utterance.lang = "hi-IN";
-    } else if (langLower.includes("odia") || langLower.includes("oriya")) {
-      const vLang = (matchedVoice?.lang || "").toLowerCase().replace("_", "-");
+    } else if (effectiveTargetLang.includes("odia") || effectiveTargetLang.includes("oriya")) {
       if (vLang.startsWith("or")) {
         utterance.lang = "or-IN";
       } else if (vLang.startsWith("hi")) {
@@ -552,7 +605,7 @@ export async function speakHumanVoice(text, {
       utterance.voice = matchedVoice;
     }
 
-    // 9. Acoustic Pitch & Formant Reinforcement
+    // 10. Acoustic Pitch & Formant Reinforcement
     const detectedVoiceGender = classifyVoiceGender(matchedVoice);
     if (acoustics.isFemalePreferred && detectedVoiceGender === "male") {
       utterance.pitch = Math.max(acoustics.pitch, 1.28);
@@ -567,48 +620,75 @@ export async function speakHumanVoice(text, {
 
     utterance.volume = acoustics.volume;
 
-    // 10. Event listeners with Chromium GC bug safeguard & Watchdog
+    // 11. Event listeners with Chromium GC bug safeguard & Safe Watchdog
     activeUtteranceRef = utterance;
+    activeUtteranceOnEnd = onEnd;
 
     const cleanupWatchdog = () => {
       if (speechWatchdogTimer) {
-        clearInterval(speechWatchdogTimer);
+        clearTimeout(speechWatchdogTimer);
         speechWatchdogTimer = null;
       }
     };
 
+    let hasEnded = false;
+    const safeEnd = () => {
+      if (hasEnded) return;
+      hasEnded = true;
+      cleanupWatchdog();
+      activeUtteranceRef = null;
+      activeUtteranceOnEnd = null;
+      if (onEnd) onEnd();
+    };
+
     utterance.onstart = () => {
       cleanupWatchdog();
-      speechWatchdogTimer = setInterval(() => {
-        if (window.speechSynthesis && window.speechSynthesis.speaking) {
-          window.speechSynthesis.pause();
-          window.speechSynthesis.resume();
+      
+      // Calculate realistic maximum speaking duration from word count
+      const words = (humanizedText || "").split(/\s+/).length;
+      const expectedDurationSec = Math.max(5, Math.ceil(words / 1.8));
+      
+      // Watchdog timeout to prevent voice lock if browser fails to trigger onend
+      speechWatchdogTimer = setTimeout(() => {
+        if (activeUtteranceRef === utterance && window.speechSynthesis.speaking) {
+          console.log("Speech watchdog timeout reached, safely ending speech.");
+          stopHumanVoice();
+          safeEnd();
         }
-      }, 10000);
+      }, (expectedDurationSec + 8) * 1000);
 
       if (onStart) onStart({ acoustics, voice: matchedVoice });
     };
 
-    utterance.onend = () => {
-      cleanupWatchdog();
-      activeUtteranceRef = null;
-      if (onEnd) onEnd();
-    };
+    utterance.onend = safeEnd;
 
     utterance.onerror = (e) => {
       cleanupWatchdog();
       activeUtteranceRef = null;
-      console.warn("Human voice synthesis error:", e);
-      if (onError) onError(e);
-      if (onEnd) onEnd();
+      activeUtteranceOnEnd = null;
+      // Do not treat intentional cancel/interruption as fatal error
+      if (e.error !== "canceled" && e.error !== "interrupted") {
+        console.warn("Human voice synthesis error:", e);
+        if (onError) onError(e);
+      }
+      safeEnd();
     };
 
-    // 11. Speak
+    // 12. Allow cancellation to settle in the native audio queue before speaking new text
+    await new Promise((resolve) => setTimeout(resolve, 60));
+
+    // Ensure audio queue is not paused before speaking
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
+    // 13. Speak
     window.speechSynthesis.speak(utterance);
     return true;
   } catch (err) {
     console.warn("speakHumanVoice unhandled error:", err);
     activeUtteranceRef = null;
+    activeUtteranceOnEnd = null;
     if (onError) onError(err);
     if (onEnd) onEnd();
     return false;
@@ -617,6 +697,7 @@ export async function speakHumanVoice(text, {
 
 /**
  * Immediately cancels any playing speech or studio audio element.
+ * Safely clears watchdog timers and unsticks jammed browser speech queues.
  */
 export function stopHumanVoice() {
   if (activeAudioElementRef) {
@@ -627,13 +708,34 @@ export function stopHumanVoice() {
       // ignore
     }
     activeAudioElementRef = null;
+    if (activeAudioOnEnd) {
+      const cb = activeAudioOnEnd;
+      activeAudioOnEnd = null;
+      try { cb(); } catch (_) {}
+    }
   }
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
+
   if (speechWatchdogTimer) {
-    clearInterval(speechWatchdogTimer);
+    clearTimeout(speechWatchdogTimer);
     speechWatchdogTimer = null;
   }
+
+  if (activeUtteranceOnEnd) {
+    const cb = activeUtteranceOnEnd;
+    activeUtteranceOnEnd = null;
+    try { cb(); } catch (_) {}
+  }
   activeUtteranceRef = null;
+
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+      // On WebKit/Blink, calling resume if stuck in paused state unsticks the queue
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch (e) {
+      console.warn("speechSynthesis.cancel error:", e);
+    }
+  }
 }

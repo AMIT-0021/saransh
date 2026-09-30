@@ -44,6 +44,97 @@ import {
 } from "../utils/voiceSynthesisEngine";
 import TriageResultCard from "./TriageResultCard";
 
+// Canonical cross-language patient statements ensuring synchronous script translation on language switch
+const CANONICAL_CLINICAL_CASES = [
+  {
+    key: "CARDIAC_RAMESH",
+    keywords: ["ପଥର", "ଦରଦ", "ଛାତି", "କଣେଇକି", "पत्थर", "सीने", "दर्द", "चुभन", "crushed", "stabbing", "chest"],
+    Odia: {
+      verbatim: "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
+      phonetic: "Doctor babu, 2 ghanta hela chhatita pathara bhali bhari laguchhi au bahut jor re kaneiki darada heuchhi. Nishwas aadou neiparuni, deha sara jhalare thanda padigalani. Tike shighra dekhantu babu, chhati fatijiba bhali laguchhi.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    },
+    Hindi: {
+      verbatim: "डॉक्टर साहब, २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है और बहुत तेज चुभन महसूस हो रही है। सांस बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है। कृपया जल्दी देखें, लग रहा है सीना फट जाएगा।",
+      phonetic: "Doctor sahab, 2 ghante se seene mein bhari patthar jaisa dard ho raha hai aur bahut tez chubhan mehsoos ho rahi hai. Saans bilkul nahi aa rahi, shareer paseene se thanda pad gaya hai. Kripya jaldi dekhein, lag raha hai seena phat jayega.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    },
+    English: {
+      verbatim: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
+      phonetic: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    }
+  },
+  {
+    key: "FEVER_PRIYA",
+    keywords: ["ତାତିଛି", "ବିନ୍ଧୁଛି", "ଦାଗ", "ନିଆଁ", "भट्टी", "तप रहा", "चकत्ते", "बुखार", "fever", "burning", "petechial", "rash"],
+    Odia: {
+      verbatim: "ଦିଦି, ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି। ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
+      phonetic: "Didi, 3 dina hela deha sara nia bhali tatichhi. Mundata ete jor re bindhuchhi je aakhi kholi heuni. Hata godare laal daga bahari padichhi au chalibaku jama bala pauni.",
+      translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
+    },
+    Hindi: {
+      verbatim: "दीदी, ३ दिन से पूरा बदन भट्टी की तरह तप रहा है। सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं और चलने की बिल्कुल ताक़त नहीं बची है।",
+      phonetic: "Didi, 3 din se pura badan bhatti ki tarah tap raha hai. Sir mein itna bhayanak dard hai ki aankhein bhi nahi khul rahi hain. Pure haath-pairon mein laal chakatte nikal aaye hain aur chalne ki bilkul taaqat nahi bachi hai.",
+      translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
+    },
+    English: {
+      verbatim: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
+      phonetic: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
+      translation: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand."
+    }
+  },
+  {
+    key: "CHILD_LIPU_AARAV",
+    keywords: ["ପେଟଟା", "ବାନ୍ତି", "ଖାଇ", "କଷ୍ଟ", "पेट", "उल्टी", "रोना", "दर्द", "tummy", "threw up", "vomit", "hurts"],
+    Odia: {
+      verbatim: "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
+      phonetic: "Didi, petata bhisana bindhuchhi. Sakalu 2 thara banti helani au kichhi khai heuni, bahut kasta heuchhi.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
+    },
+    Hindi: {
+      verbatim: "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
+      phonetic: "Didi, pet mein bahut tez dard ho raha hai. Subah se do baar ulti ho gayi aur kuch bhi khaya nahi ja raha, bahut rona aa raha hai.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
+    },
+    English: {
+      verbatim: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much.",
+      phonetic: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
+    }
+  },
+  {
+    key: "HEADACHE_SUBHASH",
+    keywords: ["ମଥାଟା", "ପାଠ", "ଥକା", "ନମସ୍କାର", "माथे", "पढ़ाई", "थकान", "नमस्ते", "headache", "throbbing", "study", "tired"],
+    Odia: {
+      verbatim: "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
+      phonetic: "Namaskar didi, gatakali raatire aneka samaya dhari patha padhiba pare mathata samanya bindhuchhi. Jwara ki banti kichhi naahi, kebala tike thaka laguchhi.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    Hindi: {
+      verbatim: "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
+      phonetic: "Namaste didi, kal der raat tak screen par padhai karne ke baad se maathe mein halka-halka dard hai. Koi bukhar ya ulti nahi hai, bas thodi thakan mehsoos ho rahi hai.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    English: {
+      verbatim: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
+      phonetic: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    }
+  }
+];
+
+function findCanonicalCase(text) {
+  if (!text || typeof text !== "string") return null;
+  const lower = text.toLowerCase();
+  for (const c of CANONICAL_CLINICAL_CASES) {
+    if (c.keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
+      return c;
+    }
+  }
+  return null;
+}
+
 export default function IntakeStation({
   selectedFacility,
   selectedLanguage,
@@ -83,6 +174,8 @@ export default function IntakeStation({
   const [isScanningAbha, setIsScanningAbha] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const currentlyPlayingTextRef = useRef(null);
+  const prevLangRef = useRef(selectedLanguage);
   const [activeBodyRegion, setActiveBodyRegion] = useState("chestCardiac");
 
   // 6 Interactive Anatomical Zones
@@ -266,13 +359,51 @@ export default function IntakeStation({
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}s`;
   };
 
-  // Sync facility and language props
+  // Sync facility and language props & synchronize clinical script
   useEffect(() => {
+    // 1. Immediately cancel active speech playback and recognition
+    stopHumanVoice();
+    setIsPlayingAudio(false);
+    currentlyPlayingTextRef.current = null;
+    if (isListening) {
+      handleStopSpeech(false);
+    }
+
     setPatientInfo((prev) => ({
       ...prev,
       facility_type: selectedFacility,
       language_preference: selectedLanguage
     }));
+
+    // 2. If language actually changed, synchronize statement to target script
+    if (prevLangRef.current !== selectedLanguage) {
+      prevLangRef.current = selectedLanguage;
+
+      setSymptoms((prev) => {
+        const currentStatement = prev.verbatim_local_statement || "";
+        const matched = findCanonicalCase(currentStatement);
+
+        if (matched && matched[selectedLanguage]) {
+          const target = matched[selectedLanguage];
+          setLiveStreamText(target.verbatim);
+          const norm = normalizeIndicSpeech(target.verbatim, selectedLanguage);
+          setDetectedIdioms(norm.detectedIdioms || []);
+
+          return {
+            ...prev,
+            verbatim_local_statement: target.verbatim,
+            phonetic_transliteration: target.phonetic,
+            translated_english_statement: target.translation,
+            chief_complaint: target.translation
+          };
+        } else {
+          // Re-extract idioms for the new language
+          const norm = normalizeIndicSpeech(currentStatement, selectedLanguage);
+          setDetectedIdioms(norm.detectedIdioms || []);
+          return prev;
+        }
+      });
+    }
   }, [selectedFacility, selectedLanguage]);
 
   // When triage result is available, auto transition to step 3
@@ -298,9 +429,10 @@ export default function IntakeStation({
     }
   }, []);
 
-  // Cleanup audio stream and timers on unmount
+  // Cleanup audio stream, speech synthesis and timers on unmount
   useEffect(() => {
     return () => {
+      stopHumanVoice();
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       if (audioStreamRef.current) {
         audioStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -338,35 +470,73 @@ export default function IntakeStation({
 
     if (!text || !text.trim()) return;
 
-    if (isPlayingAudio) {
+    // Toggle off ONLY if user taps play on the exact same currently playing text
+    if (isPlayingAudio && currentlyPlayingTextRef.current === text.trim()) {
       stopHumanVoice();
+      currentlyPlayingTextRef.current = null;
       setIsPlayingAudio(false);
       return;
     }
 
+    // Otherwise, cancel any ongoing speech and immediately start new one
+    stopHumanVoice();
+    currentlyPlayingTextRef.current = text.trim();
     setIsPlayingAudio(true);
+
     speakHumanVoice(text, {
       age,
       gender,
       role: "patient",
       language,
-      onStart: () => setIsPlayingAudio(true),
-      onEnd: () => setIsPlayingAudio(false),
-      onError: () => setIsPlayingAudio(false)
+      onStart: () => {
+        setIsPlayingAudio(true);
+      },
+      onEnd: () => {
+        setIsPlayingAudio(false);
+        currentlyPlayingTextRef.current = null;
+      },
+      onError: () => {
+        setIsPlayingAudio(false);
+        currentlyPlayingTextRef.current = null;
+      }
     });
   };
 
   // Load a 1-click synthetic preset
   const handleLoadPreset = (preset) => {
+    stopHumanVoice();
+    setIsPlayingAudio(false);
+    currentlyPlayingTextRef.current = null;
+    if (isListening) {
+      handleStopSpeech(false);
+    }
+
+    let finalVerbatim = preset.symptoms_and_complaints.verbatim_local_statement;
+    let finalPhonetic = preset.symptoms_and_complaints.phonetic_transliteration || "";
+    let finalTranslation = preset.symptoms_and_complaints.translated_english_statement;
+    let finalComplaint = preset.symptoms_and_complaints.chief_complaint;
+
+    const matched = findCanonicalCase(finalVerbatim);
+    if (matched && matched[selectedLanguage]) {
+      finalVerbatim = matched[selectedLanguage].verbatim;
+      finalPhonetic = matched[selectedLanguage].phonetic;
+      finalTranslation = matched[selectedLanguage].translation;
+      finalComplaint = matched[selectedLanguage].translation;
+    }
+
     setPatientInfo({
       ...preset.patient_basic_info,
       facility_type: selectedFacility || preset.patient_basic_info.facility_type,
+      language_preference: selectedLanguage || preset.patient_basic_info.language_preference,
       abha_id: preset.patient_basic_info.abha_id || (preset.id === "RAMESH_CARDIAC_RED" ? "91-4821-9923-0192" : "")
     });
     setAbhaScanned(preset.id === "RAMESH_CARDIAC_RED" || Boolean(preset.patient_basic_info.abha_id));
     setSymptoms({
       ...preset.symptoms_and_complaints,
-      phonetic_transliteration: preset.symptoms_and_complaints.phonetic_transliteration || ""
+      verbatim_local_statement: finalVerbatim,
+      phonetic_transliteration: finalPhonetic,
+      translated_english_statement: finalTranslation,
+      chief_complaint: finalComplaint
     });
     setVitals(preset.vital_signs);
     setMedicalHistory({
@@ -386,11 +556,11 @@ export default function IntakeStation({
 
     // Extract vernacular idioms from preset statement
     const norm = normalizeIndicSpeech(
-      preset.symptoms_and_complaints.verbatim_local_statement,
-      preset.patient_basic_info.language_preference
+      finalVerbatim,
+      selectedLanguage || preset.patient_basic_info.language_preference
     );
     setDetectedIdioms(norm.detectedIdioms || []);
-    setLiveStreamText(preset.symptoms_and_complaints.verbatim_local_statement || "");
+    setLiveStreamText(finalVerbatim || "");
   };
 
   // Sample report selection handler

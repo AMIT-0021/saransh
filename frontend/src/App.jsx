@@ -11,6 +11,7 @@ import {
 } from "./utils/offlineQueue";
 import { evaluateLocalDeterministicTriage } from "./utils/localTriageRules";
 import { SYNTHETIC_CASES } from "./data/syntheticCases";
+import { stopHumanVoice } from "./utils/voiceSynthesisEngine";
 
 const API_BASE = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_BACKEND_URL)
   ? import.meta.env.VITE_BACKEND_URL
@@ -98,6 +99,11 @@ function getBilingualFollowups(lang) {
 export default function App() {
   const [selectedFacility, setSelectedFacility] = useState("PHC_JATNI");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
+
+  const handleLanguageChange = useCallback((newLang) => {
+    stopHumanVoice();
+    setSelectedLanguage(newLang);
+  }, []);
   const [activeRole, setActiveRole] = useState("NURSE"); // "NURSE" or "DOCTOR"
   const [isOffline, setIsOffline] = useState(false);
   const [pendingSyncCount, setPendingSyncCount] = useState(getOfflinePendingCount());
@@ -556,7 +562,7 @@ export default function App() {
         selectedFacility={selectedFacility}
         onFacilityChange={setSelectedFacility}
         selectedLanguage={selectedLanguage}
-        onLanguageChange={setSelectedLanguage}
+        onLanguageChange={handleLanguageChange}
         activeRole={activeRole}
         onRoleChange={setActiveRole}
         isOffline={isOffline}

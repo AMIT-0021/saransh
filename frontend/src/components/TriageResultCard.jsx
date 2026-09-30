@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -41,6 +41,20 @@ export default function TriageResultCard({
 
   const [currentlySpeakingIdx, setCurrentlySpeakingIdx] = useState(null);
 
+  // Stop active speech and sync language on change
+  useEffect(() => {
+    stopHumanVoice();
+    setCurrentlySpeakingIdx(null);
+    setAskLang(p?.language_preference || selectedLanguage || "English");
+  }, [selectedLanguage, p?.language_preference]);
+
+  // Cleanup speech on unmount
+  useEffect(() => {
+    return () => {
+      stopHumanVoice();
+    };
+  }, []);
+
   // Empathetic bedside nurse speech synthesis for follow-up questions
   const handleSpeakQuestion = (text, lang, idx) => {
     if (currentlySpeakingIdx === idx) {
@@ -49,6 +63,7 @@ export default function TriageResultCard({
       return;
     }
 
+    stopHumanVoice();
     setCurrentlySpeakingIdx(idx);
     speakHumanVoice(text, {
       role: "nurse",
@@ -69,6 +84,7 @@ export default function TriageResultCard({
       return;
     }
 
+    stopHumanVoice();
     const summaryText = `Clinical Triage Assessment for token ${triageRecord.token_number || "T-001"}. Priority: ${priority}. Destination: ${ai.suggested_department || "Emergency"}. ${ai.priority_label || ""}.`;
     setCurrentlySpeakingIdx("SUMMARY");
     speakHumanVoice(summaryText, {

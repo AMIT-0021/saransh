@@ -19,11 +19,11 @@ if not api_key and os.path.exists(ENV_PATH):
 # Authentic Indian Voice ID Presets in ElevenLabs (Public & Multilingual Models)
 # You can also replace these Voice IDs with any custom cloned voice from your ElevenLabs VoiceLab!
 VOICE_PROFILES = {
-    # Authentic Indian Voices in ElevenLabs
+    # Authentic Odia Voice in ElevenLabs (Native Odia Script for Flawless Accent)
     "Ramesh_Odia_Distressed": {
-        "filename": "ramesh_cardiac_elevenlabs.mp3",
-        "voice_id": "pNInz6obpgDQGcFmaJgB", # Adam / Indian Clone fallback
-        "text": "Doctor babu... 2 ghanta hela chhati re bhara laagu chi... pathara bhali bhari laagu chi au bahut jor re darada heuchhi... Nishwas aadou neiparuni... deha sara jhalare thanda padigalani... Tike shighra dekhantu babu... chhati fatijiba bhali laguchhi.",
+        "filename": "ramesh_cardiac.mp3",
+        "voice_id": "pNInz6obpgDQGcFmaJgB", # ElevenLabs Multilingual Model with native Odia script
+        "text": "ଡାକ୍ତର ବାବୁ... ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି... ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି... ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ... ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
         "stability": 0.40,      # Lower stability = more human emotional tremor and breathlessness
         "similarity_boost": 0.85,
         "style": 0.45

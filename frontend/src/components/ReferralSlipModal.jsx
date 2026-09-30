@@ -187,7 +187,9 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
       return;
     }
 
-    const script = `Official 108 Emergency Handover Briefing. Patient ${p.name_or_alias}, ${p.age} years old ${p.sex}. Originating facility: ${facInfo.name}. Destination apex center: ${facInfo.receivingFacility}. Referral priority: ${priority}. Departure vitals: SpO2 ${spo2} percent, Blood Pressure ${sysBp} over ${diaBp}, Pulse rate ${pulse} beats per minute. Clinical reason: ${s.chief_complaint}. Transport corridor: ${facInfo.referralCorridor}. Transfer authorized by Medical Officer.`;
+    stopHumanVoice();
+    const clinicalReason = s.translated_english_statement || s.chief_complaint || "Acute emergency condition requiring apex transfer";
+    const script = `Official 108 Emergency Handover Briefing. Patient ${p.name_or_alias}, ${p.age} years old ${p.sex}. Originating facility: ${facInfo.name}. Destination apex center: ${facInfo.receivingFacility}. Referral priority: ${priority}. Departure vitals: SpO2 ${spo2} percent, Blood Pressure ${sysBp} over ${diaBp}, Pulse rate ${pulse} beats per minute. Clinical reason: ${clinicalReason}. Transport corridor: ${facInfo.referralCorridor}. Transfer authorized by Medical Officer.`;
 
     setIsPlayingHandover(true);
     speakHumanVoice(script, {

@@ -63,12 +63,20 @@ export default function ClinicianReviewModal({
   const [validationError, setValidationError] = useState("");
   const [isPlayingStatement, setIsPlayingStatement] = useState(false);
 
-  // Stop speech when modal closes
+  // Stop speech when modal closes or Escape key pressed
   React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        stopHumanVoice();
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
+      window.removeEventListener("keydown", handleKeyDown);
       stopHumanVoice();
     };
-  }, []);
+  }, [onClose]);
 
   const handlePlayStatement = () => {
     if (isPlayingStatement) {
@@ -79,12 +87,13 @@ export default function ClinicianReviewModal({
 
     if (!s.verbatim_local_statement) return;
 
+    stopHumanVoice();
     setIsPlayingStatement(true);
     speakHumanVoice(s.verbatim_local_statement, {
       age: p.age,
       gender: p.sex,
       role: "patient",
-      language: p.language_preference || "Odia",
+      language: p.language_preference || selectedLanguage || "Odia",
       onStart: () => setIsPlayingStatement(true),
       onEnd: () => setIsPlayingStatement(false),
       onError: () => setIsPlayingStatement(false)

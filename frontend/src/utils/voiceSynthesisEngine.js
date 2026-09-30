@@ -31,7 +31,16 @@ let speechWatchdogTimer = null;
  */
 export function convertOdiaToPhoneticDevanagari(str) {
   if (!str || typeof str !== "string") return "";
-  return str.replace(/[\u0B00-\u0B7F]/g, (ch) => {
+
+  // Normalize Unicode to canonical composition and handle decomposed vowel signs
+  const s = str.normalize("NFC")
+    .replace(/\u0B47\u0B57/g, "\u0B4C") // Decomposed AU matra -> atomic AU matra
+    .replace(/\u0B47\u0B3E/g, "\u0B4B") // Decomposed O matra -> atomic O matra
+    .replace(/\u0B47\u0B56/g, "\u0B48") // Decomposed AI matra -> atomic AI matra
+    .replace(/\u0B57/g, "\u0B4C")
+    .replace(/\u0B56/g, "");
+
+  return s.replace(/[\u0B00-\u0B7F]/g, (ch) => {
     const code = ch.charCodeAt(0);
     if (code === 0x0B5F) return "\u092F"; // Odia YA -> Devanagari YA
     if (code === 0x0B71) return "\u0935"; // Odia WA -> Devanagari VA
@@ -41,6 +50,85 @@ export function convertOdiaToPhoneticDevanagari(str) {
     const devCode = code - 0x0200;
     return String.fromCharCode(devCode);
   });
+}
+
+/**
+ * Transliterates Odia and Devanagari text into natural Latin phonetics for English/Global TTS voices.
+ * Ensures that if a device only has English voices (en-IN, en-US, etc.), it pronounces Indic text fluently
+ * without skipping words or encountering audio queue deadlocks.
+ */
+export function convertIndicToLatinPhonetic(str) {
+  if (!str || typeof str !== "string") return "";
+
+  const INDIC_DIGIT_MAP = {
+    "\u0966": "0", "\u0967": "1", "\u0968": "2", "\u0969": "3", "\u096A": "4",
+    "\u096B": "5", "\u096C": "6", "\u096D": "7", "\u096E": "8", "\u096F": "9",
+    "\u0B66": "0", "\u0B67": "1", "\u0B68": "2", "\u0B69": "3", "\u0B6A": "4",
+    "\u0B6B": "5", "\u0B6C": "6", "\u0B6D": "7", "\u0B6E": "8", "\u0B6F": "9"
+  };
+
+  let s = str.normalize("NFC")
+    .replace(/[\u0966-\u096F\u0B66-\u0B6F]/g, (d) => INDIC_DIGIT_MAP[d] || d)
+    .replace(/\u0B47\u0B57/g, "\u0B4C")
+    .replace(/\u0B47\u0B3E/g, "\u0B4B")
+    .replace(/\u0B47\u0B56/g, "\u0B48")
+    .replace(/\u0B57/g, "\u0B4C")
+    .replace(/\u0B56/g, "")
+    .replace(/[\u0964\u0B64\u0965\u0B65]/g, ". ") // Indic Danda & Double Danda -> period
+    .replace(/[\u093D\u0B3D]/g, "") // Avagraha
+    .replace(/\u0949|\u0B49/g, "o") // Chandra O (डॉ -> do)
+    .replace(/\u0945|\u0B45/g, "e") // Chandra E
+    .replace(/\u0902|\u0B02|\u0901|\u0B01/g, "n") // Anusvara / Chandrabindu
+    .replace(/\u0903|\u0B03/g, "h") // Visarga
+    .replace(/\u093C|\u0B3C/g, ""); // Nukta
+
+  // Normalize Devanagari to Odia range for unified mapping
+  s = s.replace(/[\u0900-\u097F]/g, (ch) => {
+    return String.fromCharCode(ch.charCodeAt(0) + 0x0200);
+  });
+
+  const CONSONANTS = {
+    "\u0B15": "k", "\u0B16": "kh", "\u0B17": "g", "\u0B18": "gh", "\u0B19": "ng",
+    "\u0B1A": "ch", "\u0B1B": "chh", "\u0B1C": "j", "\u0B1D": "jh", "\u0B1E": "ny",
+    "\u0B1F": "t", "\u0B20": "th", "\u0B21": "d", "\u0B22": "dh", "\u0B23": "n",
+    "\u0B24": "t", "\u0B25": "th", "\u0B26": "d", "\u0B27": "dh", "\u0B28": "n",
+    "\u0B2A": "p", "\u0B2B": "ph", "\u0B2C": "b", "\u0B2D": "bh", "\u0B2E": "m",
+    "\u0B2F": "y", "\u0B30": "r", "\u0B32": "l", "\u0B33": "l", "\u0B71": "v",
+    "\u0B36": "sh", "\u0B37": "sh", "\u0B38": "s", "\u0B39": "h",
+    "\u0B5C": "r", "\u0B5D": "rh", "\u0B5F": "y"
+  };
+
+  const MATRAS = {
+    "\u0B3E": "aa", "\u0B3F": "i", "\u0B40": "ee", "\u0B41": "u", "\u0B42": "oo",
+    "\u0B43": "ri", "\u0B47": "e", "\u0B48": "ai", "\u0B4B": "o", "\u0B4C": "au",
+    "\u0B4D": "" // virama
+  };
+
+  const INDEPENDENT_VOWELS = {
+    "\u0B05": "a", "\u0B06": "aa", "\u0B07": "i", "\u0B08": "ee", "\u0B09": "u",
+    "\u0B0A": "oo", "\u0B0F": "e", "\u0B10": "ai", "\u0B13": "o", "\u0B14": "au"
+  };
+
+  let res = "";
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    const nextCh = s[i + 1];
+    if (INDEPENDENT_VOWELS[ch]) {
+      res += INDEPENDENT_VOWELS[ch];
+    } else if (CONSONANTS[ch]) {
+      const cons = CONSONANTS[ch];
+      if (nextCh && MATRAS[nextCh] !== undefined) {
+        res += cons + MATRAS[nextCh];
+        i++;
+      } else {
+        res += cons + "a";
+      }
+    } else {
+      res += ch;
+    }
+  }
+
+  return res.replace(/a\s+/g, " ").replace(/a$/g, "").trim();
 }
 
 // Registry of high-fidelity Neural / ElevenLabs studio Indian voice audio files
@@ -54,19 +142,19 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ENGLISH",
     language: "English",
-    keywords: ["crushed under heavy stone", "tearing", "cold sweat", "unbearable stabbing"],
+    keywords: ["crushed under heavy stone", "tearing", "cold sweat", "unbearable stabbing", "chest feels crushed"],
     url: "/audio/ramesh_english.mp3"
   },
   {
     id: "PRIYA_FEVER_ODIA",
     language: "Odia",
-    keywords: ["nia bhali tatichhi", "ଦେହ ସାରା ନିଆଁ", "ନିଆଁ ଭଳି"],
+    keywords: ["nia bhali tatichhi", "ଦେହ ସାରା ନିଆଁ", "ନିଆଁ ଭଳି", "ତାତିଛି", "ବିନ୍ଧୁଛି", "ଦାଗ", "tatichhi", "bindhuchhi", "fever", "priya"],
     url: "/audio/priya_fever.mp3"
   },
   {
     id: "LIPU_PEDIATRIC_ODIA",
     language: "Odia",
-    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop", "ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି"],
+    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop", "ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ପେଟଟା", "ବାନ୍ତି", "petata", "banti", "lipu", "bhisana"],
     url: "/audio/lipu_pediatric.mp3"
   },
   {
@@ -443,7 +531,13 @@ export function findBestMatchingVoice(voices, { language = "English", isFemalePr
 export function humanizeSpeechText(text, { age = 35, role = "patient" } = {}) {
   if (!text || typeof text !== "string") return "";
 
-  let cleaned = text.trim();
+  // Strip Markdown markers (bold, headers, bullets, backticks) so TTS does not read "asterisk asterisk"
+  let cleaned = text
+    .replace(/[*#_~`>]+/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // markdown links -> just label
+    .replace(/^[•\-–—]\s*/gm, "") // bullet points
+    .replace(/\s+/g, " ")
+    .trim();
 
   // If elderly or distressed patient, add gentle breath pauses at natural conjunctions
   if (age >= 60 || role === "patient") {
@@ -461,7 +555,7 @@ export function humanizeSpeechText(text, { age = 35, role = "patient" } = {}) {
   // Ensure sentence endings have a clean breath pause
   cleaned = cleaned.replace(/([.?!।])\s*/g, "$1 ");
 
-  return cleaned;
+  return cleaned.trim();
 }
 
 /**
@@ -539,10 +633,14 @@ export async function speakHumanVoice(text, {
           if (onEnd) onEnd();
         };
 
-        audio.onerror = () => {
-          console.warn("Studio audio file playback failed, falling back to browser speech synthesis...");
+        audio.onerror = (e) => {
+          console.warn("Studio audio file playback failed, clearing audio element...", e);
+          const cb = activeAudioOnEnd;
           activeAudioElementRef = null;
           activeAudioOnEnd = null;
+          if (cb) {
+            try { cb(); } catch (_) {}
+          }
         };
 
         await audio.play();
@@ -566,18 +664,31 @@ export async function speakHumanVoice(text, {
       isFemalePreferred: acoustics.isFemalePreferred
     });
 
-    // 6. Transliterate or Phonetically map Odia text if system lacks native Odia TTS engine
+    // 6. Transliterate or Phonetically map Indic text based on available voice engine capabilities
     let textToSpeak = text;
     const vLang = (matchedVoice?.lang || "").toLowerCase().replace("_", "-");
     const hasOdiaScript = /[\u0B00-\u0B7F]/.test(textToSpeak);
+    const hasDevanagariScript = /[\u0900-\u097F]/.test(textToSpeak);
     let effectiveTargetLang = targetLangLower;
 
-    if (hasOdiaScript && !vLang.startsWith("or")) {
-      // Browser voice is Hindi or Indian English: convert Odia glyphs to Devanagari phonemes
-      textToSpeak = convertOdiaToPhoneticDevanagari(textToSpeak);
-      if (!effectiveTargetLang.includes("english")) {
-        effectiveTargetLang = "hindi";
+    if (vLang.startsWith("or")) {
+      // Native Odia voice available: speak native Odia script
+      effectiveTargetLang = "odia";
+    } else if (vLang.startsWith("hi")) {
+      // Native Hindi voice available:
+      // If text is in Odia script, convert to Devanagari phonemes so Hindi TTS pronounces it clearly
+      if (hasOdiaScript) {
+        textToSpeak = convertOdiaToPhoneticDevanagari(textToSpeak);
       }
+      effectiveTargetLang = "hindi";
+    } else {
+      // Non-Indic or English-only voice (en-IN, en-US, etc.):
+      // English voices cannot pronounce Odia or Devanagari Unicode glyphs directly.
+      // Convert any Indic script into natural Latin phonetics so the English voice reads it aloud!
+      if (hasOdiaScript || hasDevanagariScript) {
+        textToSpeak = convertIndicToLatinPhonetic(textToSpeak);
+      }
+      effectiveTargetLang = "english";
     }
 
     // 7. Humanize text with breath pauses
@@ -590,13 +701,7 @@ export async function speakHumanVoice(text, {
     if (effectiveTargetLang.includes("hindi")) {
       utterance.lang = "hi-IN";
     } else if (effectiveTargetLang.includes("odia") || effectiveTargetLang.includes("oriya")) {
-      if (vLang.startsWith("or")) {
-        utterance.lang = "or-IN";
-      } else if (vLang.startsWith("hi")) {
-        utterance.lang = "hi-IN";
-      } else {
-        utterance.lang = "en-IN";
-      }
+      utterance.lang = vLang.startsWith("or") ? "or-IN" : "hi-IN";
     } else {
       utterance.lang = "en-IN"; // Explicit Indian English Accent
     }

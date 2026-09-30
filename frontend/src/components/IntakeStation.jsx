@@ -1762,7 +1762,13 @@ export default function IntakeStation({
                     <button
                       type="button"
                       onClick={() => handlePlaySpeech(
-                        symptoms.verbatim_local_statement || (patientInfo.language_preference === "Hindi" ? "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।" : "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"),
+                        symptoms.verbatim_local_statement || (
+                          patientInfo.language_preference === "Hindi"
+                            ? "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।"
+                            : patientInfo.language_preference === "English"
+                            ? "Doctor, I am experiencing severe pain and discomfort."
+                            : "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"
+                        ),
                         patientInfo.language_preference
                       )}
                       className={`text-xs px-3.5 py-2.5 rounded-xl font-bold flex items-center space-x-1.5 border transition shadow-xs cursor-pointer min-h-[44px] ${

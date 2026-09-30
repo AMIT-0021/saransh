@@ -27,7 +27,7 @@ let speechWatchdogTimer = null;
 const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ODIA",
-    keywords: ["chhatita", "pathara", "bhari", "darada", "kaneiki", "fatijiba", "ଛାତିଟା"],
+    keywords: ["chhatita", "pathara", "bhari", "darada", "kaneiki", "fatijiba", "ଛାତିଟା", "ଡାକ୍ତର", "ଛାତି", "ପଥର", "ନିଶ୍ୱାସ", "ଦରଦ", "୨ ଘଣ୍ଟା"],
     url: "/audio/ramesh_cardiac.mp3"
   },
   {

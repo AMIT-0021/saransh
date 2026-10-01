@@ -646,10 +646,71 @@ export async function speakHumanVoice(text, {
         await audio.play();
         return true;
       } catch (audioErr) {
-        console.warn("Audio element play error, proceeding to browser TTS:", audioErr);
+        console.warn("Studio audio file playback failed, proceeding to dynamic/browser TTS:", audioErr);
         activeAudioElementRef = null;
         activeAudioOnEnd = null;
       }
+    }
+
+    // 2.5 Dynamic Sarvam AI Bulbul v3 Indian Voice Generation (Level 2 Cloud Synthesis)
+    try {
+      const isIndicLang = targetLangLower.includes("odia") || targetLangLower.includes("oriya") || targetLangLower.includes("hindi");
+      const hasIndicUnicode = /[\u0B00-\u0B7F\u0900-\u097F]/.test(text);
+
+      if (isIndicLang || hasIndicUnicode) {
+        const targetLangCode = (targetLangLower.includes("odia") || /[\u0B00-\u0B7F]/.test(text)) ? "od-IN" : "hi-IN";
+        const speaker = (gender || "").toLowerCase().includes("female") ? "priya" : "shubh";
+        const baseUrl = (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000" : "";
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        const sarvamResp = await fetch(`${baseUrl}/api/v1/sarvam/tts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: text.slice(0, 400),
+            target_language_code: targetLangCode,
+            speaker: speaker,
+            pitch: 0.0,
+            pace: 0.88
+          })
+        });
+        clearTimeout(timeoutId);
+
+        if (sarvamResp.ok) {
+          const sarvamData = await sarvamResp.json();
+          if (sarvamData && sarvamData.audio_base64) {
+            const audioUri = `data:audio/wav;base64,${sarvamData.audio_base64}`;
+            const audio = new Audio(audioUri);
+            activeAudioElementRef = audio;
+            activeAudioOnEnd = onEnd;
+
+            audio.onplay = () => {
+              const acoustics = getVocalAcoustics({ age, gender, role, language });
+              if (onStart) onStart({ acoustics, isStudio: true, isSarvam: true });
+            };
+
+            audio.onended = () => {
+              activeAudioElementRef = null;
+              activeAudioOnEnd = null;
+              if (onEnd) onEnd();
+            };
+
+            audio.onerror = () => {
+              activeAudioElementRef = null;
+              activeAudioOnEnd = null;
+              if (onEnd) onEnd();
+            };
+
+            await audio.play();
+            return true;
+          }
+        }
+      }
+    } catch (sarvamErr) {
+      console.warn("Sarvam dynamic TTS unavailable, gracefully falling back to browser TTS:", sarvamErr);
     }
 
     // 3. Fetch available browser voices

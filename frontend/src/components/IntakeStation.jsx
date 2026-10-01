@@ -1244,27 +1244,30 @@ export default function IntakeStation({
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
               {/* Ramesh (Odia RED) */}
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[0])}
-                className="text-left p-3 sm:p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3.5 sm:p-4 rounded-2xl border border-rose-200/80 bg-white hover:border-rose-400 hover:bg-rose-50/40 hover:shadow-lg hover:shadow-rose-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
-                  <div className="font-bold text-xs text-rose-950 flex items-center justify-between">
-                    <span>⚡ Ramesh 62M</span>
-                    <span className="bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                      <span>Ramesh (62M)</span>
+                    </span>
+                    <span className="bg-gradient-to-r from-rose-600 to-rose-700 text-white text-[10px] px-2.5 py-0.5 rounded-full font-black shadow-xs">
                       🔴 RED
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-600 mt-1">
+                  <div className="text-[11px] text-slate-600 mt-1.5 font-medium leading-relaxed">
                     {t.quickFillRameshSub || "Odia Chest Pain & Hypoxia (SpO2 89%)"}
                   </div>
                 </div>
-                <div className="text-[10px] text-teal-700 font-bold pt-1 border-t border-rose-200/60 flex items-center justify-between">
+                <div className="text-[11px] text-teal-700 font-bold pt-2 border-t border-slate-100 flex items-center justify-between group-hover:text-teal-900">
                   <span>{t.quickFillBtn || "Click to Quick Fill"}</span>
-                  <span>➔</span>
+                  <span className="transition-transform group-hover:translate-x-1">➔</span>
                 </div>
               </button>
 
@@ -1272,22 +1275,25 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[1])}
-                className="text-left p-3 sm:p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3.5 sm:p-4 rounded-2xl border border-amber-200/80 bg-white hover:border-amber-400 hover:bg-amber-50/40 hover:shadow-lg hover:shadow-amber-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
-                  <div className="font-bold text-xs text-amber-950 flex items-center justify-between">
-                    <span>⚡ Priya 34F</span>
-                    <span className="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                      <span>Priya (34F)</span>
+                    </span>
+                    <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-black shadow-xs">
                       🟠 YELLOW
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-600 mt-1">
+                  <div className="text-[11px] text-slate-600 mt-1.5 font-medium leading-relaxed">
                     {t.quickFillPriyaSub || "Hindi High Fever (102.8°F) & Low Platelets"}
                   </div>
                 </div>
-                <div className="text-[10px] text-teal-700 font-bold pt-1 border-t border-amber-200/60 flex items-center justify-between">
+                <div className="text-[11px] text-teal-700 font-bold pt-2 border-t border-slate-100 flex items-center justify-between group-hover:text-teal-900">
                   <span>{t.quickFillBtn || "Click to Quick Fill"}</span>
-                  <span>➔</span>
+                  <span className="transition-transform group-hover:translate-x-1">➔</span>
                 </div>
               </button>
 
@@ -1295,22 +1301,25 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[2])}
-                className="text-left p-3 sm:p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:border-emerald-400 hover:bg-emerald-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3.5 sm:p-4 rounded-2xl border border-emerald-200/80 bg-white hover:border-emerald-400 hover:bg-emerald-50/40 hover:shadow-lg hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
-                  <div className="font-bold text-xs text-emerald-950 flex items-center justify-between">
-                    <span>⚡ Subhash 24M</span>
-                    <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Subhash (24M)</span>
+                    </span>
+                    <span className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[10px] px-2.5 py-0.5 rounded-full font-black shadow-xs">
                       🟢 GREEN
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-600 mt-1">
+                  <div className="text-[11px] text-slate-600 mt-1.5 font-medium leading-relaxed">
                     {t.quickFillSubhashSub || "English Tension Headache & Screen Fatigue"}
                   </div>
                 </div>
-                <div className="text-[10px] text-teal-700 font-bold pt-1 border-t border-emerald-200/60 flex items-center justify-between">
+                <div className="text-[11px] text-teal-700 font-bold pt-2 border-t border-slate-100 flex items-center justify-between group-hover:text-teal-900">
                   <span>{t.quickFillBtn || "Click to Quick Fill"}</span>
-                  <span>➔</span>
+                  <span className="transition-transform group-hover:translate-x-1">➔</span>
                 </div>
               </button>
 
@@ -1318,22 +1327,25 @@ export default function IntakeStation({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(SYNTHETIC_CASES[3])}
-                className="text-left p-3 sm:p-3.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:border-rose-400 hover:bg-rose-100/60 transition shadow-xs flex flex-col justify-between space-y-2 group cursor-pointer"
+                className="text-left p-3.5 sm:p-4 rounded-2xl border border-rose-200/80 bg-white hover:border-rose-400 hover:bg-rose-50/40 hover:shadow-lg hover:shadow-rose-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
-                  <div className="font-bold text-xs text-rose-950 flex items-center justify-between">
-                    <span>⚡ Meena 28F</span>
-                    <span className="bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                      <span>Meena (28F)</span>
+                    </span>
+                    <span className="bg-gradient-to-r from-rose-600 to-rose-700 text-white text-[10px] px-2.5 py-0.5 rounded-full font-black shadow-xs">
                       🔴 RED
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-600 mt-1">
+                  <div className="text-[11px] text-slate-600 mt-1.5 font-medium leading-relaxed">
                     {t.quickFillMeenaSub || "Maternal Pre-eclampsia (BP 168/110)"}
                   </div>
                 </div>
-                <div className="text-[10px] text-teal-700 font-bold pt-1 border-t border-rose-200/60 flex items-center justify-between">
+                <div className="text-[11px] text-teal-700 font-bold pt-2 border-t border-slate-100 flex items-center justify-between group-hover:text-teal-900">
                   <span>{t.quickFillBtn || "Click to Quick Fill"}</span>
-                  <span>➔</span>
+                  <span className="transition-transform group-hover:translate-x-1">➔</span>
                 </div>
               </button>
             </div>
@@ -2651,16 +2663,16 @@ export default function IntakeStation({
             <button
               type="submit"
               disabled={isAnalyzing}
-              className="min-h-[44px] w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 sm:px-8 py-3 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2.5 text-sm disabled:opacity-50 cursor-pointer"
+              className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white font-black tracking-wide px-7 sm:px-10 py-3 rounded-xl transition-all duration-300 shadow-xl shadow-teal-700/30 hover:shadow-2xl hover:shadow-teal-700/40 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2.5 text-sm sm:text-base disabled:opacity-50 cursor-pointer"
             >
               {isAnalyzing ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>{t.analyzingBtn}</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-teal-100 shrink-0" />
+                  <Sparkles className="w-5 h-5 text-teal-100 shrink-0" />
                   <span>{t.runAiTriageCta || "🧠 Run AI Triage Analysis ➔"}</span>
                 </>
               )}
@@ -2713,7 +2725,7 @@ export default function IntakeStation({
                 <button
                   type="button"
                   onClick={onGoToDoctorQueue}
-                  className="min-h-[44px] w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 sm:px-8 py-3 rounded-xl transition shadow-lg shadow-teal-700/25 flex items-center justify-center space-x-2 text-sm cursor-pointer"
+                  className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white font-black tracking-wide px-7 sm:px-10 py-3 rounded-xl transition-all duration-300 shadow-xl shadow-teal-700/30 hover:shadow-2xl hover:shadow-teal-700/40 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2.5 text-sm sm:text-base cursor-pointer"
                 >
                   <Send className="w-4 h-4 shrink-0" />
                   <span>{t.addToDoctorQueue || "📨 Add Patient to Doctor Queue"}</span>

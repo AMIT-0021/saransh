@@ -90,27 +90,27 @@ export default function DoctorDashboard({
   return (
     <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
       {/* 1. Hospital Resource & Capacity Bar (Apple Health Style Live Telemetry) */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm transition-all min-w-0 max-w-full overflow-hidden">
+      <div className="card-premium bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm shadow-slate-900/5 transition-all min-w-0 max-w-full overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-100 pb-3 sm:pb-4 min-w-0">
-          <div className="flex items-center space-x-3 min-w-0">
-            <div className="p-2 sm:p-2.5 rounded-xl bg-teal-50 text-teal-700 relative border border-teal-100 shrink-0">
-              <Activity className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+          <div className="flex items-center space-x-3.5 min-w-0">
+            <div className="p-2 sm:p-3 rounded-2xl bg-gradient-to-tr from-teal-700 to-teal-500 text-white relative shadow-md shadow-teal-700/25 shrink-0">
+              <Activity className="w-5 h-5 stroke-[2.5]" />
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border border-white"></span>
               </span>
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide truncate">
+                <h3 className="font-black text-xs sm:text-sm text-slate-900 uppercase tracking-wider truncate">
                   {t.telemetryTitle || "HOSPITAL TELEMETRY & CAPACITY"}
                 </h3>
-                <span className="bg-emerald-100 text-emerald-800 text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-200 shadow-2xs shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>LIVE</span>
+                <span className="bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-900 text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-300 shadow-2xs shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                  <span>LIVE SURGE MONITOR</span>
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-slate-500 truncate">
+              <p className="text-[11px] sm:text-xs text-slate-500 truncate font-medium">
                 {facilityStats.facility_name || "PHC Jatni"} ({facilityStats.facility_nin || "OD-KHD-PHC-102"}) • Sync: <strong className="font-mono text-slate-800">{facilityStats.last_updated || "Just now"}</strong>
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function DoctorDashboard({
           <div className="w-full sm:w-auto flex flex-wrap sm:flex-nowrap items-center gap-2">
             <button
               onClick={onRefreshQueue}
-              className="flex-1 sm:flex-none px-3 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition border border-slate-200 cursor-pointer shadow-2xs min-h-[38px] sm:min-h-[40px]"
+              className="flex-1 sm:flex-none px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1.5 transition border border-slate-200 cursor-pointer shadow-2xs hover:shadow-xs min-h-[38px] sm:min-h-[40px]"
               title="Force Real-Time Telemetry Refresh"
             >
               <RefreshCw className={`w-3.5 h-3.5 text-teal-700 shrink-0 ${isRefreshing ? "animate-spin" : ""}`} />
@@ -127,7 +127,7 @@ export default function DoctorDashboard({
             </button>
             <button
               onClick={() => setActiveModal("BAYS")}
-              className="flex-1 sm:flex-none px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 transition cursor-pointer shadow-2xs min-h-[38px] sm:min-h-[40px]"
+              className="flex-1 sm:flex-none px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1.5 transition cursor-pointer shadow-2xs hover:shadow-xs min-h-[38px] sm:min-h-[40px]"
             >
               <Bed className="w-3.5 h-3.5 shrink-0" />
               <span>View Bay Roster</span>

@@ -42,20 +42,20 @@ export default function HeaderBar({
   const [activeModalTab, setActiveModalTab] = useState("PRIVACY");
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-subtle transition-all">
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all">
       {/* 1. Non-Diagnostic Clinical Safety Strip */}
-      <div className="bg-amber-50/90 border-b border-amber-200/70 px-4 py-1.5 text-xs text-amber-900 flex items-center justify-between font-medium">
+      <div className="bg-amber-50/95 border-b border-amber-200/70 px-4 py-1.5 text-xs text-amber-900 flex items-center justify-between font-medium">
         <div className="flex items-center space-x-2 truncate">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
           <span className="truncate">
-            <strong className="font-semibold text-amber-950 uppercase tracking-wide mr-1.5">
+            <strong className="font-bold text-amber-950 uppercase tracking-wide mr-1.5">
               {t.safetyNoticeTitle || "CLINICAL ADVISORY TOOL ONLY:"}
             </strong>
             {t.headerSafetyDisclaimer || "Clinical Advisory Tool Only. Final decisions rest with qualified healthcare professionals."}
           </span>
         </div>
         <div className="hidden lg:flex items-center space-x-2 shrink-0 text-[11px] text-amber-800">
-          <span className="bg-white/80 border border-amber-300 text-amber-900 px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs">
+          <span className="bg-white/90 border border-amber-300 text-amber-900 px-2.5 py-0.5 rounded-full text-[10px] font-black shadow-2xs">
             {t.safetyBadge || "MAX(Rule, AI) Safety Floor"}
           </span>
         </div>
@@ -66,20 +66,21 @@ export default function HeaderBar({
         {/* Top Header Row */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           {/* Brand Logo & Subtitle */}
-          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 text-white shrink-0">
-              <Activity className="w-4 h-4 sm:w-6 sm:h-6 stroke-[2.5]" />
+          <div className="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-teal-800 via-teal-600 to-teal-500 flex items-center justify-center shadow-lg shadow-teal-700/25 ring-2 ring-teal-500/20 text-white shrink-0">
+              <Activity className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0">
-                <h1 className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate">
+              <div className="flex items-center space-x-2 min-w-0">
+                <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 truncate">
                   {t.appTitle || "Saransh"}
                 </h1>
-                <span className="text-[10px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md font-semibold tracking-wide border border-teal-200 hidden sm:inline-flex whitespace-nowrap">
+                <span className="text-[10px] bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-900 px-2.5 py-0.5 rounded-full font-bold tracking-wide border border-teal-200/90 shadow-2xs hidden sm:inline-flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   {t.edition || "National Healthcare Innovation Edition"}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 hidden xl:block truncate max-w-sm">
+              <p className="text-xs text-slate-500 hidden xl:block truncate max-w-md font-medium">
                 {t.appSubtitle || "Multimodal Human-in-the-Loop Healthcare Triage Assistant"}
               </p>
             </div>
@@ -308,21 +309,21 @@ export default function HeaderBar({
       <div className="bg-slate-50/95 backdrop-blur-md px-3 sm:px-4 py-2 border-t border-slate-200">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
           {/* Role Switcher Container */}
-          <div className="w-full lg:w-auto grid grid-cols-2 lg:inline-flex p-1 bg-slate-200/80 rounded-2xl border border-slate-200/90 shadow-inner gap-1">
+          <div className="w-full lg:w-auto grid grid-cols-2 lg:inline-flex p-1.5 bg-slate-200/70 backdrop-blur-md rounded-2xl border border-slate-300/80 shadow-inner gap-1.5">
             {/* Tab 1: Patient Intake Station */}
             <button
               type="button"
               onClick={() => onRoleChange("NURSE")}
-              className={`flex items-center justify-center space-x-2 py-2.5 px-3 sm:px-5 text-xs rounded-xl font-bold transition-all min-h-[44px] cursor-pointer ${
+              className={`flex items-center justify-center space-x-2 py-2.5 px-3.5 sm:px-6 text-xs rounded-xl font-extrabold transition-all duration-300 min-h-[44px] cursor-pointer ${
                 activeRole === "NURSE"
-                  ? "bg-teal-600 text-white shadow-md shadow-teal-700/25"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                  ? "bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 text-white shadow-lg shadow-teal-700/30 ring-1 ring-white/20"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/70"
               }`}
             >
               <ClipboardList className="w-4 h-4 shrink-0" />
               <span className="truncate">{t.tabIntake || "🩺 Patient Intake"}</span>
-              <span className={`hidden md:inline-flex text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                activeRole === "NURSE" ? "bg-teal-700/60 text-teal-100" : "bg-slate-300/60 text-slate-700"
+              <span className={`hidden md:inline-flex text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                activeRole === "NURSE" ? "bg-teal-800/80 text-teal-100" : "bg-slate-300/80 text-slate-700"
               }`}>
                 {t.frontlineNurseBadge || "ASHA"}
               </span>
@@ -332,21 +333,21 @@ export default function HeaderBar({
             <button
               type="button"
               onClick={() => onRoleChange("DOCTOR")}
-              className={`flex items-center justify-center space-x-2 py-2.5 px-3 sm:px-5 text-xs rounded-xl font-bold transition-all min-h-[44px] cursor-pointer ${
+              className={`flex items-center justify-center space-x-2 py-2.5 px-3.5 sm:px-6 text-xs rounded-xl font-extrabold transition-all duration-300 min-h-[44px] cursor-pointer ${
                 activeRole === "DOCTOR"
-                  ? "bg-teal-600 text-white shadow-md shadow-teal-700/25"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                  ? "bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 text-white shadow-lg shadow-teal-700/30 ring-1 ring-white/20"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/70"
               }`}
             >
               <Stethoscope className="w-4 h-4 shrink-0" />
               <span className="truncate">{t.tabDoctorQueue || "🏥 Doctor Queue"}</span>
-              <span className={`inline-flex items-center space-x-1 text-[10px] px-2 py-0.5 rounded-full font-black ${
+              <span className={`inline-flex items-center space-x-1.5 text-[10px] px-2.5 py-0.5 rounded-full font-black ${
                 activeRole === "DOCTOR"
                   ? "bg-white text-teal-900 shadow-xs"
-                  : "bg-teal-100 text-teal-800"
+                  : "bg-teal-100/90 text-teal-900"
               }`}>
                 {redCount > 0 && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
                 )}
                 <span>({totalWaiting})</span>
               </span>

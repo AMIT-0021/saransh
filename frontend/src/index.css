@@ -65,17 +65,80 @@
 
 /* Glassmorphism & Elevation */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 .glass-panel-dark {
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Ultra-Premium Card Surface with Subsurface Highlights */
+.card-premium {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 6px 18px -3px rgba(15, 23, 42, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-premium:hover {
+  border-color: rgba(20, 184, 166, 0.4);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.07), 0 12px 28px -4px rgba(20, 184, 166, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+/* Ambient MedTech Luminous Highlights */
+.luminous-teal {
+  box-shadow: 0 0 25px -3px rgba(13, 148, 136, 0.25);
+}
+
+.luminous-rose {
+  box-shadow: 0 0 30px -2px rgba(225, 29, 72, 0.35);
+}
+
+.luminous-amber {
+  box-shadow: 0 0 25px -3px rgba(245, 158, 11, 0.25);
+}
+
+/* Pulsing Radar Ring for Audio & Emergency Beacons */
+@keyframes radarPing {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-radar {
+  animation: radarPing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Shimmer metallic text for headers */
+.text-gradient-teal {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-emergency {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 60%, #9f1239 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Holographic Card Gradient for ABHA */

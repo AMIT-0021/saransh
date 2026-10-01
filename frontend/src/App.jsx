@@ -494,14 +494,23 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-100 selection:text-teal-900 w-full max-w-full">
-      {/* 🚨 FLOATING HIGH-CONTRAST EMERGENCY ESCALATION ALERT TOAST (TOP-RIGHT CORNER) */}
-      {emergencyNotification && (
-        <aside
-          aria-live="assertive"
-          role="alert"
-          className="fixed top-3 sm:top-5 inset-x-3 sm:inset-x-auto sm:right-5 z-50 sm:w-[460px] animate-slideInRight"
-        >
+    <div className="min-h-screen bg-slate-50/95 text-slate-900 flex flex-col font-sans selection:bg-teal-600 selection:text-white w-full max-w-full relative overflow-x-hidden">
+      {/* Ambient MedTech Luminous Backdrop */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 right-0 w-[28rem] h-[28rem] bg-cyan-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-1/3 w-[32rem] h-[32rem] bg-emerald-100/35 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#94a3b8_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.22]"></div>
+      </div>
+
+      <div className="relative z-10 flex flex-col flex-1 w-full max-w-full">
+        {/* 🚨 FLOATING HIGH-CONTRAST EMERGENCY ESCALATION ALERT TOAST (TOP-RIGHT CORNER) */}
+        {emergencyNotification && (
+          <aside
+            aria-live="assertive"
+            role="alert"
+            className="fixed top-3 sm:top-5 inset-x-3 sm:inset-x-auto sm:right-5 z-50 sm:w-[460px] animate-slideInRight"
+          >
           <div className="bg-rose-700/95 backdrop-blur-md text-white rounded-2xl p-4 shadow-2xl border-2 border-rose-300 ring-4 ring-rose-500/30 emergency-glow flex flex-col space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start space-x-3 min-w-0">
@@ -641,9 +650,10 @@ export default function App() {
       )}
 
       {/* 5. Minimalist Healthcare Footer */}
-      <footer className="border-t border-slate-200 bg-white text-slate-500 text-[11px] sm:text-xs py-3 sm:py-4 px-3 sm:px-6 text-center shadow-xs break-words w-full max-w-full">
+      <footer className="border-t border-slate-200/80 bg-white/80 backdrop-blur-md text-slate-500 text-[11px] sm:text-xs py-3 sm:py-4 px-3 sm:px-6 text-center shadow-xs break-words w-full max-w-full">
         Saransh (सारांश) — Multimodal Human-in-the-Loop Healthcare Triage Assistant | Government & Institutional Health Facilities Edition | Non-Diagnostic Clinical Decision Support
       </footer>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import IntakeStation from "./components/IntakeStation";
 import DoctorDashboard from "./components/DoctorDashboard";
 import ClinicianReviewModal from "./components/ClinicianReviewModal";
 import ReferralSlipModal from "./components/ReferralSlipModal";
+import VoiceStudioModal from "./components/VoiceStudioModal";
 import {
   getOfflinePendingCount,
   saveOfflineRecord,
@@ -117,6 +118,7 @@ export default function App() {
   const [selectedRecordForReferral, setSelectedRecordForReferral] = useState(null);
   const [backendError, setBackendError] = useState("");
   const [emergencyNotification, setEmergencyNotification] = useState(null);
+  const [isVoiceStudioOpen, setIsVoiceStudioOpen] = useState(false);
 
   // Hospital-grade Emergency Sound Tone
   const playEmergencyTone = () => {
@@ -587,8 +589,10 @@ export default function App() {
         pendingSyncCount={pendingSyncCount}
         onSyncOffline={handleSyncOffline}
         onResetDemo={handleResetDemo}
+        onOpenVoiceStudio={() => setIsVoiceStudioOpen(true)}
         redCount={queueData.red_count}
         yellowCount={queueData.yellow_count}
+        greenCount={queueData.green_count}
         totalWaiting={queueData.total_waiting}
         isSyncing={isSyncing}
       />
@@ -656,6 +660,12 @@ export default function App() {
           selectedLanguage={selectedLanguage}
         />
       )}
+
+      {/* 5. Sovereign Voice Studio Modal (Zero-Recording Acoustic Neural Training) */}
+      <VoiceStudioModal
+        isOpen={isVoiceStudioOpen}
+        onClose={() => setIsVoiceStudioOpen(false)}
+      />
 
       {/* 5. Minimalist Healthcare Footer */}
       <footer className="border-t border-slate-200/80 bg-white/80 backdrop-blur-md text-slate-500 text-[11px] sm:text-xs py-3 sm:py-4 px-3 sm:px-6 text-center shadow-xs break-words w-full max-w-full">

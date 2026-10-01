@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   Printer,
   X,
@@ -165,12 +165,23 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
   const [isPlayingHandover, setIsPlayingHandover] = useState(false);
 
-  // Keyboard shortcut: Escape to close & speech cleanup
+  // Keep a stable ref to onClose so effect cleanup only runs on actual modal unmount
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const handleClose = useCallback(() => {
+    stopHumanVoice();
+    setIsPlayingHandover(false);
+    if (onCloseRef.current) onCloseRef.current();
+  }, []);
+
+  // Keyboard shortcut: Escape to close & speech cleanup ONLY on component unmount
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        stopHumanVoice();
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -178,7 +189,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
       window.removeEventListener("keydown", handleKeyDown);
       stopHumanVoice();
     };
-  }, [onClose]);
+  }, [handleClose]);
 
   const handlePlayHandoverBriefing = () => {
     if (isPlayingHandover) {
@@ -189,12 +200,21 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
     stopHumanVoice();
     const clinicalReason = s.translated_english_statement || s.chief_complaint || "Acute emergency condition requiring apex transfer";
-    const script = `Official 108 Emergency Handover Briefing. Patient ${p.name_or_alias}, ${p.age} years old ${p.sex}. Originating facility: ${facInfo.name}. Destination apex center: ${facInfo.receivingFacility}. Referral priority: ${priority}. Departure vitals: SpO2 ${spo2} percent, Blood Pressure ${sysBp} over ${diaBp}, Pulse rate ${pulse} beats per minute. Clinical reason: ${clinicalReason}. Transport corridor: ${facInfo.referralCorridor}. Transfer authorized by Medical Officer.`;
+
+    // Adaptive handover briefing according to selected clinical language
+    let script = "";
+    if (selectedLanguage === "Hindi") {
+      script = `आधिकारिक 108 आपातकालीन हैंडओवर ब्रीफिंग। मरीज ${p.name_or_alias}, आयु ${p.age} वर्ष ${p.sex === "Female" ? "महिला" : "पुरुष"}। प्रस्थान सुविधा: ${facInfo.name}। गंतव्य एपेक्स केंद्र: ${facInfo.receivingFacility}। रेफरल प्राथमिकता: ${priority}। प्रस्थान वाइटल्स: SpO2 ${spo2} प्रतिशत, रक्तचाप ${sysBp} बटा ${diaBp}, पल्स रेट ${pulse} प्रति मिनट। क्लीनिकल कारण: ${clinicalReason}। परिवहन कॉरिडोर: ${facInfo.referralCorridor}। स्थानांतरण मेडिकल ऑफिसर द्वारा अधिकृत।`;
+    } else if (selectedLanguage === "Odia") {
+      script = `ଅଫିସିଆଲ୍ ୧୦୮ ଜରୁରୀକାଳୀନ ହସ୍ତାନ୍ତର ବ୍ରିଫିଙ୍ଗ୍। ରୋଗୀ ${p.name_or_alias}, ବୟସ ${p.age} ବର୍ଷ ${p.sex === "Female" ? "ମହିଳା" : "ପୁରୁଷ"}। ପ୍ରାରମ୍ଭିକ ଚିକିତ୍ସାଳୟ: ${facInfo.name}। ଲକ୍ଷ୍ୟସ୍ଥଳ ଶୀର୍ଷ କେନ୍ଦ୍ର: ${facInfo.receivingFacility}। ରେଫରାଲ୍ ପ୍ରାଥମିକତା: ${priority}। ଭାଇଟାଲ୍ସ: SpO2 ${spo2} ପ୍ରତିଶତ, ରକ୍ତଚାପ ${sysBp} ବାଇ ${diaBp}, ନାଡ଼ି ଗତି ${pulse} ପ୍ରତି ମିନିଟ୍। ଡାକ୍ତରୀ କାରଣ: ${clinicalReason}। ପରିବହନ କରିଡର: ${facInfo.referralCorridor}। ସ୍ଥାନାନ୍ତର ମେଡିକାଲ୍ ଅଫିସରଙ୍କ ଦ୍ୱାରା ଅନୁମୋଦିତ।`;
+    } else {
+      script = `Official 108 Emergency Handover Briefing. Patient ${p.name_or_alias}, ${p.age} years old ${p.sex}. Originating facility: ${facInfo.name}. Destination apex center: ${facInfo.receivingFacility}. Referral priority: ${priority}. Departure vitals: SpO2 ${spo2} percent, Blood Pressure ${sysBp} over ${diaBp}, Pulse rate ${pulse} beats per minute. Clinical reason: ${clinicalReason}. Transport corridor: ${facInfo.referralCorridor}. Transfer authorized by Medical Officer.`;
+    }
 
     setIsPlayingHandover(true);
     speakHumanVoice(script, {
       role: "doctor",
-      language: "English",
+      language: selectedLanguage || "English",
       age: 45,
       gender: "Male",
       onStart: () => setIsPlayingHandover(true),
@@ -223,12 +243,12 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     <div
       className="fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 md:py-6 animate-fadeIn"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) handleClose();
       }}
     >
       {/* Floating Global Quick-Close Button (Always visible on screen at top right) */}
       <button
-        onClick={onClose}
+        onClick={handleClose}
         aria-label="Close referral slip (Esc)"
         title="Close Referral Slip (Esc)"
         className="no-print fixed top-3 right-3 sm:top-5 sm:right-6 z-50 bg-slate-900/90 hover:bg-rose-600 text-white p-3 rounded-full shadow-2xl border border-slate-700 hover:border-rose-500 transition-all duration-200 hover:scale-105 cursor-pointer backdrop-blur-md flex items-center justify-center group"
@@ -285,7 +305,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
               <span className="sm:hidden">Print</span>
             </button>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               aria-label="Close referral slip modal"
               className="min-h-[40px] bg-slate-800 hover:bg-rose-600 text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1 transition border border-slate-700 hover:border-rose-500 cursor-pointer shadow-xs"
             >

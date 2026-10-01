@@ -18,12 +18,33 @@
 let cachedVoices = [];
 let voicesLoadedPromise = null;
 
-// Keep a global reference to prevent Chromium garbage collection bug during playback
+// Keep references to prevent Chromium garbage collection bug & 15s pause bug during playback
+const activeUtterances = new Set();
 let activeUtteranceRef = null;
 let activeUtteranceOnEnd = null;
 let activeAudioElementRef = null;
 let activeAudioOnEnd = null;
 let speechWatchdogTimer = null;
+let keepAliveHeartbeat = null;
+
+function startKeepAliveHeartbeat() {
+  stopKeepAliveHeartbeat();
+  keepAliveHeartbeat = setInterval(() => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        window.speechSynthesis.resume();
+      }
+    }
+  }, 10000); // 10-second pulse prevents Chromium 15s silent drop bug
+}
+
+function stopKeepAliveHeartbeat() {
+  if (keepAliveHeartbeat) {
+    clearInterval(keepAliveHeartbeat);
+    keepAliveHeartbeat = null;
+  }
+}
 
 /**
  * Phonetically maps Odia script to Devanagari for Hindi/Indian browser TTS voices.
@@ -789,6 +810,7 @@ export async function speakHumanVoice(text, {
     // 11. Event listeners with Chromium GC bug safeguard & Safe Watchdog
     activeUtteranceRef = utterance;
     activeUtteranceOnEnd = onEnd;
+    activeUtterances.add(utterance);
 
     const cleanupWatchdog = () => {
       if (speechWatchdogTimer) {
@@ -802,6 +824,8 @@ export async function speakHumanVoice(text, {
       if (hasEnded) return;
       hasEnded = true;
       cleanupWatchdog();
+      stopKeepAliveHeartbeat();
+      activeUtterances.delete(utterance);
       activeUtteranceRef = null;
       activeUtteranceOnEnd = null;
       if (onEnd) onEnd();
@@ -809,19 +833,20 @@ export async function speakHumanVoice(text, {
 
     utterance.onstart = () => {
       cleanupWatchdog();
+      startKeepAliveHeartbeat();
       
-      // Calculate realistic maximum speaking duration from word count
-      const words = (humanizedText || "").split(/\s+/).length;
-      const expectedDurationSec = Math.max(5, Math.ceil(words / 1.8));
+      // Calculate realistic maximum speaking duration from word count with safety margin
+      const words = (humanizedText || "").split(/\s+/).filter(Boolean).length;
+      const expectedDurationSec = Math.max(30, Math.ceil(words / 1.0) + 45);
       
-      // Watchdog timeout to prevent voice lock if browser fails to trigger onend
+      // Watchdog timeout to prevent voice lock ONLY if browser engine truly hangs
       speechWatchdogTimer = setTimeout(() => {
         if (activeUtteranceRef === utterance && window.speechSynthesis.speaking) {
           console.log("Speech watchdog timeout reached, safely ending speech.");
           stopHumanVoice();
           safeEnd();
         }
-      }, (expectedDurationSec + 8) * 1000);
+      }, expectedDurationSec * 1000);
 
       if (onStart) onStart({ acoustics, voice: matchedVoice });
     };
@@ -830,6 +855,8 @@ export async function speakHumanVoice(text, {
 
     utterance.onerror = (e) => {
       cleanupWatchdog();
+      stopKeepAliveHeartbeat();
+      activeUtterances.delete(utterance);
       activeUtteranceRef = null;
       activeUtteranceOnEnd = null;
       // Do not treat intentional cancel/interruption as fatal error
@@ -853,6 +880,8 @@ export async function speakHumanVoice(text, {
     return true;
   } catch (err) {
     console.warn("speakHumanVoice unhandled error:", err);
+    stopKeepAliveHeartbeat();
+    activeUtterances.clear();
     activeUtteranceRef = null;
     activeUtteranceOnEnd = null;
     if (onError) onError(err);
@@ -866,6 +895,9 @@ export async function speakHumanVoice(text, {
  * Safely clears watchdog timers and unsticks jammed browser speech queues.
  */
 export function stopHumanVoice() {
+  stopKeepAliveHeartbeat();
+  activeUtterances.clear();
+
   if (activeAudioElementRef) {
     try {
       activeAudioElementRef.pause();

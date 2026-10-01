@@ -437,6 +437,14 @@ export default function App() {
     }
   };
 
+  const handleCloseReferralSlip = useCallback(() => {
+    setSelectedRecordForReferral(null);
+  }, []);
+
+  const handleCloseReviewModal = useCallback(() => {
+    setSelectedRecordForReview(null);
+  }, []);
+
   // Submit Clinician Review & Override
   const handleSaveReview = async (reviewPayload) => {
     if (!selectedRecordForReview) return;
@@ -633,7 +641,7 @@ export default function App() {
       {selectedRecordForReview && (
         <ClinicianReviewModal
           record={selectedRecordForReview}
-          onClose={() => setSelectedRecordForReview(null)}
+          onClose={handleCloseReviewModal}
           onSaveReview={handleSaveReview}
           onOpenReferralSlip={handleOpenReferralSlip}
           selectedLanguage={selectedLanguage}
@@ -644,7 +652,7 @@ export default function App() {
       {selectedRecordForReferral && (
         <ReferralSlipModal
           record={selectedRecordForReferral}
-          onClose={() => setSelectedRecordForReferral(null)}
+          onClose={handleCloseReferralSlip}
           selectedLanguage={selectedLanguage}
         />
       )}

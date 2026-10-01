@@ -647,7 +647,7 @@ export const SAMPLE_REPORTS = [
 export const SAMPLE_AUDIO_SCRIPTS = {
   Odia: [
     {
-      label: "🔴 ଛାତିରେ ଭାରି ପଥର ଭଳି ଦରଦ ଓ ଝାଳ (Ramesh - 62M)",
+      label: "🔴 ଛାତିରେ ଭାରି ପଥର ଭଳି ଦରଦ ଓ ଝାଳ (Ramesh - 62Y Male)",
       age: 62,
       gender: "Male",
       text: "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
@@ -655,7 +655,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
-      label: "🟠 ୩ ଦିନ ହେଲା ଭୀଷଣ ଜ୍ୱର ଓ ବିନ୍ଧା (Priya - 34F)",
+      label: "🟠 ୩ ଦିନ ହେଲା ଭୀଷଣ ଜ୍ୱର ଓ ବିନ୍ଧା (Priya - 34Y Female)",
       age: 34,
       gender: "Female",
       text: "ଦିଦି, ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି। ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
@@ -663,7 +663,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red petechial rashes have appeared on my arms and legs, and I have zero strength to stand."
     },
     {
-      label: "🟡 ପିଲାଙ୍କ ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (Lipu - 7M Child)",
+      label: "🟡 ପିଲାଙ୍କ ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (Lipu - 7Y Male Child / ୭ ବର୍ଷର ଶିଶୁ)",
       age: 7,
       gender: "Male",
       text: "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
@@ -671,7 +671,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
     },
     {
-      label: "🟢 ସାମାନ୍ୟ ମୁଣ୍ଡବିନ୍ଧା ଓ ଥକାପଣ (Subhash - 24M)",
+      label: "🟢 ସାମାନ୍ୟ ମୁଣ୍ଡବିନ୍ଧା ଓ ଥକାପଣ (Subhash - 24Y Male)",
       age: 24,
       gender: "Male",
       text: "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
@@ -681,7 +681,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
   ],
   Hindi: [
     {
-      label: "🔴 सीने में भारी पत्थर जैसा दर्द और पसीना (Ramesh - 62M)",
+      label: "🔴 सीने में भारी पत्थर जैसा दर्द और पसीना (Ramesh - 62Y Male)",
       age: 62,
       gender: "Male",
       text: "डॉक्टर साहब, २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है और बहुत तेज चुभन महसूस हो रही है। सांस बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है। कृपया जल्दी देखें, लग रहा है सीना फट जाएगा।",
@@ -689,7 +689,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
-      label: "🟠 पूरा बदन भट्टी जैसा तप रहा है (Priya - 34F)",
+      label: "🟠 पूरा बदन भट्टी जैसा तप रहा है (Priya - 34Y Female)",
       age: 34,
       gender: "Female",
       text: "दीदी, ३ दिन से पूरा बदन भट्टी की तरह तप रहा है। सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं और चलने की बिल्कुल ताक़त नहीं बची है।",
@@ -697,7 +697,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
     },
     {
-      label: "🟡 बच्चे के पेट में तेज दर्द व उल्टी (Aarav - 8M Child)",
+      label: "🟡 बच्चे के पेट में तेज दर्द व उल्टी (Aarav - 8Y Male Child / ८ वर्ष का बालक)",
       age: 8,
       gender: "Male",
       text: "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
@@ -705,7 +705,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
     },
     {
-      label: "🟢 हल्की थकान व पढ़ाई से सिरदर्द (Subhash - 24M)",
+      label: "🟢 हल्की थकान व पढ़ाई से सिरदर्द (Subhash - 24Y Male)",
       age: 24,
       gender: "Male",
       text: "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
@@ -715,7 +715,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
   ],
   English: [
     {
-      label: "🔴 Sudden Crushing Chest Pain & Sweating (Ramesh - 62M)",
+      label: "🔴 Sudden Crushing Chest Pain & Sweating (Ramesh - 62Y Male)",
       age: 62,
       gender: "Male",
       text: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
@@ -723,7 +723,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     },
     {
-      label: "🟠 Burning High Fever & Body Ache (Priya - 34F)",
+      label: "🟠 Burning High Fever & Body Ache (Priya - 34Y Female)",
       age: 34,
       gender: "Female",
       text: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
@@ -731,7 +731,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
     },
     {
-      label: "🟡 Severe Tummy Pain & Vomiting (Aarav - 8M Child)",
+      label: "🟡 Severe Tummy Pain & Vomiting (Aarav - 8Y Male Child)",
       age: 8,
       gender: "Male",
       text: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
@@ -739,7 +739,7 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad."
     },
     {
-      label: "🟢 Mild Screen Fatigue & Study Headache (Subhash - 24M)",
+      label: "🟢 Mild Screen Fatigue & Study Headache (Subhash - 24Y Male)",
       age: 24,
       gender: "Male",
       text: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",

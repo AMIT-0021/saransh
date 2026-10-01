@@ -152,32 +152,87 @@ export function convertIndicToLatinPhonetic(str) {
   return res.replace(/a\s+/g, " ").replace(/a$/g, "").trim();
 }
 
-// Registry of high-fidelity Neural / ElevenLabs studio Indian voice audio files
+// Registry of high-fidelity Neural studio Indian voice audio files (Distinct non-overlapping keywords)
 const PRE_RENDERED_STUDIO_AUDIO = [
+  // --- ODIA PATIENT CASES ---
   {
     id: "RAMESH_ODIA",
     language: "Odia",
-    keywords: ["chhatita", "pathara", "bhari", "darada", "kaneiki", "fatijiba", "ଛାତିଟା", "ଡାକ୍ତର", "ଛାତି", "ପଥର", "ନିଶ୍ୱାସ", "ଦରଦ", "୨ ଘଣ୍ଟା"],
-    url: "/audio/ramesh_cardiac.mp3"
-  },
-  {
-    id: "RAMESH_ENGLISH",
-    language: "English",
-    keywords: ["crushed under heavy stone", "tearing", "cold sweat", "unbearable stabbing", "chest feels crushed"],
-    url: "/audio/ramesh_english.mp3"
+    keywords: ["ଛାତିଟା ପଥର", "ପଥର ଭଳି", "ଛାତି ଫାଟିଯିବା", "chhatita pathara", "pathara bhali", "୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା"],
+    url: "/audio/ramesh_cardiac_odia.wav"
   },
   {
     id: "PRIYA_FEVER_ODIA",
     language: "Odia",
-    keywords: ["nia bhali tatichhi", "ଦେହ ସାରା ନିଆଁ", "ନିଆଁ ଭଳି", "ତାତିଛି", "ବିନ୍ଧୁଛି", "ଦାଗ", "tatichhi", "bindhuchhi", "fever", "priya"],
-    url: "/audio/priya_fever.mp3"
+    keywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ଦେହ ସାରା ନିଆଁ", "ଲାଲ୍ ଦାଗ ବାହାରି", "nia bhali tatichhi", "୩ ଦିନ ହେଲା ଦେହ"],
+    url: "/audio/priya_fever_odia.wav"
   },
   {
     id: "LIPU_PEDIATRIC_ODIA",
     language: "Odia",
-    keywords: ["cannot breathe properly", "whistling", "wheezing", "coughing won't stop", "ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ପେଟଟା", "ବାନ୍ତି", "petata", "banti", "lipu", "bhisana"],
-    url: "/audio/lipu_pediatric.mp3"
+    keywords: ["ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ବାନ୍ତି ହେଲାଣି", "କିଛି ଖାଇ ହେଉନି", "petata bhisana", "banti helani", "ଖାଇ ହେଉନି"],
+    url: "/audio/lipu_pediatric_odia.wav"
   },
+  {
+    id: "SUBHASH_HEADACHE_ODIA",
+    language: "Odia",
+    keywords: ["ପାଠ ପଢ଼ିବା ପରେ", "ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି", "ଟିକେ ଥକା ଲାଗୁଛି", "patha padhiba pare", "mathata samanya"],
+    url: "/audio/subhash_headache_odia.wav"
+  },
+
+  // --- HINDI PATIENT CASES ---
+  {
+    id: "RAMESH_HINDI",
+    language: "Hindi",
+    keywords: ["सीने में भारी पत्थर", "पत्थर जैसा दर्द", "सीना फट जाएगा", "२ घंटे से सीने"],
+    url: "/audio/ramesh_cardiac_hindi.wav"
+  },
+  {
+    id: "PRIYA_FEVER_HINDI",
+    language: "Hindi",
+    keywords: ["भट्टी की तरह तप", "लाल चकत्ते निकल", "३ दिन से पूरा बदन", "आंखें भी नहीं खुल"],
+    url: "/audio/priya_fever_hindi.wav"
+  },
+  {
+    id: "AARAV_PEDIATRIC_HINDI",
+    language: "Hindi",
+    keywords: ["पेट में बहुत तेज दर्द", "दो बार उल्टी हो गई", "बहुत रोना आ रहा", "कुछ भी खाया नहीं जा रहा"],
+    url: "/audio/aarav_pediatric_hindi.wav"
+  },
+  {
+    id: "SUBHASH_HEADACHE_HINDI",
+    language: "Hindi",
+    keywords: ["स्क्रीन पर पढ़ाई करने के बाद", "माथे में हल्का-हल्का", "बस थोड़ी थकान", "कल देर रात तक"],
+    url: "/audio/subhash_headache_hindi.wav"
+  },
+
+  // --- ENGLISH PATIENT CASES ---
+  {
+    id: "RAMESH_ENGLISH",
+    language: "English",
+    keywords: ["crushed under heavy stone", "unbearable stabbing pain", "chest feels crushed", "chest is tearing"],
+    url: "/audio/ramesh_english.mp3"
+  },
+  {
+    id: "PRIYA_FEVER_ENGLISH",
+    language: "English",
+    keywords: ["entire body has been burning", "blinding i can't even open my eyes", "red spots have appeared", "zero strength to stand"],
+    url: "/audio/priya_fever_english.mp3"
+  },
+  {
+    id: "AARAV_PEDIATRIC_ENGLISH",
+    language: "English",
+    keywords: ["tummy hurts very badly", "threw up twice", "cannot eat anything", "hurts really bad"],
+    url: "/audio/aarav_pediatric_english.mp3"
+  },
+  {
+    id: "SUBHASH_HEADACHE_ENGLISH",
+    language: "English",
+    keywords: ["throbbing headache across my forehead", "long study hours", "mild screen fatigue", "just feeling tired"],
+    url: "/audio/subhash_headache_english.mp3"
+  },
+
+  // --- CLINICIAN / NURSE ADVISORY ---
   {
     id: "NURSE_ADVISORY",
     language: "English",
@@ -377,7 +432,7 @@ export function getVocalAcoustics({
 
   // 2. Patient Voice by Age Group & Strict Gender
   if (numericAge <= 12) {
-    // Child / Pediatric (e.g. Lipu 7M, Aarav 8M)
+    // Child / Pediatric (e.g. Lipu 7Y boy, Aarav 8Y boy)
     return {
       pitch: isFemale ? 1.42 : 1.25, // Expressive pediatric register (differentiated girl vs boy)
       rate: 0.94,
@@ -680,22 +735,38 @@ export async function speakHumanVoice(text, {
 
       if (isIndicLang || hasIndicUnicode) {
         const targetLangCode = (targetLangLower.includes("odia") || /[\u0B00-\u0B7F]/.test(text)) ? "od-IN" : "hi-IN";
-        const speaker = (gender || "").toLowerCase().includes("female") ? "priya" : "shubh";
+        const numericAge = parseInt(age, 10) || 35;
+        const isFemale = (gender || "").toLowerCase().includes("female") || (gender || "").toLowerCase().includes("f");
+        
+        let speaker = isFemale ? "priya" : "shubh";
+        let pace = 0.86;
+        let pitch = 0.0;
+
+        if (numericAge <= 12) {
+          speaker = "aayan";
+          pitch = 0.16;
+          pace = 0.88;
+        } else if (numericAge >= 55) {
+          speaker = isFemale ? "priya" : "ashutosh";
+          pitch = isFemale ? -0.04 : -0.08;
+          pace = 0.82;
+        }
+
         const baseUrl = (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000" : "";
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         const sarvamResp = await fetch(`${baseUrl}/api/v1/sarvam/tts`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
-            text: text.slice(0, 400),
+            text: text.slice(0, 450),
             target_language_code: targetLangCode,
             speaker: speaker,
-            pitch: 0.0,
-            pace: 0.88
+            pitch: pitch,
+            pace: pace
           })
         });
         clearTimeout(timeoutId);

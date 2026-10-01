@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import base64
 from typing import Optional, Dict, Any
@@ -27,17 +28,36 @@ def get_sarvam_headers() -> Dict[str, str]:
         "Content-Type": "application/json"
     }
 
+def enhance_clinical_prosody(text: str) -> str:
+    """
+    Inserts subtle prosody breath pauses (...) at clause boundaries and commas
+    so neural Indic TTS takes natural human breaths instead of reading monotonically.
+    """
+    if not text or not text.strip():
+        return text
+    # Avoid duplicate ellipses
+    enhanced = text.strip()
+    enhanced = re.sub(r'\.{2,}', '...', enhanced)
+    # Add breath pauses at major clinical conjunctions/breaks if not already punctuated
+    for marker in [", ", " - ", "—", "। ", "! "]:
+        if marker in enhanced and "..." not in enhanced:
+            enhanced = enhanced.replace(marker, "... ")
+            break
+    return enhanced
+
 def synthesize_sarvam_speech(
     text: str,
     target_language_code: str = "od-IN",
-    speaker: str = "shubh",
-    pitch: float = 0.0,
-    pace: float = 0.90,
-    loudness: float = 1.2
+    speaker: str = "ashutosh",
+    pitch: float = -0.05,
+    pace: float = 0.85,
+    loudness: float = 1.25,
+    sample_rate: int = 24000
 ) -> Optional[str]:
     """
-    Synthesizes speech using Sarvam AI Bulbul v3.
-    Returns base64 encoded audio string (WAV/MP3) or None on failure.
+    Synthesizes speech using Sarvam AI Bulbul v3 with 24,000 Hz broadcast fidelity
+    and natural human prosody breath pauses.
+    Returns base64 encoded audio string (WAV) or None on failure.
     """
     if not is_sarvam_configured():
         return None
@@ -56,14 +76,17 @@ def synthesize_sarvam_speech(
     }
     norm_lang = lang_map.get(target_language_code.lower(), target_language_code)
 
+    # Apply emotional/human breath pauses
+    processed_text = enhance_clinical_prosody(text)
+
     payload = {
-        "inputs": [text.strip()],
+        "inputs": [processed_text],
         "target_language_code": norm_lang,
         "speaker": speaker,
         "pitch": pitch,
         "pace": pace,
         "loudness": loudness,
-        "speech_sample_rate": 22050,
+        "speech_sample_rate": sample_rate,
         "enable_preprocessing": True,
         "model": "bulbul:v3"
     }

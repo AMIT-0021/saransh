@@ -177,17 +177,22 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     if (onCloseRef.current) onCloseRef.current();
   }, []);
 
-  // Keyboard shortcut: Escape to close & speech cleanup ONLY on component unmount
+  // Keyboard shortcuts: Escape to close, Ctrl+P to print
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         handleClose();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === "p" || e.key === "P")) {
+        e.preventDefault();
+        handlePrint();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       stopHumanVoice();
+      const existingFrame = document.getElementById("nhm-print-iframe");
+      if (existingFrame) existingFrame.remove();
     };
   }, [handleClose]);
 
@@ -223,9 +228,115 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     });
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  // Robust isolated print mechanism: avoids modal clipping, zero-height calculations, and blank pages in Chrome/Edge
+  const handlePrint = useCallback(() => {
+    const printContent = document.getElementById("printable-referral-slip");
+    if (!printContent) {
+      window.print();
+      return;
+    }
+
+    try {
+      let printFrame = document.getElementById("nhm-print-iframe");
+      if (printFrame) {
+        printFrame.remove();
+      }
+
+      printFrame = document.createElement("iframe");
+      printFrame.id = "nhm-print-iframe";
+      printFrame.setAttribute("aria-hidden", "true");
+      printFrame.style.position = "fixed";
+      printFrame.style.top = "-9999px";
+      printFrame.style.left = "-9999px";
+      printFrame.style.width = "1024px";
+      printFrame.style.height = "1000px";
+      printFrame.style.border = "0";
+      printFrame.style.opacity = "0";
+      printFrame.style.pointerEvents = "none";
+      document.body.appendChild(printFrame);
+
+      const frameDoc = printFrame.contentWindow.document;
+      frameDoc.open();
+
+      // Collect all stylesheets and inline styles from the host document
+      let styles = "";
+      document.querySelectorAll('link[rel="stylesheet"], style').forEach((node) => {
+        styles += node.outerHTML;
+      });
+
+      // Clone content and remove internal style tag to avoid conflicting nested rules
+      const contentClone = printContent.cloneNode(true);
+      contentClone.querySelectorAll("style").forEach((s) => s.remove());
+
+      frameDoc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NHM Referral Slip - REF-${tokenNumber}-2026-OD-NHM</title>
+  ${styles}
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    html, body {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+    }
+    .no-print {
+      display: none !important;
+    }
+    #printable-referral-slip {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: visible !important;
+      max-height: none !important;
+      padding: 4px !important;
+      margin: 0 !important;
+    }
+    .break-inside-avoid, section, table, tr {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-900 p-2 font-sans">
+  <div id="printable-referral-slip" class="space-y-4 font-sans text-slate-900">
+    ${contentClone.innerHTML}
+  </div>
+</body>
+</html>`);
+      frameDoc.close();
+
+      setTimeout(() => {
+        try {
+          printFrame.contentWindow.focus();
+          printFrame.contentWindow.print();
+        } catch (e) {
+          console.warn("Iframe print invocation error, falling back to window.print()", e);
+          window.print();
+        }
+      }, 350);
+    } catch (err) {
+      console.warn("Print frame generation failed, fallback to native window.print()", err);
+      window.print();
+    }
+  }, [tokenNumber]);
 
   const currentDate = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -241,12 +352,12 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 md:py-6 animate-fadeIn"
+      className="referral-modal-overlay fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 md:py-6 animate-fadeIn"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300 overflow-hidden text-slate-800 my-0 sm:my-4 relative max-h-[92vh] sm:max-h-[90vh] flex flex-col">
+      <div className="referral-modal-card bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300 overflow-hidden text-slate-800 my-0 sm:my-4 relative max-h-[92vh] sm:max-h-[90vh] flex flex-col">
         {/* Mobile Pull Handle */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2 sm:hidden shrink-0" />
 
@@ -308,26 +419,72 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
 
         {/* Printable Document Container (Scrollable) */}
         <div id="printable-referral-slip" className="overflow-y-auto flex-1 p-4 sm:p-10 space-y-5 bg-white print:p-0 print:space-y-3 font-sans">
-          {/* Print CSS Styles */}
+          {/* Print CSS Styles (Ensures native direct print is never blank) */}
           <style dangerouslySetInnerHTML={{
             __html: `
               @media print {
+                @page {
+                  size: A4 portrait;
+                  margin: 8mm 10mm;
+                }
+                html, body {
+                  overflow: visible !important;
+                  height: auto !important;
+                  min-height: auto !important;
+                  background: #ffffff !important;
+                  color: #000000 !important;
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                }
                 body * {
                   visibility: hidden;
                 }
-                #printable-referral-slip, #printable-referral-slip * {
-                  visibility: visible;
+                .referral-modal-overlay,
+                .referral-modal-card,
+                #printable-referral-slip,
+                #printable-referral-slip * {
+                  visibility: visible !important;
+                }
+                .referral-modal-overlay {
+                  position: static !important;
+                  inset: auto !important;
+                  display: block !important;
+                  width: 100% !important;
+                  height: auto !important;
+                  max-height: none !important;
+                  overflow: visible !important;
+                  background: transparent !important;
+                  backdrop-filter: none !important;
+                  padding: 0 !important;
+                  margin: 0 !important;
+                  z-index: auto !important;
+                }
+                .referral-modal-card {
+                  position: static !important;
+                  display: block !important;
+                  width: 100% !important;
+                  max-width: 100% !important;
+                  height: auto !important;
+                  max-height: none !important;
+                  overflow: visible !important;
+                  border: none !important;
+                  box-shadow: none !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  border-radius: 0 !important;
                 }
                 #printable-referral-slip {
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  width: 100%;
-                  margin: 0;
-                  padding: 16px !important;
-                  background: white !important;
-                  color: black !important;
-                  font-size: 10.5pt;
+                  position: static !important;
+                  display: block !important;
+                  width: 100% !important;
+                  height: auto !important;
+                  max-height: none !important;
+                  overflow: visible !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  background: #ffffff !important;
+                  color: #000000 !important;
+                  font-size: 10pt;
                 }
                 .no-print {
                   display: none !important;

@@ -238,25 +238,85 @@
   background: #94a3b8;
 }
 
-/* Print styles for referral slip */
+/* Standardized NHM Clinical Referral Slip Print Rules */
 @media print {
-  body * {
-    visibility: hidden;
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm 8mm 10mm;
   }
-  #printable-referral-slip, #printable-referral-slip * {
-    visibility: visible;
+
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+
+  /* CRITICAL: Hide main application UI completely so it consumes ZERO vertical space on print page */
+  body.has-referral-slip-open #root {
+    display: none !important;
+  }
+
+  body.has-referral-slip-open {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    width: 100% !important;
+  }
+
+  #referral-slip-portal,
+  .referral-modal-overlay {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  .referral-modal-card {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
   #printable-referral-slip {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 24px;
-    box-shadow: none;
-    border: 1px solid #000;
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
   }
+
   .no-print {
     display: none !important;
+  }
+
+  .break-inside-avoid, section, table, tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }

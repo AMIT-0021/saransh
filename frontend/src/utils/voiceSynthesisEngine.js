@@ -179,6 +179,12 @@ const PRE_RENDERED_STUDIO_AUDIO = [
     keywords: ["ପାଠ ପଢ଼ିବା ପରେ", "ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି", "ଟିକେ ଥକା ଲାଗୁଛି", "patha padhiba pare", "mathata samanya"],
     url: "/audio/subhash_headache_odia.wav"
   },
+  {
+    id: "MEENA_MATERNAL_ODIA",
+    language: "Odia",
+    keywords: ["ମାଉସୀ", "ମୋତେ ୮ ମାସ", "ଚପଲ ପଶୁନି", "ମୁଣ୍ଡଟା କାଠ ଭଳିଆ", "ଖୁବ୍ ବିନ୍ଧୁଛି", "ଆଖିକୁ ଝାପ୍ସା", "ଗୋଡ଼ ଦୁଇଟା ଫୁଲି", "mausi", "chapala pasuni"],
+    url: "/audio/meena_maternal_odia.wav"
+  },
 
   // --- HINDI PATIENT CASES ---
   {
@@ -205,6 +211,12 @@ const PRE_RENDERED_STUDIO_AUDIO = [
     keywords: ["स्क्रीन पर पढ़ाई करने के बाद", "माथे में हल्का-हल्का", "बस थोड़ी थकान", "कल देर रात तक"],
     url: "/audio/subhash_headache_hindi.wav"
   },
+  {
+    id: "MEENA_MATERNAL_HINDI",
+    language: "Hindi",
+    keywords: ["८ महीने का गर्भ", "नर्स दीदी, मुझे ८", "चप्पल नहीं आ रही", "सिर बहुत तेज फटने", "धुंधलापन आ रहा है", "दोनों पैर इतने सूज गए", "मुझे ८ महीने का"],
+    url: "/audio/meena_maternal_hindi.wav"
+  },
 
   // --- ENGLISH PATIENT CASES ---
   {
@@ -230,6 +242,12 @@ const PRE_RENDERED_STUDIO_AUDIO = [
     language: "English",
     keywords: ["throbbing headache across my forehead", "long study hours", "mild screen fatigue", "just feeling tired"],
     url: "/audio/subhash_headache_english.mp3"
+  },
+  {
+    id: "MEENA_MATERNAL_ENGLISH",
+    language: "English",
+    keywords: ["8 months pregnant", "slippers won't fit", "blurred vision", "feet are so swollen", "maternal pre-eclampsia"],
+    url: "/audio/meena_maternal_english.mp3"
   },
 
   // --- CLINICIAN / NURSE ADVISORY ---

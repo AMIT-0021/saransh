@@ -141,6 +141,73 @@ export const SYNTHETIC_CASES = [
     }
   },
   {
+    id: "AARAV_PEDIATRIC_YELLOW",
+    badgeLabel: "🟠 Aarav S. (8M) — Hindi / Odia Pediatric Acute Abdomen & Vomiting",
+    priorityHint: "YELLOW",
+    patient_basic_info: {
+      patient_id: "PED-1028",
+      token_number: "T-028",
+      name_or_alias: "Aarav S. (Synthetic)",
+      age: 8,
+      sex: "Male",
+      location_state: "Odisha - Khordha (CHC Tangi Pediatric Bay - NIN: OD-KHD-CHC-204)",
+      facility_type: "CHC_TANGI",
+      language_preference: "Hindi",
+      consent_given: true,
+      unconscious_bypass: false,
+      emergency_contact: "+91-9876543218",
+      abha_id: "91-3319-4482-7701"
+    },
+    symptoms_and_complaints: {
+      chief_complaint: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much.",
+      selected_symptoms: ["Severe Abdominal Pain", "Vomiting", "Fever"],
+      duration: "12 hours",
+      onset_trend: "Worsening colicky pain",
+      severity_self_reported: "Moderate (6/10)",
+      associated_symptoms: ["Right lower quadrant guarding", "Inability to keep liquids down"],
+      previous_similar_episodes: "None",
+      verbatim_local_statement: "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
+      phonetic_transliteration: "Didi, pet mein bahut tez dard ho raha hai. Subah se do baar ulti ho gayi aur kuch bhi khaya nahi ja raha, bahut rona aa raha hai.",
+      translated_english_statement: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
+    },
+    vital_signs: {
+      temperature_f: 100.4,
+      spo2_percent: 98,
+      heart_rate_bpm: 112,
+      bp_systolic: 102,
+      bp_diastolic: 66,
+      respiratory_rate_min: 24,
+      blood_glucose_mg_dl: 98,
+      weight_kg: 24
+    },
+    medical_history: {
+      existing_conditions: ["Fully immunized for age"],
+      previous_surgeries: [],
+      previous_hospitalizations: [],
+      current_medications: ["Oral rehydration solution SOS"],
+      known_allergies: []
+    },
+    uploaded_reports: [
+      {
+        report_type: "Complete_Blood_Count_CBC",
+        file_name: "pediatric_cbc.jpg",
+        ocr_extracted_text: "Hemoglobin: 12.1 g/dL, TLC (WBC): 12,800 /cumm (Mild Leukocytosis with Neutrophilia 78%), Platelets: 2,40,000 /cumm, Urine Routine: Normal",
+        key_findings: ["Mild Leukocytosis (WBC 12,800 /cumm)", "Neutrophilia 78% suggestive of acute inflammatory response", "Suspected acute mesenteric lymphadenitis vs early appendicitis"]
+      }
+    ],
+    visual_inputs: [],
+    red_flag_checklist: {
+      severe_chest_pain: false,
+      severe_breathing_difficulty: false,
+      very_low_oxygen_spo2: false,
+      loss_of_consciousness: false,
+      severe_bleeding: false,
+      seizure: false,
+      sudden_weakness_paralysis: false,
+      severe_allergic_reaction: false
+    }
+  },
+  {
     id: "SUBHASH_HEADACHE_GREEN",
     badgeLabel: "🟢 Subhash P. (24M) — English Mild Screen Fatigue & Tension Headache",
     priorityHint: "GREEN",
@@ -663,8 +730,8 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red petechial rashes have appeared on my arms and legs, and I have zero strength to stand."
     },
     {
-      label: "🟡 ପିଲାଙ୍କ ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (Lipu - 7Y Male Child / ୭ ବର୍ଷର ଶିଶୁ)",
-      age: 7,
+      label: "🟡 ପିଲାଙ୍କ ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (Aarav - 8Y Male Child / ୮ ବର୍ଷର ଶିଶୁ ଆରଭ)",
+      age: 8,
       gender: "Male",
       text: "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
       phonetic: "Didi, petata bhisana bindhuchhi. Sakalu 2 thara banti helani au kichhi khai heuni, bahut kasta heuchhi.",
@@ -677,6 +744,14 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       text: "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
       phonetic: "Namaskar didi, gatakali raatire aneka samaya dhari patha padhiba pare mathata samanya bindhuchhi. Jwara ki banti kichhi naahi, kebala tike thaka laguchhi.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    {
+      label: "🔴 ଗର୍ଭାବସ୍ଥା ୮ ମାସ ମୁଣ୍ଡବିନ୍ଧା ଓ ଗୋଡ଼ଫୁଲା (Meena - 28Y Female Maternal / ମୀନା)",
+      age: 28,
+      gender: "Female",
+      text: "ମାଉସୀ, ମୋତେ ୮ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି, ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି ଆଉ ଗୋଡ଼ ଦୁଇଟା ଫୁଲି ଯାଇ ଚପଲ ପଶୁନି।",
+      phonetic: "Mausi, mote 8 masa chalichhi. Gatakali sanjaru mundata katha bhalia khub bindhuchhi, aakhiku jhapsa disuchhi au goda duita fuli jai chapala pasuni.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
     }
   ],
   Hindi: [
@@ -711,6 +786,14 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       text: "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
       phonetic: "Namaste didi, kal der raat tak screen par padhai karne ke baad se maathe mein halka-halka dard hai. Koi bukhar ya ulti nahi hai, bas thodi thakan mehsoos ho rahi hai.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    {
+      label: "🔴 गर्भावस्था ८ माह सिरदर्द व पैरों में सूजन (Meena - 28Y Female Maternal / मीना)",
+      age: 28,
+      gender: "Female",
+      text: "नर्स दीदी, मुझे ८ महीने का गर्भ है। कल शाम से सिर बहुत तेज फटने जैसा दर्द कर रहा है, आंखों के आगे धुंधलापन आ रहा है और दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही।",
+      phonetic: "Nurse didi, mujhe 8 mahine ka garbh hai. Kal shaam se सिर bahut tez phatne jaisa dard kar raha hai, aankhon ke aage dhundhlapan aa raha hai aur dono pair itne sooj gaye hain ki chappal nahi aa rahi.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
     }
   ],
   English: [
@@ -745,6 +828,14 @@ export const SAMPLE_AUDIO_SCRIPTS = {
       text: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       phonetic: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    {
+      label: "🔴 Maternal 34w Pre-eclampsia & Swelling (Meena - 28Y Female Maternal)",
+      age: 28,
+      gender: "Female",
+      text: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
+      phonetic: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
     }
   ]
 };

@@ -121,6 +121,25 @@ const CANONICAL_CLINICAL_CASES = [
       phonetic: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
     }
+  },
+  {
+    key: "MATERNAL_MEENA",
+    keywords: ["ମାଉସୀ", "ଗର୍ଭ", "ଝାପ୍ସା", "ଫୁଲି", "ଚପଲ", "चप्पल", "सूज", "धुंधलापन", "महीने का गर्भ", "pregnant", "swollen", "pre-eclampsia", "slippers", "vision"],
+    Odia: {
+      verbatim: "ମାଉସୀ, ମୋତେ ୮ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି, ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି ଆଉ ଗୋଡ଼ ଦୁଇଟା ଫୁଲି ଯାଇ ଚପଲ ପଶୁନି।",
+      phonetic: "Mausi, mote 8 masa chalichhi. Gatakali sanjaru mundata katha bhalia khub bindhuchhi, aakhiku jhapsa disuchhi au goda duita fuli jai chapala pasuni.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    },
+    Hindi: {
+      verbatim: "नर्स दीदी, मुझे ८ महीने का गर्भ है। कल शाम से सिर बहुत तेज फटने जैसा दर्द कर रहा है, आंखों के आगे धुंधलापन आ रहा है और दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही।",
+      phonetic: "Nurse didi, mujhe 8 mahine ka garbh hai. Kal shaam se sir bahut tez phatne jaisa dard kar raha hai, aankhon ke aage dhundhlapan aa raha hai aur dono pair itne sooj gaye hain ki chappal nahi aa rahi.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    },
+    English: {
+      verbatim: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
+      phonetic: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    }
   }
 ];
 
@@ -1244,11 +1263,11 @@ export default function IntakeStation({
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-3.5">
               {/* Ramesh (Odia RED) */}
               <button
                 type="button"
-                onClick={() => handleLoadPreset(SYNTHETIC_CASES[0])}
+                onClick={() => handleLoadPreset(SYNTHETIC_CASES.find(c => c.id === "RAMESH_CARDIAC_RED") || SYNTHETIC_CASES[0])}
                 className="text-left p-3.5 sm:p-4 rounded-2xl border border-rose-200/80 bg-white hover:border-rose-400 hover:bg-rose-50/40 hover:shadow-lg hover:shadow-rose-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
@@ -1274,7 +1293,7 @@ export default function IntakeStation({
               {/* Priya (Hindi YELLOW) */}
               <button
                 type="button"
-                onClick={() => handleLoadPreset(SYNTHETIC_CASES[1])}
+                onClick={() => handleLoadPreset(SYNTHETIC_CASES.find(c => c.id === "PRIYA_FEVER_YELLOW") || SYNTHETIC_CASES[1])}
                 className="text-left p-3.5 sm:p-4 rounded-2xl border border-amber-200/80 bg-white hover:border-amber-400 hover:bg-amber-50/40 hover:shadow-lg hover:shadow-amber-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
@@ -1297,10 +1316,36 @@ export default function IntakeStation({
                 </div>
               </button>
 
+              {/* Aarav (Pediatric 8M Child YELLOW) */}
+              <button
+                type="button"
+                onClick={() => handleLoadPreset(SYNTHETIC_CASES.find(c => c.id === "AARAV_PEDIATRIC_YELLOW") || SYNTHETIC_CASES[2])}
+                className="text-left p-3.5 sm:p-4 rounded-2xl border border-amber-200/80 bg-white hover:border-amber-400 hover:bg-amber-50/40 hover:shadow-lg hover:shadow-amber-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
+              >
+                <div>
+                  <div className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                      <span>Aarav (8M Child)</span>
+                    </span>
+                    <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-black shadow-xs">
+                      🟠 YELLOW
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-600 mt-1.5 font-medium leading-relaxed">
+                    {t.quickFillAaravSub || "Pediatric Acute Abdomen & Vomiting"}
+                  </div>
+                </div>
+                <div className="text-[11px] text-teal-700 font-bold pt-2 border-t border-slate-100 flex items-center justify-between group-hover:text-teal-900">
+                  <span>{t.quickFillBtn || "Click to Quick Fill"}</span>
+                  <span className="transition-transform group-hover:translate-x-1">➔</span>
+                </div>
+              </button>
+
               {/* Subhash (Eng GREEN) */}
               <button
                 type="button"
-                onClick={() => handleLoadPreset(SYNTHETIC_CASES[2])}
+                onClick={() => handleLoadPreset(SYNTHETIC_CASES.find(c => c.id === "SUBHASH_HEADACHE_GREEN") || SYNTHETIC_CASES[3])}
                 className="text-left p-3.5 sm:p-4 rounded-2xl border border-emerald-200/80 bg-white hover:border-emerald-400 hover:bg-emerald-50/40 hover:shadow-lg hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>
@@ -1326,7 +1371,7 @@ export default function IntakeStation({
               {/* Meena (Odia Maternal RED) */}
               <button
                 type="button"
-                onClick={() => handleLoadPreset(SYNTHETIC_CASES[3])}
+                onClick={() => handleLoadPreset(SYNTHETIC_CASES.find(c => c.id === "MEENA_MATERNAL_RED") || SYNTHETIC_CASES[4])}
                 className="text-left p-3.5 sm:p-4 rounded-2xl border border-rose-200/80 bg-white hover:border-rose-400 hover:bg-rose-50/40 hover:shadow-lg hover:shadow-rose-900/5 transition-all duration-300 flex flex-col justify-between space-y-2.5 group cursor-pointer hover:-translate-y-0.5"
               >
                 <div>

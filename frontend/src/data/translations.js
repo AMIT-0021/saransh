@@ -53,6 +53,7 @@ export const TRANSLATIONS = {
     quickFillRameshSub: "Odia Chest Pain & Hypoxia (SpO2 89%)",
     quickFillPriyaSub: "Hindi High Fever (102.8°F) & Low Platelets",
     quickFillSubhashSub: "English Tension Headache & Screen Fatigue",
+    quickFillAaravSub: "Pediatric Acute Abdomen & Vomiting (8Y Male)",
     quickFillMeenaSub: "Maternal Pre-eclampsia (BP 168/110)",
 
     // Connectivity
@@ -291,6 +292,7 @@ export const TRANSLATIONS = {
     quickFillRameshSub: "सीने में दर्द एवं हाइपोक्सिया (SpO2 89%)",
     quickFillPriyaSub: "तेज बुखार (102.8°F) एवं कम प्लेटलेट्स",
     quickFillSubhashSub: "हल्का सिरदर्द एवं तनाव/थकान",
+    quickFillAaravSub: "बालक के पेट में तेज दर्द व उल्टी (८ वर्ष)",
     quickFillMeenaSub: "गर्भावस्था प्री-एक्लेम्पसिया (BP 168/110)",
 
     // Connectivity
@@ -529,6 +531,7 @@ export const TRANSLATIONS = {
     quickFillRameshSub: "ଛାତି ଦରଦ ଓ ହାଇପୋକ୍ସିଆ (SpO2 89%)",
     quickFillPriyaSub: "ତୀବ୍ର ଜ୍ୱର (102.8°F) ଓ କମ୍ ପ୍ଲେଟଲେଟ୍ସ",
     quickFillSubhashSub: "ସାମାନ୍ୟ ମୁଣ୍ଡବିନ୍ଧା ଓ ଥକାପଣ",
+    quickFillAaravSub: "ପିଲାଙ୍କ ତୀବ୍ର ପେଟବିନ୍ଧା ଓ ବାନ୍ତି (୮ ବର୍ଷ)",
     quickFillMeenaSub: "୮ ମାସ ଗର୍ଭବତୀ ପ୍ରି-ଏକ୍ଲାମ୍ପସିଆ (BP 168/110)",
 
     // Connectivity

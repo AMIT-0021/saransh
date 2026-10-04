@@ -246,16 +246,6 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      {/* Floating Global Quick-Close Button (Always visible on screen at top right) */}
-      <button
-        onClick={handleClose}
-        aria-label="Close referral slip (Esc)"
-        title="Close Referral Slip (Esc)"
-        className="no-print fixed top-3 right-3 sm:top-5 sm:right-6 z-50 bg-slate-900/90 hover:bg-rose-600 text-white p-3 rounded-full shadow-2xl border border-slate-700 hover:border-rose-500 transition-all duration-200 hover:scale-105 cursor-pointer backdrop-blur-md flex items-center justify-center group"
-      >
-        <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
-      </button>
-
       <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300 overflow-hidden text-slate-800 my-0 sm:my-4 relative max-h-[92vh] sm:max-h-[90vh] flex flex-col">
         {/* Mobile Pull Handle */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2 sm:hidden shrink-0" />
@@ -307,10 +297,11 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
             <button
               onClick={handleClose}
               aria-label="Close referral slip modal"
-              className="min-h-[40px] bg-slate-800 hover:bg-rose-600 text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1 transition border border-slate-700 hover:border-rose-500 cursor-pointer shadow-xs"
+              title="Close Referral Slip (Esc)"
+              className="min-h-[40px] bg-slate-800 hover:bg-rose-600 text-white px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-1.5 transition border border-slate-700 hover:border-rose-500 cursor-pointer shadow-xs"
             >
               <X className="w-4 h-4 shrink-0" />
-              <span className="hidden sm:inline">Close</span>
+              <span>Close</span>
             </button>
           </div>
         </div>
@@ -761,20 +752,13 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
             <span className="truncate">Official NHM Form Ready • Verified</span>
           </div>
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+          <div className="flex items-center justify-end">
             <button
               onClick={handlePrint}
-              className="min-h-[44px] bg-teal-700 hover:bg-teal-800 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center space-x-1.5 transition shadow-sm cursor-pointer"
+              className="min-h-[44px] w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center space-x-2 transition shadow-sm cursor-pointer"
             >
               <Printer className="w-4 h-4 shrink-0" />
-              <span>Print / PDF</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="min-h-[44px] bg-white hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition border border-slate-300 cursor-pointer flex items-center justify-center space-x-1.5 shadow-2xs"
-            >
-              <X className="w-4 h-4 shrink-0" />
-              <span>Close Slip</span>
+              <span>Print Official Slip (PDF)</span>
             </button>
           </div>
         </div>

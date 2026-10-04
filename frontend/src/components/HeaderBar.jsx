@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { FACILITY_SCENARIOS } from "../data/syntheticCases";
 import { TRANSLATIONS } from "../data/translations";
+import SaranshLogo from "./SaranshLogo";
 
 export default function HeaderBar({
   selectedFacility,
@@ -113,9 +114,7 @@ export default function HeaderBar({
         <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
           {/* Brand Logo & Title */}
           <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-800 via-teal-600 to-teal-500 flex items-center justify-center shadow-md shadow-teal-700/20 ring-2 ring-teal-500/20 text-white shrink-0">
-              <Activity className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-            </div>
+            <SaranshLogo size={38} className="shrink-0 drop-shadow-sm" />
             <div className="min-w-0">
               <div className="flex items-center space-x-2 min-w-0">
                 <h1 className="text-base sm:text-xl font-black tracking-tight text-slate-900 truncate">

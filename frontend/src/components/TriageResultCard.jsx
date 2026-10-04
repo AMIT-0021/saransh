@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  AlertTriangle,
-  CheckCircle2,
   Clock,
-  HelpCircle,
   ArrowRight,
   ShieldAlert,
   Send,
   Building2,
   Sparkles,
-  FileCheck,
-  Check,
   Volume2
 } from "lucide-react";
 import { TRANSLATIONS } from "../data/translations";
 import {
   speakHumanVoice,
-  stopHumanVoice,
-  getVocalAcoustics
+  stopHumanVoice
 } from "../utils/voiceSynthesisEngine";
 
 export default function TriageResultCard({
@@ -27,12 +21,10 @@ export default function TriageResultCard({
   isSubmittingFollowup = false,
   selectedLanguage = "English"
 }) {
-  if (!triageRecord || !triageRecord.ai_triage_output) return null;
-
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
-  const ai = triageRecord.ai_triage_output;
-  const p = triageRecord.patient_basic_info || {};
-  const priority = ai.final_computed_priority || "GREEN";
+  const ai = triageRecord?.ai_triage_output;
+  const p = triageRecord?.patient_basic_info || {};
+  const priority = ai?.final_computed_priority || "GREEN";
 
   const patientPrefLang = p?.language_preference || selectedLanguage || "English";
   const [askLang, setAskLang] = useState(patientPrefLang);
@@ -54,6 +46,8 @@ export default function TriageResultCard({
       stopHumanVoice();
     };
   }, []);
+
+  if (!triageRecord || !triageRecord.ai_triage_output) return null;
 
   // Empathetic bedside nurse speech synthesis for follow-up questions
   const handleSpeakQuestion = (text, lang, idx) => {
@@ -115,7 +109,7 @@ export default function TriageResultCard({
   const handleSubmitFollowups = async (e) => {
     e.preventDefault();
     const formatted = Object.entries(answers)
-      .filter(([_, ans]) => ans && ans.trim().length > 0)
+      .filter(([, ans]) => ans && ans.trim().length > 0)
       .map(([idx, ans]) => ({
         question: ai.suggested_followup_questions[Number(idx)] || `Question #${Number(idx) + 1}`,
         answer: ans.trim()

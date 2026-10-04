@@ -6,18 +6,11 @@ import {
   Activity,
   Clock,
   Search,
-  Filter,
-  AlertTriangle,
   CheckCircle2,
   ChevronRight,
-  ShieldAlert,
-  Building2,
-  AlertCircle,
   FileText,
   RefreshCw,
-  X,
-  Radio,
-  HeartPulse
+  X
 } from "lucide-react";
 import { TRANSLATIONS } from "../data/translations";
 
@@ -25,8 +18,6 @@ export default function DoctorDashboard({
   queueData,
   onSelectPatientForReview,
   onOpenReferralSlip,
-  selectedFacility,
-  onFacilityChange,
   selectedLanguage = "English",
   onRefreshQueue,
   isRefreshing = false

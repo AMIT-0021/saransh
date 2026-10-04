@@ -19,22 +19,79 @@ const API_BASE = (typeof import.meta !== "undefined" && import.meta.env && impor
   : (import.meta.env.DEV ? "http://localhost:8000" : "");
 
 function getInitialQueueData(facility = "PHC_JATNI") {
-  const cases = (SYNTHETIC_CASES || []).map((c, i) => ({
-    visit_id: `v-synth-${i}`,
-    token_number: `T-0${i + 1}`,
-    name_or_alias: c.patient_info?.name_or_alias || `Patient ${i + 1}`,
-    age: c.patient_info?.age || 45,
-    sex: c.patient_info?.sex || "Male",
-    facility_type: c.facility_context || facility,
-    department: c.priority === "RED" ? "Resuscitation Bay" : (c.priority === "YELLOW" ? "Priority OPD" : "Standard OPD"),
-    language_preference: c.patient_info?.primary_language || "English",
-    priority: c.priority || "GREEN",
-    chief_complaint: c.symptoms?.chief_complaint || "Medical Consultation",
-    vitals_summary: `SpO₂ ${c.vitals?.spo2_percent || 98}% • BP ${c.vitals?.bp_systolic || 120}/${c.vitals?.bp_diastolic || 80} • HR ${c.vitals?.heart_rate_bpm || 78}`,
-    wait_time_minutes: (i + 1) * 3,
-    queue_status: "WAITING",
-    created_at: new Date(Date.now() - i * 300000).toISOString()
-  }));
+  const cases = (SYNTHETIC_CASES || []).map((c, i) => {
+    const p = c.patient_basic_info || c.patient_info || {};
+    const v = c.vital_signs || c.vitals || {};
+    const s = c.symptoms_and_complaints || c.symptoms || {};
+    const prio = c.priority || c.priorityHint || "GREEN";
+    const name = p.name_or_alias || `Patient ${i + 1}`;
+    const age = Math.max(0, Math.abs(Number(p.age ?? 45)));
+    const sex = p.sex || "Male";
+    const token = p.token_number || `T-0${i + 1}`;
+    const lang = p.language_preference || p.primary_language || "English";
+    const fac = p.facility_type || c.facility_context || facility;
+    const complaint = s.chief_complaint || "Medical Consultation";
+    const vitalsStr = `SpO₂ ${v.spo2_percent || 98}% • BP ${v.bp_systolic || 120}/${v.bp_diastolic || 80} • HR ${v.heart_rate_bpm || 78}`;
+
+    return {
+      visit_id: `v-synth-${i}`,
+      token_number: token,
+      name_or_alias: name,
+      age,
+      sex,
+      facility_type: fac,
+      department: prio === "RED" ? "Resuscitation Bay" : (prio === "YELLOW" ? "Priority OPD" : "Standard OPD"),
+      language_preference: lang,
+      priority: prio,
+      chief_complaint: complaint,
+      vitals_summary: vitalsStr,
+      wait_time_minutes: (i + 1) * 3,
+      queue_status: "WAITING",
+      created_at: new Date(Date.now() - i * 300000).toISOString(),
+      patient_basic_info: {
+        name_or_alias: name,
+        age,
+        sex,
+        facility_type: fac,
+        token_number: token,
+        abha_id: p.abha_id || "91-4821-9923-0192",
+        language_preference: lang,
+        emergency_contact: p.emergency_contact || "+91-9876543210"
+      },
+      vital_signs: v,
+      symptoms_and_complaints: s,
+      medical_history: c.medical_history || {},
+      uploaded_reports: c.uploaded_reports || [],
+      visual_inputs: c.visual_inputs || [],
+      red_flag_checklist: c.red_flag_checklist || {},
+      ai_triage_output: c.ai_triage_output || {
+        final_computed_priority: prio,
+        rule_engine_priority: prio,
+        ai_suggested_priority: prio,
+        priority_label: prio === "RED" ? "Emergency Priority 1" : (prio === "YELLOW" ? "Urgent Priority 2" : "Routine Priority 3"),
+        deterministic_triggers: prio === "RED" ? ["Critical Vitals / Red Flag Triggers"] : (prio === "YELLOW" ? ["Urgent Care Clinical Protocol"] : []),
+        chronological_timeline: `Onset: ${s.duration || "2 hours"}. Vitals: ${vitalsStr}`,
+        missing_information_gaps: [
+          "Confirm current medication compliance",
+          "Verify any previous drug allergies"
+        ],
+        suggested_followup_questions: [
+          "Did symptoms begin suddenly or gradually?",
+          "Are you currently taking any prescribed medication?"
+        ],
+        followup_questions_english: [
+          "Did symptoms begin suddenly or gradually?",
+          "Are you currently taking any prescribed medication?"
+        ],
+        suggested_department: prio === "RED" ? "Emergency Resuscitation Bay" : (prio === "YELLOW" ? "Priority OPD" : "General OPD"),
+        concise_clinician_summary: `Patient ${name} (${age}y ${sex}) presenting with ${complaint}. Priority: ${prio}.`,
+        referral_note_draft: `CLINICAL REFERRAL NOTE: Patient ${name} (${age}y ${sex}) presenting with ${complaint}. Priority: ${prio}.`,
+        non_diagnostic_disclaimer: "Deterministic triage advisory output. Non-diagnostic frontline assistance."
+      },
+      human_review_feedback: { review_status: "PENDING" },
+      followup_answers: []
+    };
+  });
 
   const redCount = cases.filter((x) => x.priority === "RED").length;
   const yellowCount = cases.filter((x) => x.priority === "YELLOW").length;
@@ -137,7 +194,7 @@ export default function App() {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.3);
-    } catch (e) {
+    } catch {
       // AudioContext policy safe catch
     }
   };
@@ -377,8 +434,8 @@ export default function App() {
         setTriageResult(updated);
         fetchQueue();
       }
-    } catch (e) {
-      console.warn("Followup submission handled locally:", e);
+    } catch {
+      // Followup submission handled locally
     }
   };
 
@@ -400,21 +457,25 @@ export default function App() {
             `Critical Hypoxia SpO2 ${spo2}%`
           );
         }
+        return;
       }
-    } catch (e) {
-      const found = queueData.active_queue.find((q) => q.visit_id === visitId);
-      if (found) {
-        setSelectedRecordForReview(triageResult || found);
-        if (found.priority === "RED" || triageResult?.ai_triage_output?.final_computed_priority === "RED") {
-          const tok = found.token_number || "T-024";
-          const patName = found.patient_name || found.name_or_alias || "Ramesh K.";
-          const spo2 = found.vitals?.spo2_percent || 89;
-          triggerEmergencyEscalation(
-            tok,
-            patName,
-            `Critical Hypoxia SpO2 ${spo2}%`
-          );
-        }
+    } catch {
+      // Fallback to local queue item
+    }
+
+    const found = queueData?.active_queue?.find((q) => q.visit_id === visitId);
+    if (found) {
+      setSelectedRecordForReview(found);
+      const prio = found.ai_triage_output?.final_computed_priority || found.priority;
+      if (prio === "RED") {
+        const tok = found.token_number || "T-024";
+        const patName = found.name_or_alias || found.patient_basic_info?.name_or_alias || "Ramesh K.";
+        const spo2 = found.vital_signs?.spo2_percent || 89;
+        triggerEmergencyEscalation(
+          tok,
+          patName,
+          `Critical Alert Priority RED (SpO₂: ${spo2}%)`
+        );
       }
     }
   };
@@ -462,7 +523,7 @@ export default function App() {
       );
 
       if (res.ok) {
-        const updated = await res.json();
+        await res.json();
         if (reviewPayload.final_priority === "RED") {
           const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || "Ramesh K.";
           triggerEmergencyEscalation(
@@ -473,10 +534,51 @@ export default function App() {
         }
         setSelectedRecordForReview(null);
         fetchQueue();
+        return;
       }
-    } catch (e) {
-      setSelectedRecordForReview(null);
+    } catch {
+      // Local fallback handled below
     }
+
+    // Local state update when offline or backend unavailable
+    setQueueData((prev) => {
+      if (!prev?.active_queue) return prev;
+      const newQueue = prev.active_queue.map((item) => {
+        if (item.visit_id === selectedRecordForReview.visit_id) {
+          return {
+            ...item,
+            priority: reviewPayload.final_priority,
+            department: reviewPayload.admit_action === "DISCHARGE" ? "Discharged" : item.department,
+            queue_status: "REVIEWED",
+            human_review_feedback: {
+              review_status: "REVIEWED",
+              clinician_assigned_priority: reviewPayload.final_priority,
+              override_reason: reviewPayload.override_reason,
+              clinician_corrections: reviewPayload.clinician_notes,
+              reviewer_id: reviewPayload.reviewer_id
+            }
+          };
+        }
+        return item;
+      });
+      return {
+        ...prev,
+        active_queue: newQueue,
+        red_count: newQueue.filter((x) => x.priority === "RED").length,
+        yellow_count: newQueue.filter((x) => x.priority === "YELLOW").length,
+        green_count: newQueue.filter((x) => x.priority === "GREEN").length
+      };
+    });
+
+    if (reviewPayload.final_priority === "RED") {
+      const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || selectedRecordForReview.name_or_alias || "Ramesh K.";
+      triggerEmergencyEscalation(
+        selectedRecordForReview.token_number || "T-024",
+        patName,
+        "Direct Medical Officer Emergency Bay Escalation"
+      );
+    }
+    setSelectedRecordForReview(null);
   };
 
   // Reset Demo Data
@@ -489,8 +591,9 @@ export default function App() {
         fetchQueue();
         setTriageResult(null);
       }
-    } catch (e) {
-      // Local fallback
+    } catch {
+      setQueueData(getInitialQueueData(selectedFacility));
+      setTriageResult(null);
     }
   };
 

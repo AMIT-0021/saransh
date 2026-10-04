@@ -8,10 +8,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   Building2,
-  PhoneCall,
   Truck,
   HeartPulse,
-  Activity,
   Volume2
 } from "lucide-react";
 import {
@@ -123,36 +121,34 @@ const FACILITY_MAP = {
 };
 
 export default function ReferralSlipModal({ record, onClose, selectedLanguage = "English" }) {
-  if (!record) return null;
-
-  const p = record.patient_basic_info || {
-    name_or_alias: record.name_or_alias || "Ramesh K. (Synthetic)",
-    age: Math.max(0, Math.abs(Number(record.age ?? 62))),
-    sex: record.sex || "Male",
-    facility_type: record.facility_type || "PHC_JATNI",
-    token_number: record.token_number || "T-024",
-    abha_id: record.abha_id || "91-4821-9923-0192",
-    language_preference: record.language_preference || "Odia",
-    emergency_contact: record.emergency_contact || "+91-9876543210"
+  const p = record?.patient_basic_info || {
+    name_or_alias: record?.name_or_alias || "Ramesh K. (Synthetic)",
+    age: Math.max(0, Math.abs(Number(record?.age ?? 62))),
+    sex: record?.sex || "Male",
+    facility_type: record?.facility_type || "PHC_JATNI",
+    token_number: record?.token_number || "T-024",
+    abha_id: record?.abha_id || "91-4821-9923-0192",
+    language_preference: record?.language_preference || "Odia",
+    emergency_contact: record?.emergency_contact || "+91-9876543210"
   };
 
-  const v = record.vital_signs || {};
-  const s = record.symptoms_and_complaints || {
-    chief_complaint: record.chief_complaint || "Retrosternal crushing chest pain & severe dyspnea (2 hours, worsening rapidly)",
+  const v = record?.vital_signs || {};
+  const s = record?.symptoms_and_complaints || {
+    chief_complaint: record?.chief_complaint || "Retrosternal crushing chest pain & severe dyspnea (2 hours, worsening rapidly)",
     duration: "2 hours",
     onset_trend: "Worsening rapidly"
   };
-  const m = record.medical_history || {};
-  const ai = record.ai_triage_output || {};
-  const review = record.human_review_feedback || record.human_reviewFeedback || {};
+  const m = record?.medical_history || {};
+  const ai = record?.ai_triage_output || {};
+  const review = record?.human_review_feedback || record?.human_reviewFeedback || {};
 
-  const priority = review.clinician_assigned_priority || ai.final_computed_priority || record.priority || "RED";
+  const priority = review.clinician_assigned_priority || ai.final_computed_priority || record?.priority || "RED";
 
   // Resolve Facility Info from Government Registry
   const facKey = (p.facility_type || "").toUpperCase();
   const facInfo = FACILITY_MAP[facKey] || FACILITY_MAP.PHC_JATNI;
 
-  const tokenNumber = record.token_number || p.token_number || "T-024";
+  const tokenNumber = record?.token_number || p.token_number || "T-024";
   const abhaId = p.abha_id || "91-4821-9923-0192";
 
   // Departure Vitals (pre-transfer assessment)
@@ -165,6 +161,11 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
   const glucose = v.blood_glucose_mg_dl ?? 142;
 
   const [isPlayingHandover, setIsPlayingHandover] = useState(false);
+
+  // Direct clean native browser print
+  const handlePrint = useCallback(() => {
+    window.print();
+  }, []);
 
   // Keep a stable ref to onClose so effect cleanup only runs on actual modal unmount
   const onCloseRef = useRef(onClose);
@@ -201,7 +202,7 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleClose]);
+  }, [handleClose, handlePrint]);
 
   const handlePlayHandoverBriefing = () => {
     if (isPlayingHandover) {
@@ -235,11 +236,6 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     });
   };
 
-  // Direct clean native browser print
-  const handlePrint = useCallback(() => {
-    window.print();
-  }, []);
-
   const currentDate = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "long",
@@ -251,6 +247,8 @@ export default function ReferralSlipModal({ record, onClose, selectedLanguage = 
     minute: "2-digit",
     second: "2-digit"
   });
+
+  if (!record) return null;
 
   return createPortal(
     <div

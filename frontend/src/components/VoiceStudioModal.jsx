@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Mic,
-  Volume2,
-  VolumeX,
   Sparkles,
   Sliders,
   Play,
@@ -16,7 +13,7 @@ import {
   Stethoscope,
   Globe
 } from "lucide-react";
-import { stopHumanVoice } from "../utils/voiceSynthesisEngine";
+import { stopHumanVoice, playWithClinicalMastering } from "../utils/voiceSynthesisEngine";
 
 const PERSONA_PRESETS = [
   {
@@ -204,7 +201,7 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
             setStatusMessage("Audio playback failed.");
           };
 
-          await audio.play();
+          await playWithClinicalMastering(audio);
         } else {
           throw new Error("No audio returned");
         }
@@ -234,7 +231,7 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
           setIsPlaying(false);
           audioRef.current = null;
         };
-        await audio.play();
+        await playWithClinicalMastering(audio);
       } else {
         setIsPlaying(false);
         setStatusMessage("Failed to play audio.");

@@ -1,32 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Mic,
   MicOff,
-  Upload,
   Camera,
   Heart,
   Activity,
-  AlertTriangle,
   ShieldAlert,
   Sparkles,
   FileText,
   User,
   Volume2,
   CheckCircle2,
-  AlertCircle,
-  HelpCircle,
   ArrowRight,
   ArrowLeft,
   Radio,
   FileCheck,
-  Languages,
   Check,
-  Thermometer,
-  Gauge,
-  Droplet,
   RotateCcw,
   Send,
-  Building2,
   Plus
 } from "lucide-react";
 import {
@@ -195,7 +186,7 @@ export default function IntakeStation({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const currentlyPlayingTextRef = useRef(null);
   const prevLangRef = useRef(selectedLanguage);
-  const [activeBodyRegion, setActiveBodyRegion] = useState("chestCardiac");
+  const [, setActiveBodyRegion] = useState("chestCardiac");
 
   // 6 Interactive Anatomical Zones
   const BODY_REGIONS = [
@@ -378,6 +369,49 @@ export default function IntakeStation({
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}s`;
   };
 
+  const stopHardwareAudioStream = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
+    if (audioContextRef.current) {
+      try {
+        audioContextRef.current.close();
+      } catch {
+        // audio context close error ignored
+      }
+      audioContextRef.current = null;
+    }
+    setIsSoundDetected(false);
+    setAudioVolumePercent(0);
+  }, []);
+
+  // Stop speech recognition, clear silence timer and finalize statement
+  const handleStopSpeech = useCallback((autoConfirmed = false) => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {
+        // recognition stop error ignored
+      }
+      recognitionRef.current = null;
+    }
+    stopHardwareAudioStream();
+    setIsListening(false);
+
+    if (autoConfirmed) {
+      setIsStatementVerified(true);
+    }
+  }, [stopHardwareAudioStream]);
+
   // Sync facility and language props & synchronize clinical script
   useEffect(() => {
     // 1. Immediately cancel active speech playback and recognition
@@ -423,7 +457,7 @@ export default function IntakeStation({
         }
       });
     }
-  }, [selectedFacility, selectedLanguage]);
+  }, [selectedFacility, selectedLanguage, isListening, handleStopSpeech]);
 
   // When triage result is available, auto transition to step 3
   useEffect(() => {
@@ -438,7 +472,7 @@ export default function IntakeStation({
     }
   }, []);
 
-  // Initial vernacular idiom extraction for preset statement
+  // Vernacular idiom extraction for statement
   useEffect(() => {
     if (symptoms.verbatim_local_statement) {
       const norm = normalizeIndicSpeech(symptoms.verbatim_local_statement, patientInfo.language_preference);
@@ -446,7 +480,7 @@ export default function IntakeStation({
         setDetectedIdioms(norm.detectedIdioms);
       }
     }
-  }, []);
+  }, [symptoms.verbatim_local_statement, patientInfo.language_preference]);
 
   // Cleanup audio stream, speech synthesis and timers on unmount
   useEffect(() => {
@@ -459,13 +493,17 @@ export default function IntakeStation({
       if (audioContextRef.current) {
         try {
           audioContextRef.current.close();
-        } catch (_) {}
+        } catch {
+          // audio context close error ignored
+        }
       }
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (recognitionRef.current) {
         try {
           recognitionRef.current.stop();
-        } catch (_) {}
+        } catch {
+          // recognition stop error ignored
+        }
       }
     };
   }, []);
@@ -694,45 +732,6 @@ export default function IntakeStation({
       }
     } catch (err) {
       console.warn("Hardware audio analysis warning (falling back to speech recognition):", err);
-    }
-  };
-
-  const stopHardwareAudioStream = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    if (audioStreamRef.current) {
-      audioStreamRef.current.getTracks().forEach((track) => track.stop());
-      audioStreamRef.current = null;
-    }
-    if (audioContextRef.current) {
-      try {
-        audioContextRef.current.close();
-      } catch (_) {}
-      audioContextRef.current = null;
-    }
-    setIsSoundDetected(false);
-    setAudioVolumePercent(0);
-  };
-
-  // Stop speech recognition, clear silence timer and finalize statement
-  const handleStopSpeech = (autoConfirmed = false) => {
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
-    }
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (_) {}
-      recognitionRef.current = null;
-    }
-    stopHardwareAudioStream();
-    setIsListening(false);
-
-    if (autoConfirmed) {
-      setIsStatementVerified(true);
     }
   };
 

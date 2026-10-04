@@ -417,7 +417,7 @@ export function getVocalAcoustics({
   age = 35,
   gender = "Male",
   role = "patient",
-  language = "English"
+  language: _language = "English"
 } = {}) {
   const numericAge = Math.max(0, Math.abs(Number(age) || 30));
   const normGender = String(gender || "").toLowerCase().trim();
@@ -652,6 +652,82 @@ export function humanizeSpeechText(text, { age = 35, role = "patient" } = {}) {
   return cleaned.trim();
 }
 
+let sharedMasteringAudioCtx = null;
+const masteredAudioElementsSet = new WeakSet();
+
+/**
+ * Masters raw clinical TTS audio through an acoustic Web Audio API graph:
+ * - Low-shelf warmth filter (+2.8dB @ 240Hz) for natural human vocal chest resonance
+ * - Vocal clarity presence filter (+1.8dB @ 3200Hz) for natural Indic consonant definition
+ * - High-shelf gentle de-esser (-2.2dB @ 7500Hz) to eliminate digital robotic harshness
+ * - Broadcast dynamics compressor to bring up subtle emotional whispers & inhalation breaths
+ */
+export async function playWithClinicalMastering(audioElement) {
+  if (!audioElement) return false;
+
+  try {
+    const AudioContextClass = typeof window !== "undefined" && (window.AudioContext || window.webkitAudioContext);
+    if (!AudioContextClass) {
+      return await audioElement.play();
+    }
+
+    if (!sharedMasteringAudioCtx || sharedMasteringAudioCtx.state === "closed") {
+      sharedMasteringAudioCtx = new AudioContextClass();
+    }
+    if (sharedMasteringAudioCtx.state === "suspended") {
+      await sharedMasteringAudioCtx.resume();
+    }
+
+    if (!masteredAudioElementsSet.has(audioElement)) {
+      try {
+        const source = sharedMasteringAudioCtx.createMediaElementSource(audioElement);
+
+        // 1. Vocal Chest Warmth (240 Hz, +2.8 dB)
+        const warmth = sharedMasteringAudioCtx.createBiquadFilter();
+        warmth.type = "lowshelf";
+        warmth.frequency.value = 240;
+        warmth.gain.value = 2.8;
+
+        // 2. Vocal Clarity & Consonant Presence (3200 Hz, +1.8 dB)
+        const presence = sharedMasteringAudioCtx.createBiquadFilter();
+        presence.type = "peaking";
+        presence.frequency.value = 3200;
+        presence.Q.value = 1.1;
+        presence.gain.value = 1.8;
+
+        // 3. De-Esser (7500 Hz, -2.2 dB)
+        const deEsser = sharedMasteringAudioCtx.createBiquadFilter();
+        deEsser.type = "highshelf";
+        deEsser.frequency.value = 7500;
+        deEsser.gain.value = -2.2;
+
+        // 4. Dynamics Compressor (enhances quiet breath gasps)
+        const compressor = sharedMasteringAudioCtx.createDynamicsCompressor();
+        compressor.threshold.value = -24;
+        compressor.knee.value = 10;
+        compressor.ratio.value = 3.2;
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.25;
+
+        // Wire graph: source -> warmth -> presence -> deEsser -> compressor -> speakers
+        source.connect(warmth);
+        warmth.connect(presence);
+        presence.connect(deEsser);
+        deEsser.connect(compressor);
+        compressor.connect(sharedMasteringAudioCtx.destination);
+
+        masteredAudioElementsSet.add(audioElement);
+      } catch {
+        // Fallback to standard direct playback if MediaElementSource already connected or restricted
+      }
+    }
+
+    return await audioElement.play();
+  } catch {
+    return await audioElement.play();
+  }
+}
+
 /**
  * Speaks text with humanized pitch, rate, and timbre according to age, gender, and role.
  * Strictly guarantees Indian accent and strict male/female distinction.
@@ -733,11 +809,11 @@ export async function speakHumanVoice(text, {
           activeAudioElementRef = null;
           activeAudioOnEnd = null;
           if (cb) {
-            try { cb(); } catch (_) {}
+            try { cb(); } catch {}
           }
         };
 
-        await audio.play();
+        await playWithClinicalMastering(audio);
         return true;
       } catch (audioErr) {
         console.warn("Studio audio file playback failed, proceeding to dynamic/browser TTS:", audioErr);
@@ -814,7 +890,7 @@ export async function speakHumanVoice(text, {
               if (onEnd) onEnd();
             };
 
-            await audio.play();
+            await playWithClinicalMastering(audio);
             return true;
           }
         }
@@ -991,14 +1067,14 @@ export function stopHumanVoice() {
     try {
       activeAudioElementRef.pause();
       activeAudioElementRef.currentTime = 0;
-    } catch (e) {
+    } catch {
       // ignore
     }
     activeAudioElementRef = null;
     if (activeAudioOnEnd) {
       const cb = activeAudioOnEnd;
       activeAudioOnEnd = null;
-      try { cb(); } catch (_) {}
+      try { cb(); } catch {}
     }
   }
 
@@ -1010,7 +1086,7 @@ export function stopHumanVoice() {
   if (activeUtteranceOnEnd) {
     const cb = activeUtteranceOnEnd;
     activeUtteranceOnEnd = null;
-    try { cb(); } catch (_) {}
+    try { cb(); } catch {}
   }
   activeUtteranceRef = null;
 

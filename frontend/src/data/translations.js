@@ -112,8 +112,6 @@ export const TRANSLATIONS = {
     originalStatementLabel: "Original Patient Statement",
     audioWaveform: "Audio Waveform Verified",
     englishTranslationLabel: "Clinical English Translation & Chief Complaint:",
-    aiVerifiedTranslation: "AI Verified Clinical Translation",
-    playAudioBtn: "Play Audio",
 
     quadrant2Title: "Quadrant 2: Symptoms & Emergency Red-Flags",
     quadrant2Subtitle: "Rapid symptom tagging and emergency triggers",
@@ -351,8 +349,6 @@ export const TRANSLATIONS = {
     originalStatementLabel: "रोगी का मूल स्थानीय बयान",
     audioWaveform: "ऑडियो तरंग सत्यापित",
     englishTranslationLabel: "नैदानिक अंग्रेजी अनुवाद एवं मुख्य लक्षण:",
-    aiVerifiedTranslation: "एआई सत्यापित नैदानिक अनुवाद",
-    playAudioBtn: "ऑडियो सुनें",
 
     quadrant2Title: "चतुर्थांश 2: लक्षण एवं आपातकालीन रेड-फ्लैग",
     quadrant2Subtitle: "त्वरित लक्षण चयन एवं जीवन-रक्षक रेड-फ्लैग जांच",
@@ -590,8 +586,6 @@ export const TRANSLATIONS = {
     originalStatementLabel: "ରୋଗୀଙ୍କ ମୂଳ ବକ୍ତବ୍ୟ (ଓଡ଼ିଆ)",
     audioWaveform: "ଅଡିଓ ତରଙ୍ଗ ସତ୍ୟାପିତ",
     englishTranslationLabel: "ଡାକ୍ତରୀ ଇଂରାଜୀ ଅନୁବାଦ ଓ ମୁଖ୍ୟ ଲକ୍ଷଣ:",
-    aiVerifiedTranslation: "AI ସତ୍ୟାପିତ ଚିକିତ୍ସା ଅନୁବାଦ",
-    playAudioBtn: "ସ୍ୱର ଶୁଣନ୍ତୁ",
 
     quadrant2Title: "ଚତୁର୍ଥାଂଶ ୨: ଲକ୍ଷଣ ଓ ଜରୁରୀକାଳୀନ ରେଡ୍-ଫ୍ଲାଗ୍",
     quadrant2Subtitle: "ଦ୍ରୁତ ଲକ୍ଷଣ ଚୟନ ଓ ଜୀବନ-ରକ୍ଷାକାରୀ ବିପଦ ସଂକେତ",

@@ -48,11 +48,11 @@ async function writeToIndexedDB(record) {
           db.close();
           resolve(false);
         };
-      } catch (_) {
+      } catch {
         resolve(false);
       }
     });
-  } catch (err) {
+  } catch {
     // Graceful fallback to localStorage
     return false;
   }
@@ -152,7 +152,7 @@ export async function syncOfflineQueueWithBackend(backendUrl = ((typeof import.m
         remaining.push(item);
         failed++;
       }
-    } catch (err) {
+    } catch {
       remaining.push(item);
       failed++;
     }

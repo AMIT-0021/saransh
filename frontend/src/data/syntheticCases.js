@@ -76,6 +76,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "PRIYA_FEVER_YELLOW",
     badgeLabel: "🟠 Priya S. (34F) — Hindi Campus High Fever (102.8°F) & Low Platelets",
+    priority: "YELLOW",
     priorityHint: "YELLOW",
     patient_basic_info: {
       patient_id: "CAMPUS-1025",
@@ -143,6 +144,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "AARAV_PEDIATRIC_YELLOW",
     badgeLabel: "🟠 Aarav S. (8M) — Hindi / Odia Pediatric Acute Abdomen & Vomiting",
+    priority: "YELLOW",
     priorityHint: "YELLOW",
     patient_basic_info: {
       patient_id: "PED-1028",
@@ -210,6 +212,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "SUBHASH_HEADACHE_GREEN",
     badgeLabel: "🟢 Subhash P. (24M) — English Mild Screen Fatigue & Tension Headache",
+    priority: "GREEN",
     priorityHint: "GREEN",
     patient_basic_info: {
       patient_id: "PHC-1026",
@@ -270,6 +273,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "MEENA_MATERNAL_RED",
     badgeLabel: "🔴 Meena D. (28F) — Odia Maternal 34w Pre-eclampsia Risk (BP 168/110)",
+    priority: "RED",
     priorityHint: "RED",
     patient_basic_info: {
       patient_id: "MATERNAL-1019",

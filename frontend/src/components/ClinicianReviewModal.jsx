@@ -2,22 +2,10 @@ import React, { useState } from "react";
 import {
   X,
   AlertTriangle,
-  ShieldCheck,
-  FileText,
-  Clock,
-  User,
-  Heart,
-  Activity,
-  Layers,
   CheckCircle2,
   AlertCircle,
-  HelpCircle,
   Stethoscope,
-  Send,
   Printer,
-  ChevronRight,
-  Radio,
-  FileCheck,
   Volume2
 } from "lucide-react";
 import { TRANSLATIONS } from "../data/translations";
@@ -33,14 +21,12 @@ export default function ClinicianReviewModal({
   onOpenReferralSlip,
   selectedLanguage = "English"
 }) {
-  if (!record) return null;
-
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
-  const p = record.patient_basic_info || {};
-  const v = record.vital_signs || {};
-  const s = record.symptoms_and_complaints || {};
-  const ai = record.ai_triage_output || {};
-  const existingReview = record.human_review_feedback || {};
+  const p = record?.patient_basic_info || {};
+  const v = record?.vital_signs || {};
+  const s = record?.symptoms_and_complaints || {};
+  const ai = record?.ai_triage_output || {};
+  const existingReview = record?.human_review_feedback || {};
 
   const originalAiPriority = ai.final_computed_priority || "GREEN";
 
@@ -77,6 +63,8 @@ export default function ClinicianReviewModal({
       stopHumanVoice();
     };
   }, [onClose]);
+
+  if (!record) return null;
 
   const handlePlayStatement = () => {
     if (isPlayingStatement) {
@@ -316,6 +304,44 @@ export default function ClinicianReviewModal({
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Interactive Information Gaps Resolution */}
+          {ai.missing_information_gaps && ai.missing_information_gaps.length > 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-700 uppercase tracking-wide block">
+                  Information Gaps Identified:
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium">Click to mark resolved</span>
+              </div>
+              <div className="space-y-1.5">
+                {ai.missing_information_gaps.map((gap, idx) => {
+                  const isResolved = resolvedGaps.includes(gap);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => toggleGapResolution(gap)}
+                      className={`w-full text-left p-2.5 rounded-xl border text-xs flex items-center justify-between transition cursor-pointer ${
+                        isResolved
+                          ? "bg-emerald-50 border-emerald-300 text-emerald-900"
+                          : "bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <span className={isResolved ? "line-through opacity-80" : "font-medium"}>
+                        {gap}
+                      </span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                        isResolved ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"
+                      }`}>
+                        {isResolved ? "Resolved" : "Pending"}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

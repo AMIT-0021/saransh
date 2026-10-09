@@ -54,6 +54,21 @@ const CANONICAL_CLINICAL_CASES = [
       verbatim: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
       phonetic: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
       translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    },
+    Bengali: {
+      verbatim: "ডাক্তারবাবু, ২ ঘণ্টা ধরে বুকটা পাথরের মতো ভারী লাগছে আর খুব তীব্র চিনচিনে ব্যথা হচ্ছে। শ্বাস একদম নিতে পারছি না, সারা শরীর ঘামে ঠান্ডা হয়ে গেছে। একটু তাড়াতাড়ি দেখুন বাবু, মনে হচ্ছে বুকটা ফেটে যাবে।",
+      phonetic: "Daktarbabu, 2 ghonta dhore bukta pathorer moto bhari lagchhe ar khub tibro chinchine byatha hochhe. Shwas ekdom nite parchhi na, sara shorir ghame thanda hoye gechhe. Ektu taratari dekhun babu, mone hochhe bukta phete jabe.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    },
+    Tamil: {
+      verbatim: "டாக்டர் ஐயா, இரண்டு மணி நேரமாக நெஞ்சு பாராங்கல் போல அழுத்துகிறது மற்றும் தாங்க முடியாத ஊசி குத்துவது போன்ற வலி இருக்கிறது. மூச்சு விடவே முடியவில்லை, உடல் முழுவதும் குளிர்ந்து வியர்த்து கொட்டுகிறது. சீக்கிரம் பாருங்கள் ஐயா, நெஞ்சு வெடிப்பது போல் இருக்கிறது.",
+      phonetic: "Doctor aiya, irandu mani neramaga nenju paarangal pola aluthugirathu matrum thaanga mudiyatha oosi kuthuvathu pondra vali irukkirathu. Moochu vidave mudiyavillai, udal muzhuvathum kulirnthu viyarthu kottugirathu. Seekiram paarungal aiya, nenju vedippathu pol irukkirathu.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    },
+    Telugu: {
+      verbatim: "డాక్టర్ గారూ, రెండు గంటల నుంచి గుండె మీద రాయి పెట్టినట్లు బరువుగా ఉంది మరియు విపరీతమైన పొడుస్తున్న నొప్పిగా ఉంది. ఊపిరి అస్సలు ఆడటం లేదు, ఒళ్లంతా చల్లటి చెమటలు పట్టేస్తున్నాయి. త్వరగా చూడండి బాబూ, గుండె పగిలిపోయేలా ఉంది.",
+      phonetic: "Doctor garoo, rendu gantala nunchi gunde meeda raayi pettinatlu baruvuga undi mariyu vipareetamaina podustunna noppiga undi. Oopiri assalu aadatam ledu, ollantaa challati chematalu pattesthunnaayi. Tvaraga choodandi baboo, gunde pagilipoyela undi.",
+      translation: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
     }
   },
   {
@@ -73,6 +88,21 @@ const CANONICAL_CLINICAL_CASES = [
       verbatim: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
       phonetic: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
       translation: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand."
+    },
+    Bengali: {
+      verbatim: "দিদি, ৩ দিন ধরে পুরো শরীর আগুনের মতো জ্বলছে। মাথায় এত তীব্র যন্ত্রণা যে চোখ খুলতে পারছি না। হাত-পায়ে লাল দাগ ফুটে উঠেছে আর হাঁটার একদম শক্তি নেই।",
+      phonetic: "Didi, 3 din dhore puro shorir aguner moto jwolchhe. Mathay eto tibro jontrona je chokh khulte parchhi na. Hath-paye laal daag phute uthechhe ar haatar ekdom shokti nei.",
+      translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
+    },
+    Tamil: {
+      verbatim: "அக்கா, 3 நாட்களாக உடம்பு நெருப்பு போல கொதிக்கிறது. தலை பயங்கரமாக வலிக்கிறது, கண்ணையே திறக்க முடியவில்லை. கை கால்களில் சிவப்பு புள்ளிகள் வந்துவிட்டன, எழுந்து நடக்கக் கூட தெம்பு இல்லை.",
+      phonetic: "Akka, 3 naatkalaga udambu neruppu pola kothikkirathu. Thalai bayangaramaaga valikkirathu, kannaiye thirakka mudiyavillai. Kai kaalgalil sivappu pulligal vanthuvittana, ezhunthu nadakka kooda thembu illai.",
+      translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
+    },
+    Telugu: {
+      verbatim: "అక్కా, మూడు రోజుల నుంచి ఒళ్లంతా నిప్పులా కాలిపోతోంది. తలనొప్పి ఎంత తీవ్రంగా ఉందంటే కళ్లు కూడా తెరవలేకపోతున్నాను. కాళ్లు చేతులపై ఎర్రటి మచ్చలు వచ్చాయి, నడవడానికి అస్సలు శక్తి లేదు.",
+      phonetic: "Akka, moodu rojula nunchi ollantaa nippulaa kaalipothondi. Talanroppi entha teevramgaa undante kallu kooda teravalekapothunnaanu. Kaallu chetulapai errati machalu vachhaayi, nadavadaaniki assalu shakti ledu.",
+      translation: "Sister, my body has been burning with high fever for 3 days. My headache is so blinding I can't even open my eyes. Red spots have appeared all over my arms and legs, and I have zero strength to stand."
     }
   },
   {
@@ -89,9 +119,24 @@ const CANONICAL_CLINICAL_CASES = [
       translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
     },
     English: {
-      verbatim: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much.",
-      phonetic: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much.",
-      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts so much."
+      verbatim: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
+      phonetic: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
+      translation: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad."
+    },
+    Bengali: {
+      verbatim: "দিদি, পেটে খুব জোরে ব্যথা করছে। সকাল থেকে দু'বার বমি হয়ে গেছে আর কিছুই খেতে পারছি না, খুব কষ্ট হচ্ছে।",
+      phonetic: "Didi, pete khub jore byatha korchhe. Sokal theke dubar bomi hoye gechhe ar kichhui khete parchhi na, khub koshto hochhe.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
+    },
+    Tamil: {
+      verbatim: "அக்கா, வயிறு ரொம்ப பயங்கரமா வலிக்குது. காலையில இருந்து ரெண்டு தடவ வாந்தி எடுத்திட்டேன், ஒண்ணுமே சாப்பிட முடியல, ரொம்ப கஷ்டமா இருக்கு.",
+      phonetic: "Akka, vayiru romba bayangarama valikkuthu. Kaalaiyila irunthu rendu thadava vaanthi eduthitten, onnumey saapida mudiyala, romba kashtama irukku.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
+    },
+    Telugu: {
+      verbatim: "అక్కా, కడుపులో విపరీతంగా నొప్పిగా ఉంది. పొద్దున్నుంచి రెండుసార్లు వాంతులు అయ్యాయి, ఏమీ తినలేకపోతున్నాను, చాలా ఏడుపు వస్తోంది.",
+      phonetic: "Akka, kadupulo vipareetamgaa noppiga undi. Poddununchi rendusarlu vaanthulu ayyaayi, emee tinalekapothunnaanu, chaala edupu vasthondi.",
+      translation: "Sister, my tummy hurts very badly. I threw up twice since morning and cannot eat anything, it hurts a lot."
     }
   },
   {
@@ -110,6 +155,21 @@ const CANONICAL_CLINICAL_CASES = [
     English: {
       verbatim: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
       phonetic: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    Bengali: {
+      verbatim: "নমস্কার দিদি, কাল রাতে পরীক্ষার পড়ার পর কপালে হালকা ব্যথা করছে। কোনো জ্বর বা বমি নেই, শুধু একটু ক্লান্তি লাগছে।",
+      phonetic: "Nomoshkar didi, kaal raate porikshar porar por kopale halka byatha korchhe. Kono jwor ba bomi nei, shudhu ektu klanti lagchhe.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    Tamil: {
+      verbatim: "வணக்கம் அக்கா, நேற்று இரவு தேர்வுக்கு படித்ததால் நெற்றியில் லேசான தலைவலி இருக்கிறது. காய்ச்சல் அல்லது வாந்தி எதுவும் இல்லை, கொஞ்சம் சோர்வாக உள்ளது.",
+      phonetic: "Vanakkam akka, netru iravu thervukku padithathaal netriyil lesaana thalaivali irukkirathu. Kaaichal allathu vaanthi ethuvum illai, konjam sorvaaga ullathu.",
+      translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
+    },
+    Telugu: {
+      verbatim: "నమస్కారం అక్కా, నిన్న రాత్రి పరీక్షల కోసం చదువుకున్న తర్వాత నుదిటిలో కొద్దిగా తలనొప్పిగా ఉంది. జ్వరం లేదా వాంతులు ఏమీ లేవు, కాస్త నీరసంగా ఉంది.",
+      phonetic: "Namaskaram akka, ninna raatri pareekshala kosam chaduvukunna tarvata nuditilo koddigaa talanoppiga undi. Jwaram leda vaanthulu emee levu, kaasta neerasamgaa undi.",
       translation: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired."
     }
   },
@@ -130,9 +190,25 @@ const CANONICAL_CLINICAL_CASES = [
       verbatim: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
       phonetic: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
       translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    },
+    Bengali: {
+      verbatim: "নার্স দিদি, আমার ৮ মাসের গর্ভ চলছে। কাল সন্ধ্যা থেকে মাথায় প্রচণ্ড যন্ত্রণা হচ্ছে, চোখের সামনে সব ঝাপসা দেখছি আর দুটো পা এত ফুলে গেছে যে চটি পরতে পারছি না।",
+      phonetic: "Nurse didi, amar 8 masher gorbho cholchhe. Kaal sondhya theke mathay prochondo jontrona hochhe, chokher shamne shob jhapsa dekhchhi ar duto pa eto phule gechhe je choti porte parchhi na.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    },
+    Tamil: {
+      verbatim: "நர்ஸ் அக்கா, எனக்கு 8 மாத கர்ப்பம். நேற்று மாலையில் இருந்து தலை பயங்கரமாக வலிக்கிறது, கண்ணும் மங்கலாக தெரிகிறது, இரண்டு கால்களும் வீங்கி செருப்பு கூட போட முடியவில்லை.",
+      phonetic: "Nurse akka, enakku 8 maatha karppam. Netru maalaiyil irunthu thalai bayangaramaaga valikkirathu, kannum mangalaaga therigirathu, irandu kaalgalum veengi seruppu kooda poda mudiyavillai.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
+    },
+    Telugu: {
+      verbatim: "నర్సు అక్కా, నాకు 8 నెలల గర్భం. నిన్న సాయంత్రం నుంచి తల బద్దలయ్యేంత తీవ్రమైన నొప్పిగా ఉంది, కళ్లు మసకగా కనిపిస్తున్నాయి, రెండు కాళ్లూ బాగా వాచిపోయి చెప్పులు కూడా పట్టడం లేదు.",
+      phonetic: "Nurse akka, naaku 8 nelala garbham. Ninna saayantram nunchi tala baddalayyentha teevramaina noppiga undi, kallu masakaga kanipisthunnaayi, rendu kaalloo baagaa vaachipoyi cheppulu kooda pattadam ledu.",
+      translation: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit."
     }
   }
 ];
+
 
 function findCanonicalCase(text) {
   if (!text || typeof text !== "string") return null;
@@ -1834,6 +1910,12 @@ export default function IntakeStation({
                             ? "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।"
                             : patientInfo.language_preference === "English"
                             ? "Doctor, I am experiencing severe pain and discomfort."
+                            : patientInfo.language_preference === "Bengali"
+                            ? "ডাক্তারবাবু, খুব তীব্র যন্ত্রণা হচ্ছে।"
+                            : patientInfo.language_preference === "Tamil"
+                            ? "டாக்டர் ஐயா, பயங்கரமான வலி இருக்கிறது."
+                            : patientInfo.language_preference === "Telugu"
+                            ? "డాక్టర్ గారూ, చాలా తీవ్రమైన నొప్పిగా ఉంది."
                             : "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"
                         ),
                         patientInfo.language_preference

@@ -28,7 +28,19 @@
 
 ---
 
-### Slide 3: Our Solution & Hybrid Safety Architecture
+### Slide 3: System Ideation & Design Thinking Blueprint
+* **Visual Blueprint:** High-resolution architectural ideation concept (`docs/saransh_ideation.jpg`) featuring illuminated stethoscope-to-neural network workflow, multilingual Indic speech wave spectrums, and the 3 clinical priority output lanes.
+* **💡 The Ideation Spark & Core Hypothesis:**
+  * *"Can we convert subjective colloquial distress ('Chhati pathara bhali bhari') into objective, life-saving clinical urgency lanes in <30 seconds—while guaranteeing zero AI hallucination on vital signs?"*
+* **⚙️ The 4 Converging Technologies & Design Thinking:**
+  1. **User-Centric Empathy (The ASHA/ANM Reality):** Frontline staff have under 90s per patient. We designed an interactive 2D Anatomical Body Map so non-literate patients can visually tap pain points with zero typing.
+  2. **Sovereign Indic Vernacular AI (Sarvam AI):** Integrating India's `Saaras:v3` & `Bulbul:v3` to recognize spoken Odia & Hindi cultural idioms, outputting phonetic transcripts & standardized medical English.
+  3. **The Mathematical Safety Guardrail (AIIMS/WHO):** Refusing black-box LLM risk: vital thresholds enforce an unbreakable floor via `MAX(Rule, AI)`. If SpO₂ < 90%, it locks RED regardless of AI output.
+  4. **National Health Continuity (ABDM FHIR R4):** Transitioning from lost paper scraps to tamper-evident referral slips with SHA-256 cryptographic hashes for seamless PHC-to-MCH ambulance handoffs.
+
+---
+
+### Slide 4: Our Solution & Hybrid Safety Architecture
 * **The Core Architectural Choice:** Why NOT an Autonomous Black-Box LLM?
   * *Pure LLMs Hallucinate:* Autonomous models can change priority randomly or give unauthorized medical prescriptions.
   * *Saransh Hybrid Solution:* Separates **Clinical Safety** (deterministic) from **Linguistic Processing** (generative).

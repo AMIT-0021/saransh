@@ -223,7 +223,80 @@ def create_ultra_premium_presentation():
         pb.space_before = Pt(6)
 
     # =========================================================================
-    # SLIDE 3: OUR SOLUTION & HYBRID SAFETY ARCHITECTURE
+    # SLIDE 3: SYSTEM IDEATION & DESIGN THINKING BLUEPRINT
+    # =========================================================================
+    slide_ideation = prs.slides.add_slide(blank_layout)
+    add_slide_base(slide_ideation, "System Ideation: From Waiting Room Chaos to Prioritized Triage Lanes")
+
+    # Left Column: High-Res Concept Art / Visual Blueprint
+    ideation_img_path = os.path.join(r"C:\Users\AMITRAZ\OneDrive\Desktop\Saransh", "docs", "saransh_ideation.jpg")
+    if os.path.exists(ideation_img_path):
+        img_container = slide_ideation.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.65), Inches(6.0), Inches(3.45))
+        img_container.fill.solid()
+        img_container.fill.fore_color.rgb = C_CARD_BG
+        img_container.line.color.rgb = C_TEAL_CYAN
+        img_container.line.width = Pt(1.5)
+        slide_ideation.shapes.add_picture(ideation_img_path, Inches(0.85), Inches(1.7), Inches(5.9), Inches(3.35))
+
+    # Left Bottom: Innovation Spark Card
+    spark_card = slide_ideation.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.25), Inches(6.0), Inches(1.75))
+    spark_card.fill.solid()
+    spark_card.fill.fore_color.rgb = C_CARD_BG
+    spark_card.line.color.rgb = C_BORDER
+    spark_card.line.width = Pt(1)
+    tf_spark = spark_card.text_frame
+    tf_spark.word_wrap = True
+    
+    ps = tf_spark.paragraphs[0]
+    ps.text = "💡 The Ideation Genesis & Core Hypothesis"
+    ps.font.size = Pt(13)
+    ps.font.bold = True
+    ps.font.color.rgb = C_CYAN_GLOW
+    
+    ps_b = tf_spark.add_paragraph()
+    ps_b.text = "“Can we convert subjective colloquial distress ('Chhati pathara bhali bhari') into objective, life-saving clinical urgency lanes in <30 seconds—while guaranteeing zero AI hallucination on vital signs?”"
+    ps_b.font.size = Pt(10)
+    ps_b.font.italic = True
+    ps_b.font.color.rgb = C_OFFWHITE
+    ps_b.space_before = Pt(4)
+
+    # Right Column: The 4 Converging Technologies & Design Thinking
+    right_c = slide_ideation.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(1.65), Inches(5.433), Inches(5.35))
+    right_c.fill.solid()
+    right_c.fill.fore_color.rgb = C_CARD_BG
+    right_c.line.color.rgb = C_BORDER
+    right_c.line.width = Pt(1.5)
+    tf_r = right_c.text_frame
+    tf_r.word_wrap = True
+
+    pr = tf_r.paragraphs[0]
+    pr.text = "⚙️ Design Thinking & Technology Convergence"
+    pr.font.size = Pt(15)
+    pr.font.bold = True
+    pr.font.color.rgb = C_WHITE
+
+    ideation_matrix = [
+        ("1. User-Centric Empathy (The ASHA/ANM Reality):", "Frontline staff have under 90s per patient. We designed an interactive 2D Anatomical Body Map so non-literate patients can visually tap pain points with zero typing."),
+        ("2. Sovereign Indic Vernacular AI (Sarvam AI):", "Integrating India's Saaras:v3 & Bulbul:v3 to recognize spoken Odia & Hindi cultural idioms, outputting phonetic transcripts & standardized medical English."),
+        ("3. The Mathematical Safety Guardrail (AIIMS/WHO):", "Refusing black-box LLM risk: vital thresholds enforce an unbreakable floor via MAX(Rule, AI). If SpO2 < 90%, it locks RED regardless of AI output."),
+        ("4. National Health Continuity (ABDM FHIR R4):", "Transitioning from lost paper scraps to tamper-evident referral slips with SHA-256 cryptographic hashes for seamless PHC-to-MCH ambulance handoffs.")
+    ]
+    for h, d in ideation_matrix:
+        ph = tf_r.add_paragraph()
+        ph.text = f"• {h}"
+        ph.font.size = Pt(10.5)
+        ph.font.bold = True
+        ph.font.color.rgb = C_TEAL_CYAN
+        ph.space_before = Pt(6)
+        
+        pd = tf_r.add_paragraph()
+        pd.text = d
+        pd.font.size = Pt(9.5)
+        pd.font.color.rgb = C_OFFWHITE
+        pd.space_before = Pt(1)
+
+    # =========================================================================
+    # SLIDE 4: OUR SOLUTION & HYBRID SAFETY ARCHITECTURE
     # =========================================================================
     slide3 = prs.slides.add_slide(blank_layout)
     add_slide_base(slide3, "Our Solution: Hybrid Deterministic + Generative Triage Engine")

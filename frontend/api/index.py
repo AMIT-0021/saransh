@@ -32,6 +32,12 @@ from models import (
 from triage_rules import PRIORITY_RANK
 from ai_service import process_multimodal_triage
 from seed_data import get_seed_patients, ODISHA_NHM_FACILITIES
+from sarvam_service import (
+    is_sarvam_configured,
+    synthesize_sarvam_speech,
+    transcribe_sarvam_speech,
+    translate_sarvam_text
+)
 
 
 app = FastAPI(
@@ -85,7 +91,63 @@ def health_check():
         "safety_guardrails": "Strict MAX(Rule, AI) Priority Ceiling Enforced"
     }
 
+class SarvamTTSPayload(BaseModel):
+    text: str
+    target_language_code: Optional[str] = "od-IN"
+    speaker: Optional[str] = "shubh"
+    pitch: Optional[float] = 0.0
+    pace: Optional[float] = 0.90
+
+class SarvamTranslatePayload(BaseModel):
+    text: str
+    source_language_code: Optional[str] = "od-IN"
+    target_language_code: Optional[str] = "en-IN"
+
+@app.get("/api/v1/sarvam/status")
+@app.get("/api/sarvam/status")
+def sarvam_status():
+    return {
+        "status": "online" if is_sarvam_configured() else "unconfigured",
+        "configured": is_sarvam_configured(),
+        "tts_model": "bulbul:v3",
+        "stt_model": "saaras:v3",
+        "translate_model": "mayura:v1",
+        "default_odia_speaker": "shubh (male) / priya (female)",
+        "default_english_speaker": "aditya (male) / ishita (female)"
+    }
+
+@app.post("/api/v1/sarvam/tts")
+@app.post("/api/sarvam/tts")
+def sarvam_tts(payload: SarvamTTSPayload):
+    if not is_sarvam_configured():
+        raise HTTPException(status_code=503, detail="Sarvam AI API key is not configured")
+    audio_b64 = synthesize_sarvam_speech(
+        text=payload.text,
+        target_language_code=payload.target_language_code or "od-IN",
+        speaker=payload.speaker or "shubh",
+        pitch=payload.pitch if payload.pitch is not None else 0.0,
+        pace=payload.pace if payload.pace is not None else 0.90
+    )
+    if not audio_b64:
+        raise HTTPException(status_code=500, detail="Sarvam AI speech synthesis failed")
+    return {"audio_base64": audio_b64, "format": "audio/wav"}
+
+@app.post("/api/v1/sarvam/translate")
+@app.post("/api/sarvam/translate")
+def sarvam_translate(payload: SarvamTranslatePayload):
+    if not is_sarvam_configured():
+        raise HTTPException(status_code=503, detail="Sarvam AI API key is not configured")
+    translated = translate_sarvam_text(
+        text=payload.text,
+        source_language_code=payload.source_language_code or "od-IN",
+        target_language_code=payload.target_language_code or "en-IN"
+    )
+    if not translated:
+        raise HTTPException(status_code=500, detail="Sarvam AI translation failed")
+    return {"translated_text": translated}
+
 @app.get("/api/v1/facilities")
+
 @app.get("/api/facilities")
 def get_facilities():
     """

@@ -1,0 +1,16 @@
+# robots.txt for Saransh (सारांश) — Multimodal Healthcare Triage Assistant
+# BPUT Hackathon • PS01 AI Healthcare Track
+
+User-agent: *
+Allow: /
+Allow: /demo_walkthrough.html
+Allow: /Saransh_System_Flowchart.png
+Allow: /backgrounds/
+Allow: /audio/
+
+# Restrict raw internal API endpoints
+Disallow: /api/
+Disallow: /telemetry/internal/
+
+# Sitemap location
+Sitemap: https://saransh.vercel.app/sitemap.xml

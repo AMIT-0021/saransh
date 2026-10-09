@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saransh (सारांश) — Interactive Product Demo Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070B14;
+      --card-bg: rgba(19, 26, 42, 0.85);
+      --card-border: rgba(45, 60, 90, 0.55);
+      --teal-main: #14B8A6;
+      --teal-glow: rgba(20, 184, 166, 0.3);
+      --cyan-main: #38BDF8;
+      --red-alert: #F43F5E;
+      --amber-warn: #F59E0B;
+      --emerald-ok: #10B981;
+      --text-white: #FFFFFF;
+      --text-offwhite: #E2E8F0;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-offwhite);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient MedTech Luminous Backdrop */
+    .ambient-glow {
+      position: fixed;
+      top: -15%;
+      left: 10%;
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, rgba(56, 189, 248, 0.04) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -15%;
+      right: 5%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.08) 0%, rgba(245, 158, 11, 0.03) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Video Frame Container (16:9 Aspect Ratio) */
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 1120px;
+      aspect-ratio: 16 / 9;
+      background: #0B0F19;
+      border: 2px solid rgba(20, 184, 166, 0.4);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 50px rgba(20, 184, 166, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    /* Top Video Watermark */
+    .video-header-overlay {
+      position: absolute;
+      top: 18px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(11, 15, 25, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13px;
+      color: #FFF;
+      letter-spacing: 0.5px;
+    }
+
+    .live-rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244, 63, 94, 0.2);
+      border: 1px solid rgba(244, 63, 94, 0.6);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #FDA4AF;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F43F5E;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Video Scene Stage */
+    .video-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    /* Scene Container (Fading in & out) */
+    .scene-view {
+      position: absolute;
+      inset: 0;
+      padding: 60px 40px 80px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.96);
+    }
+
+    .scene-view.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    /* Scene Layouts */
+    .scene-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .scene-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #FFF;
+      text-align: center;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .scene-subtitle {
+      font-size: 15px;
+      color: var(--cyan-main);
+      text-align: center;
+      max-width: 700px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    /* Grid of Demo Features inside Scene */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 950px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .feature-card.highlight {
+      border-color: var(--teal-main);
+      box-shadow: 0 0 25px rgba(20, 184, 166, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Interactive Live Demonstration Simulator Mockups */
+    .mockup-window {
+      width: 100%;
+      max-width: 920px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(45, 60, 90, 0.7);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .mockup-bar {
+      background: rgba(11, 15, 25, 0.9);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(45, 60, 90, 0.5);
+    }
+
+    .mockup-body {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      font-size: 12px;
+    }
+
+    /* Subtitles / Narration Bar */
+    .narration-subtitle-box {
+      position: absolute;
+      bottom: 74px;
+      left: 30px;
+      right: 30px;
+      background: rgba(11, 15, 25, 0.9);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      border-radius: 14px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 40;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .speaker-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal-main), var(--cyan-main));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: #070B14;
+      flex-shrink: 0;
+    }
+
+    .subtitle-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #F8FAFC;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    /* Video Player Control Bar */
+    .video-controls {
+      height: 64px;
+      background: rgba(11, 15, 25, 0.95);
+      border-top: 1px solid rgba(45, 60, 90, 0.5);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      z-index: 50;
+    }
+
+    .btn-play {
+      background: var(--teal-main);
+      color: #070B14;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .btn-play:hover {
+      transform: scale(1.05);
+      background: #2DD4BF;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--teal-main), var(--cyan-main));
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
+
+    .time-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .timeline-chapters {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chapter-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chapter-pill:hover, .chapter-pill.active {
+      background: rgba(20, 184, 166, 0.2);
+      border-color: var(--teal-main);
+      color: #FFF;
+    }
+
+    /* Screen Recorder Helper Guide Box */
+    .record-instructions {
+      margin-top: 20px;
+      background: rgba(19, 26, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1120px;
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    .shortcut-tag {
+      background: #1E293B;
+      border: 1px solid #334155;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      color: var(--cyan-main);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- 16:9 Cinema-Grade Video Frame -->
+  <div class="video-viewport" id="videoContainer">
+    
+    <!-- Top Header Bar -->
+    <div class="video-header-overlay">
+      <div class="brand-pill">
+        <span>🏥</span>
+        <span>SARANSH (सारांश) — PRODUCT DEMO</span>
+      </div>
+      <div class="live-rec-badge">
+        <span class="rec-dot"></span>
+        <span id="sceneBadgeText">SCENE 1 • OVERVIEW</span>
+      </div>
+    </div>
+
+    <!-- The 5 Animated Video Scenes -->
+    <div class="video-stage">
+      
+      <!-- SCENE 1: INTRODUCTION & FRONTLINE PROBLEM -->
+      <div class="scene-view active" id="scene1">
+        <span class="scene-badge" style="background: rgba(20, 184, 166, 0.2); color: var(--teal-main);">CHAPTER 1 • THE MISSION</span>
+        <h2 class="scene-title">Right Priority. Right Facility. Right on Time.</h2>
+        <p class="scene-subtitle">Frontline healthcare triage assistant designed for 200–400 patient morning surges in Indian PHCs.</p>
+
+        <div class="feature-grid">
+          <div class="feature-card highlight">
+            <span class="feature-icon">🚨</span>
+            <h4 class="feature-title">The Ground Reality</h4>
+            <p class="feature-desc">Critical patients with silent hypoxia (SpO₂ &lt; 90%) wait in the same chaotic queue as mild routine colds.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🗣️</span>
+            <h4 class="feature-title">Vernacular Language Barrier</h4>
+            <p class="feature-desc">Rural patients speak colloquial Odia & Hindi (*"Chhati pathara bhali bhari"*), while clinical records are in English.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🛡️</span>
+            <h4 class="feature-title">The Saransh Solution</h4>
+            <p class="feature-desc">Dual-Engine AI combining Indic speech models with a deterministic AIIMS/WHO safety ceiling.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 2: NURSE INTAKE & 2D BODY MAP -->
+      <div class="scene-view" id="scene2">
+        <span class="scene-badge" style="background: rgba(56, 189, 248, 0.2); color: var(--cyan-main);">CHAPTER 2 • MULTIMODAL INTAKE</span>
+        <h2 class="scene-title">Rapid Frontline Intake in Under 30 Seconds</h2>
+        <p class="scene-subtitle">Designed for frontline ASHA & Nursing staff with zero typing friction.</p>
+
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <span style="font-weight: 800; color: #FFF;">👤 Patient Intake Station — Token T-024 (Ramesh K. 62M)</span>
+            <span style="color: var(--teal-main); font-weight: 700;">🪪 ABHA ID: 91-4821-9923-0192 Verified</span>
+          </div>
+          <div class="mockup-body">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px;">
+              <strong style="color: var(--cyan-main); display: block; margin-bottom: 6px;">📍 2D Interactive Anatomical Body Map</strong>
+              <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 8px;">Non-literate patients simply tap pain locations visually:</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="background: rgba(244,63,94,0.25); border: 1px solid var(--red-alert); color: #FFF; padding: 4px 8px; border-radius: 6px; font-weight: 700;">🫀 Chest & Cardiac [SELECTED]</span>
+                <span style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px;">🧠 Head</span>
+                <span style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px;">🫁 Lungs</span>
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px;">
+              <strong style="color: var(--teal-main); display: block; margin-bottom: 6px;">🩺 Threshold-Aware Vitals Bento Grid</strong>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                <div style="background: rgba(244,63,94,0.2); border: 1px solid var(--red-alert); padding: 6px; border-radius: 8px;">
+                  <span style="color: #FDA4AF; display: block;">SpO₂ (Oxygen)</span>
+                  <strong style="color: #FFF; font-size: 15px;">89% [CRITICAL]</strong>
+                </div>
+                <div style="background: rgba(245,158,11,0.2); border: 1px solid var(--amber-warn); padding: 6px; border-radius: 8px;">
+                  <span style="color: #FDE68A; display: block;">Blood Pressure</span>
+                  <strong style="color: #FFF; font-size: 15px;">158 / 96 mmHg</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 3: SOVEREIGN INDIC VOICE & ODIA SPEECH -->
+      <div class="scene-view" id="scene3">
+        <span class="scene-badge" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald-ok);">CHAPTER 3 • SOVEREIGN INDIC AI</span>
+        <h2 class="scene-title">Vernacular Speech & Dialect Normalization</h2>
+        <p class="scene-subtitle">Powered by Sarvam AI (`Saaras:v3`, `Bulbul:v3`) with 24kHz DSP clinical acoustic mastering.</p>
+
+        <div class="mockup-window" style="max-width: 860px;">
+          <div class="mockup-bar">
+            <span style="color: #FFF; font-weight: 800;">🎙️ Spoken Odia Input + Synchronous Medical Translation</span>
+            <span style="background: var(--emerald-ok); color: #070B14; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px;">DSP 24kHz MASTERED</span>
+          </div>
+          <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: rgba(20, 184, 166, 0.1); border-left: 4px solid var(--teal-main); padding: 14px 18px; border-radius: 0 12px 12px 0;">
+              <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--teal-main); display: block; margin-bottom: 4px;">Spoken Patient Odia Audio:</span>
+              <p style="font-size: 14px; font-weight: 700; color: #FFF; line-height: 1.4;">
+                "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି..."
+              </p>
+            </div>
+
+            <div style="background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--cyan-main); padding: 14px 18px; border-radius: 0 12px 12px 0;">
+              <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--cyan-main); display: block; margin-bottom: 4px;">Normalized Medical English for Doctor:</span>
+              <p style="font-size: 13px; color: var(--text-offwhite); line-height: 1.4;">
+                "Severe crushing retrosternal chest pain (onset 2 hours, worsening), cold diaphoresis, dyspnea with acute silent hypoxia (SpO₂ 89%)."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 4: DUAL-ENGINE TRIAGE & EMERGENCY SIREN -->
+      <div class="scene-view" id="scene4">
+        <span class="scene-badge" style="background: rgba(244, 63, 94, 0.2); color: var(--red-alert);">CHAPTER 4 • ZERO-HALLUCINATION SAFETY</span>
+        <h2 class="scene-title">Deterministic AIIMS/WHO Safety Floor</h2>
+        <p class="scene-subtitle">Formula: `MAX(Rule_Engine_Priority, AI_Advisory_Priority)` — The AI can NEVER downgrade an emergency.</p>
+
+        <div class="feature-grid">
+          <div class="feature-card highlight" style="border-color: var(--red-alert);">
+            <span class="feature-icon">🔴</span>
+            <h4 class="feature-title" style="color: var(--red-alert);">Priority RED (Immediate Bay)</h4>
+            <p class="feature-desc">SpO₂ &lt; 90% triggers an un-downgradable mathematical lock. 0-minute wait target.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🚨</span>
+            <h4 class="feature-title">Hospital Audio Siren</h4>
+            <p class="feature-desc">Instant 880Hz hospital tone alert dispatches notification to the emergency resuscitation bay.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">⏱️</span>
+            <h4 class="feature-title">Timeline Stepper</h4>
+            <p class="feature-desc">Assembles symptom progression and pinpoints missing clinical gaps before the doctor walks in.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 5: DOCTOR QUEUE & ABDM REFERRAL SLIP -->
+      <div class="scene-view" id="scene5">
+        <span class="scene-badge" style="background: rgba(20, 184, 166, 0.2); color: var(--teal-main);">CHAPTER 5 • CLINICIAN COMMAND & REFERRAL</span>
+        <h2 class="scene-title">Tamper-Evident ABDM FHIR R4 Referrals</h2>
+        <p class="scene-subtitle">1-Click inter-facility transfer from PHC Jatni to SCB Medical College with 108 ambulance escort.</p>
+
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <span style="color: #FFF; font-weight: 800;">📄 National Health Mission (NHM) Government Referral Slip</span>
+            <span style="color: var(--teal-main); font-weight: 700;">SHA-256 Verified: 72af42f26c09...</span>
+          </div>
+          <div class="mockup-body">
+            <div>
+              <strong style="color: #FFF; display: block; margin-bottom: 4px;">Transfer Route:</strong>
+              <p style="color: var(--text-muted); font-size: 11px;">PHC Jatni (Khordha) ➔ SCB Medical College Apex Bay (Cuttack)</p>
+              <strong style="color: #FFF; display: block; margin-top: 8px; margin-bottom: 4px;">108 Ambulance Escort:</strong>
+              <p style="color: var(--text-muted); font-size: 11px;">Vehicle: OD-02-AX-1081 (ALS Unit with continuous O₂ manifold)</p>
+            </div>
+            <div>
+              <strong style="color: var(--cyan-main); display: block; margin-bottom: 4px;">Digital Health Interoperability:</strong>
+              <p style="color: var(--text-muted); font-size: 11px;">Generates full HL7 ABDM FHIR R4 JSON bundles compatible with Ayushman Bharat digital lockers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Narration Subtitle Box -->
+    <div class="narration-subtitle-box">
+      <div class="speaker-avatar">AI</div>
+      <div class="subtitle-text" id="subtitleDisplay">
+        "Welcome to Saransh. An explainable, multimodal healthcare triage assistant built for government primary health centres in Odisha."
+      </div>
+    </div>
+
+    <!-- Bottom Video Controls -->
+    <div class="video-controls">
+      <button class="btn-play" id="btnPlayPause" title="Play / Pause Demo Video">▶</button>
+      
+      <span class="time-code" id="timeCode">00:00 / 02:30</span>
+
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="timeline-chapters">
+        <button class="chapter-pill active" onclick="jumpToScene(0)">1. Intro</button>
+        <button class="chapter-pill" onclick="jumpToScene(1)">2. Intake</button>
+        <button class="chapter-pill" onclick="jumpToScene(2)">3. Indic Voice</button>
+        <button class="chapter-pill" onclick="jumpToScene(3)">4. Safety Floor</button>
+        <button class="chapter-pill" onclick="jumpToScene(4)">5. Referral</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Screen Recording Instructions Box -->
+  <div class="record-instructions">
+    <div>
+      <strong style="color: #FFF; font-size: 14px;">🎥 Want to record this as an MP4 Video File?</strong>
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 2px;">
+        Press <span class="shortcut-tag">Win + Alt + R</span> on your Windows keyboard to start instant 1080p video recording with audio narration! Press it again when finished.
+      </p>
+    </div>
+    <button onclick="toggleAudioSpeech()" id="btnVoiceToggle" style="background: rgba(20, 184, 166, 0.2); border: 1px solid var(--teal-main); color: #FFF; padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer;">
+      🔊 Voice Narration: ON
+    </button>
+  </div>
+
+  <script>
+    const scenes = [
+      {
+        id: "scene1",
+        badge: "SCENE 1 • OVERVIEW & MISSION",
+        time: 30,
+        subtitles: "Welcome to Saransh. In government primary health centres across Odisha, hundreds of patients arrive during crowded morning hours. Silent hypoxia and acute emergencies often get lost in first-come queues. Saransh solves this with multimodal triage."
+      },
+      {
+        id: "scene2",
+        badge: "SCENE 2 • MULTIMODAL INTAKE",
+        time: 30,
+        subtitles: "At the nurse station, intake takes under 30 seconds. Non-literate patients can simply tap pain points on our interactive 2D anatomical body map. Vitals are checked against real-time clinical thresholds, with instant ABHA card verification."
+      },
+      {
+        id: "scene3",
+        badge: "SCENE 3 • SOVEREIGN INDIC AI",
+        time: 35,
+        subtitles: "Powered by Sarvam AI, Saransh understands native spoken Odia and Hindi idioms like 'chhati pathara bhali bhari'. Our 24 kilohertz DSP engine masters acoustic distress vocalizations and delivers standardized clinical English for doctors."
+      },
+      {
+        id: "scene4",
+        badge: "SCENE 4 • SAFETY-FIRST TRIAGE",
+        time: 30,
+        subtitles: "We strictly refuse black-box LLM risks in healthcare. Urgency is governed by a deterministic safety floor using MAX(Rule, AI). When oxygen saturation drops below 90%, it mathematically locks Priority RED and sounds the emergency siren."
+      },
+      {
+        id: "scene5",
+        badge: "SCENE 5 • DOCTOR COMMAND & REFERRAL",
+        time: 25,
+        subtitles: "In the Doctor Queue, clinicians review the chronological timeline and missing gaps. With one click, they generate a tamper-evident National Health Mission referral slip, complete with SHA-256 hash, 108 ambulance escort, and ABDM FHIR R4 export."
+      }
+    ];
+
+    let currentSceneIdx = 0;
+    let isPlaying = false;
+    let isVoiceEnabled = true;
+    let sceneTimer = null;
+    let progressInterval = null;
+    let elapsedSeconds = 0;
+    const totalDuration = scenes.reduce((acc, s) => acc + s.time, 0);
+
+    const btnPlayPause = document.getElementById("btnPlayPause");
+    const progressFill = document.getElementById("progressFill");
+    const timeCode = document.getElementById("timeCode");
+    const subtitleDisplay = document.getElementById("subtitleDisplay");
+    const sceneBadgeText = document.getElementById("sceneBadgeText");
+    const btnVoiceToggle = document.getElementById("btnVoiceToggle");
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const rem = Math.floor(s % 60);
+      return `${String(m).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
+    }
+
+    function speakSubtitle(text) {
+      if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const engVoice = voices.find(v => v.lang.includes("en-IN") || v.name.includes("India") || v.lang.includes("en-GB") || v.lang.includes("en-US"));
+      if (engVoice) utterance.voice = engVoice;
+      
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function showScene(idx) {
+      currentSceneIdx = idx;
+      scenes.forEach((s, i) => {
+        const el = document.getElementById(s.id);
+        const pill = document.querySelectorAll(".chapter-pill")[i];
+        if (i === idx) {
+          el.classList.add("active");
+          pill.classList.add("active");
+        } else {
+          el.classList.remove("active");
+          pill.classList.remove("active");
+        }
+      });
+
+      const activeScene = scenes[idx];
+      sceneBadgeText.innerText = activeScene.badge;
+      subtitleDisplay.innerText = `"${activeScene.subtitles}"`;
+      if (isPlaying) {
+        speakSubtitle(activeScene.subtitles);
+      }
+    }
+
+    function jumpToScene(idx) {
+      currentSceneIdx = idx;
+      let acc = 0;
+      for (let i = 0; i < idx; i++) acc += scenes[i].time;
+      elapsedSeconds = acc;
+      showScene(idx);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = (elapsedSeconds / totalDuration) * 100;
+      progressFill.style.width = `${Math.min(100, pct)}%`;
+      timeCode.innerText = `${formatTime(elapsedSeconds)} / ${formatTime(totalDuration)}`;
+    }
+
+    function playDemo() {
+      isPlaying = true;
+      btnPlayPause.innerText = "⏸";
+      showScene(currentSceneIdx);
+
+      progressInterval = setInterval(() => {
+        elapsedSeconds += 1;
+        updateProgress();
+
+        // Check scene transition
+        let acc = 0;
+        for (let i = 0; i < scenes.length; i++) {
+          acc += scenes[i].time;
+          if (elapsedSeconds < acc) {
+            if (currentSceneIdx !== i) showScene(i);
+            break;
+          }
+        }
+
+        if (elapsedSeconds >= totalDuration) {
+          pauseDemo();
+          elapsedSeconds = 0;
+          currentSceneIdx = 0;
+          updateProgress();
+        }
+      }, 1000);
+    }
+
+    function pauseDemo() {
+      isPlaying = false;
+      btnPlayPause.innerText = "▶";
+      clearInterval(progressInterval);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    btnPlayPause.addEventListener("click", () => {
+      if (isPlaying) pauseDemo();
+      else playDemo();
+    });
+
+    function toggleAudioSpeech() {
+      isVoiceEnabled = !isVoiceEnabled;
+      btnVoiceToggle.innerText = isVoiceEnabled ? "🔊 Voice Narration: ON" : "🔇 Voice Narration: OFF";
+      if (!isVoiceEnabled && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    // Keyboard controls (Space to Play/Pause, Arrow keys to navigate)
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        btnPlayPause.click();
+      } else if (e.code === "ArrowRight") {
+        if (currentSceneIdx < scenes.length - 1) jumpToScene(currentSceneIdx + 1);
+      } else if (e.code === "ArrowLeft") {
+        if (currentSceneIdx > 0) jumpToScene(currentSceneIdx - 1);
+      }
+    });
+
+    // Initialize voices
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {};
+    }
+  </script>
+</body>
+</html>

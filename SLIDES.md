@@ -1,119 +1,153 @@
-# Saransh (सारांश) — BPUT Hackathon Pitch Deck Script
+# Saransh (सारांश) — Official BPUT Hackathon Pitch Deck Script
 
-> **File:** `Saransh_BPUT_Hackathon_Pitch.pptx` (Saved on your Desktop)  
-> **Format:** 16:9 Widescreen Professional Deck (8 Slides)  
-> **Design Theme:** Clinical Navy & Medical Teal (High-Contrast Hospital Aesthetic)
+> **Files Generated & Ready to Present:**
+> * 📄 **Desktop PPTX:** [`C:\Users\AMITRAZ\OneDrive\Desktop\Saransh_BPUT_Official_Pitch.pptx`](file:///C:/Users/AMITRAZ/OneDrive/Desktop/Saransh_BPUT_Official_Pitch.pptx)
+> * 📁 **Project PPTX:** [`Saransh_BPUT_Official_Pitch.pptx`](file:///C:/Users/AMITRAZ/OneDrive/Desktop/Saransh/Saransh_BPUT_Official_Pitch.pptx)
+> * **Format:** 16:9 Widescreen Professional Deck (10 Slides)
+> * **Theme:** Clean Obsidian Slate Navy & Medical Electric Teal (`#0B0F19` / `#14B8A6`)
+> * **Team ID:** `BH26PS07T060` | **Team Name:** `CODEX` | **Problem Statement:** `PS01`
 
 ---
 
-### Slide 1: Title & One-Line Vision
-* **Header Tag:** BPUT HACKATHON 2026 • AI HEALTHCARE TRACK
-* **Main Title:** Saransh (सारांश)
-* **Subtitle:** Multimodal Human-in-the-Loop Healthcare Triage Assistant for Government and Institutional Facilities
+### Slide 1: Title & Hero
+* **Header Tag:** `BPUT HACKATHON 2026 • PROBLEM STATEMENT 1`
+* **Main Title:** **Saransh (सारांश)**
+* **Subtitle:** Multimodal Healthcare Triage Assistant for Government and Institutional Health Facilities
 * **Pitch Quote:**  
-  *“An explainable, non-diagnostic clinical triage platform that turns chaotic multilingual waiting rooms into prioritized clinical lanes—combining Vernacular Voice (Odia/Hindi), Lab Report OCR, Vital Signs, and Deterministic Red-Flag Rules while keeping final decisions with qualified doctors.”*
-* **Core Pillars:**
-  1. 🎤 Multimodal Voice (Odia/Hindi live speech + idiom normalizer)
-  2. 🛡️ Deterministic Safety Rules (Hard SpO2 < 90% floor)
-  3. 🏥 3-Lane Hospital Queue (RED, YELLOW, GREEN)
-  4. 📄 NHM Referral Engine (1-click transfer slip with 108 ambulance)
+  *“Human-in-the-loop, non-diagnostic triage support transforming chaotic multilingual waiting rooms into structured, prioritised clinical lanes.”*
+* **Metadata:** Team: CODEX | Team ID: BH26PS07T060 | Educational prototype for triage support only. Synthetic data only.
+* **4 Core Pillars:**
+  1. 🛡️ **Rules decide, LLM summarises:** Urgency flags come from transparent clinical rules; AI never diagnoses.
+  2. 🗣️ **Vernacular + voice first:** Odia, Hindi & regional speech in; standardized clinical English note out.
+  3. 🔍 **Missing-info engine:** Detects absent clinical history and prompts frontline staff with follow-ups.
+  4. 🏥 **One tool, many settings:** PHC, CHC, campus fever bay, maternal check-in, and rural health camps.
 
 ---
 
-### Slide 2: The Problem (Morning Outpatient Bottlenecks)
-* **Card 1: 🚨 Unprioritized First-Come Queue:** 200–400 patients arrive during 8 AM–12 PM. Silent hypoxia and atypical chest pain wait in the same queue as mild headaches.
-* **Card 2: 🗣️ Vernacular & Linguistic Barrier:** Rural patients describe symptoms in cultural idioms (*'Chhati fatijiba'*, *'Pathara bhali bhari'*). Rotating doctors struggle with speed and accurate local transcription.
-* **Card 3: 📑 Paper Overload & Missing Info:** Crumpled lab reports, handwritten slips, and under 90 seconds per patient lead to missed drug allergies or unrecorded comorbidity timelines.
-* **Card 4: 🚑 Broken Referral Continuity:** Rural PHCs transfer deteriorating patients to District Hospitals or SCB Medical College with scribbled scrap notes, missing departure vitals.
+### Slide 2: Ideation
+* **Top Idea:** *A safety-first assistant that turns messy symptoms, voice and reports into one structured, prioritised note for a qualified reviewer.*
+* **Core Tenets:**
+  * **Rules decide, LLM summarises:** Urgency flags come from transparent deterministic rules; AI never diagnoses or prescribes.
+  * **Vernacular + voice first:** Spoken Hindi, Odia and other regional languages in; standardized clinical English note out.
+  * **Missing-info engine:** Actively finds what is absent from intake and prompts the frontline worker with targeted follow-ups.
+  * **One tool, many settings:** Scalable profiles: General OPD queue, factory clinic, campus fever bay, maternal care, and mobile health camps.
+* **Existing Models Fall Short:**
+  * *Symptom checkers:* Diagnostic-first, English-only, high hallucination risk, consumer-facing.
+  * *Telemedicine platforms:* Video consults, but lacks structured intake and queue sorting.
+  * *Point-solution Imaging AI:* Narrow radiology focus; ignores multimodal vernacular intake.
+  * *HMIS / Heavy EHRs:* Clunky manual typing, negligible regional voice NLP, fails on rural devices.
+* **Our Strategic Gap:**  
+  *A lightweight, reviewer-facing clinical triage layer placed directly in front of existing government hospital workflows.*
 
 ---
 
-### Slide 3: System Ideation & Design Thinking Blueprint
-* **Visual Blueprint:** High-resolution architectural ideation concept (`docs/saransh_ideation.jpg`) featuring illuminated stethoscope-to-neural network workflow, multilingual Indic speech wave spectrums, and the 3 clinical priority output lanes.
-* **💡 The Ideation Spark & Core Hypothesis:**
-  * *"Can we convert subjective colloquial distress ('Chhati pathara bhali bhari') into objective, life-saving clinical urgency lanes in <30 seconds—while guaranteeing zero AI hallucination on vital signs?"*
-* **⚙️ The 4 Converging Technologies & Design Thinking:**
-  1. **User-Centric Empathy (The ASHA/ANM Reality):** Frontline staff have under 90s per patient. We designed an interactive 2D Anatomical Body Map so non-literate patients can visually tap pain points with zero typing.
-  2. **Sovereign Indic Vernacular AI (Sarvam AI):** Integrating India's `Saaras:v3` & `Bulbul:v3` to recognize spoken Odia & Hindi cultural idioms, outputting phonetic transcripts & standardized medical English.
-  3. **The Mathematical Safety Guardrail (AIIMS/WHO):** Refusing black-box LLM risk: vital thresholds enforce an unbreakable floor via `MAX(Rule, AI)`. If SpO₂ < 90%, it locks RED regardless of AI output.
-  4. **National Health Continuity (ABDM FHIR R4):** Transitioning from lost paper scraps to tamper-evident referral slips with SHA-256 cryptographic hashes for seamless PHC-to-MCH ambulance handoffs.
+### Slide 3: Problem Relevance
+* **Subtitle:** *Directly matches the government brief across PHCs, CHCs, health camps, industrial clinics and campus centres.*
+* **6 Ground Realities:**
+  1. 🚨 **Overcrowded OPDs & Camps:** 200–400 patients arrive in crowded morning hours; doctors have <90 seconds per patient with zero structured intake.
+  2. 🗣️ **Language Diversity:** Patients speak regional languages (Odia, Hindi dialects), while clinical notes are standardized in English.
+  3. 📑 **Paper Reports & Photos:** Reports are crumpled paper or photos; critical numeric parameters and timelines get lost.
+  4. 🏥 **Specialist Scarcity:** Rural PHCs lack specialists; transfer notes are scribbled on scrap paper without baseline vitals.
+  5. ⏳ **Unprioritized First-Come Queues:** Critical emergencies (silent hypoxia SpO2 < 90%, crushing chest pain) wait behind mild routine check-ins.
+  6. 📶 **Uneven Digital Maturity:** Low rural bandwidth, shared mobile devices, and lack of formal EHR hardware at frontline stations.
+* **The Essential Gap:**  
+  *Structured, language-ready, prioritised information reaching the right healthcare professional in time.*
 
 ---
 
-### Slide 4: Our Solution & Hybrid Safety Architecture
-* **The Core Architectural Choice:** Why NOT an Autonomous Black-Box LLM?
-  * *Pure LLMs Hallucinate:* Autonomous models can change priority randomly or give unauthorized medical prescriptions.
-  * *Saransh Hybrid Solution:* Separates **Clinical Safety** (deterministic) from **Linguistic Processing** (generative).
-* **The 3 Priority Tiers:**
-  * 🔴 **RED — EMERGENCY (P1):** Immediate MO care (0 min wait). SpO2 < 90%, BP >= 180, severe chest pain, dyspnea, seizure.
-  * 🟠 **YELLOW — URGENT (P2):** Priority Fast-Track (< 15-20 min target). SpO2 90-93%, Temp >= 101.5°F, Platelets < 100k, maternal pre-eclampsia.
-  * 🟢 **GREEN — ROUTINE (P3):** Standard OPD Consultation. SpO2 >= 94%, stable baseline, tension headache, chronic refill.
-* **The Safety Mandate:** Final priority is strictly `MAX(Rule_Engine_Priority, AI_Advisory_Priority)`—the AI can never downgrade an emergency.
+### Slide 4: Solution
+* **Subtitle:** *A 4-step pipeline turning multimodal frontline inputs into structured, reviewer-facing priority intelligence.*
+* **The 4 Steps:**
+  1. **Collect:** Patient or worker enters symptoms by text or voice in English, Hindi, or Odia. 2D Anatomical Body Map + ABHA ID scan & consent.
+  2. **Extract:** Multimodal OCR reads lab reports and prescriptions; values and dates become an explainable timeline.
+  3. **Flag:** Rules-based risk flags and category tags set an urgency signal. Hard SpO2 < 90% floor. No diagnosis.
+  4. **Review:** Nurse or doctor sees a structured note, follow-up questions and queue order, then decides.
+* **Standardized Outputs:**  
+  *One-page triage note + prioritised clinical queue (🔴 RED, 🟠 YELLOW, 🟢 GREEN) + referral draft, always labelled advisory and reviewer-facing.*
+* **Supported Scenarios:**  
+  *Primary OPD queue, industrial-estate screening, campus fever bay, maternal follow-up, chronic check-in, health camps, and inter-facility referral notes.*
 
 ---
 
-### Slide 4: Multimodal Ingestion & Vernacular Dialect Normalizer
-* **🗣️ Vernacular Dialect Normalizer:**  
-  Maps spoken Odia/Hindi idioms to SNOMED-CT / ICD-10 (*"ଛାତି ଫାଟିଯିବା"* ➔ Severe Stabbing Chest Pain [ALERT]; *"ପଥର ଭଳି ଭାରି"* ➔ Crushing Chest Heaviness [ALERT]). Preserves verbatim voice for medico-legal truth while outputting clinical English for doctors.
-* **🪪 Holographic ABDM / ABHA Sync:**  
-  1-click mock scan fetches verified ABHA ID (e.g. `91-4821-9923-0192`), pre-populates chronic conditions, and triggers critical drug allergy alerts (Penicillin Anaphylaxis) before triage begins.
-* **👤 2D Anatomical Body Map:**  
-  Clickable anatomical selector for non-literate patients (Head, Chest, Lungs, Abdomen, Limbs, Skin) to point visually to pain.
-* **📑 Single-Call Document OCR:**  
-  Gemini 2.5 Flash extracts quantitative values from CBC slips (Platelets 85k), ECGs (LVH strain pattern), and prescription images.
+### Slide 5: Impact
+* **Subtitle:** *Empowering patients, frontline workers, and institutional facilities with measurable pilot metrics.*
+* **3 Stakeholder Value Pillars:**
+  * **👥 Patients:** Speak in their mother tongue (Odia/Hindi); urgent cases reach clinicians sooner; clear referral handoff documentation.
+  * **👩‍⚕️ Health Workers:** Less typing and paperwork; guided follow-up questions; consistent, standardized clinical handoff notes.
+  * **🏥 Facilities:** Better queue order; auditable clinician override records; real-time emergency bed telemetry tracking.
+* **Pilot Success Metrics (To be measured, not assumed):**
+  * ⏱️ **Time to Reviewer Attention:** Arrival to clinician attention for flagged urgent cases (Target: <30 seconds).
+  * 📑 **Report OCR Accuracy:** Share of paper lab report values correctly extracted, verified by staff (Target: >95%).
+  * 🩺 **Reviewer Agreement Rate:** Reviewer agreement with deterministic urgency flags (Target: >90%).
+  * ⏳ **Frontline Staff Time Saved:** Frontline worker intake time reduced from 8–10 minutes to under 2 minutes.
 
 ---
 
-### Slide 5: Human-in-the-Loop Clinical Review & Doctor Queue
-* **🏥 Hospital Live Triage Command Center:**  
-  Sorted lanes with active patient wait times:
-  * 🔴 RED: Ramesh K. (62M, SpO2 89%, Chest Pain) & Meena D. (28F, Maternal 34w BP 168/110)
-  * 🟠 YELLOW: Priya S. (34F, Temp 102.8°F, CBC Platelets 85k)
-  * 🟢 GREEN: Subhash P. (24M, Mild Study Tension Headache)
-* **⚖️ Human-in-the-Loop Governance (15% Rubric):**
-  1. Doctor Verification Drawer with chronological timeline and missing info checklist.
-  2. 1-Click Priority Override (upgrade/downgrade).
-  3. Mandatory Clinical Justification logging.
-  4. Immutable Reviewer ID audit trail.
-  5. Real-time Emergency Bed Telemetry (3/5 available).
+### Slide 6: Technical Depth
+* **Subtitle:** *Full-stack architecture engineered with transparent deterministic safety guardrails.*
+* **6 Modular Architecture Layers:**
+  1. 🎨 **Frontend:** React 18 PWA, Vite, Tailwind CSS, Web Speech API, offline-first IndexedDB, responsive layout.
+  2. ⚡ **Backend Engine:** FastAPI (Python 3.11+), Pydantic v2 strict schemas across all clinical domains, RESTful JSON API.
+  3. 🗣️ **Speech & Translation:** Sarvam AI (Saaras:v3 ASR, Bulbul:v3 TTS, Mayura:v1) + Web Speech API fallback for Odia & Hindi.
+  4. 📑 **OCR & Vision:** Gemini 2.5 Flash multimodal document OCR + OpenCV image pre-processing for CBC slips and ECG waveforms.
+  5. 🧠 **AI Intelligence Layer:** Gemini 2.5 Flash for timeline extraction, structured summaries, and missing-info follow-up questions.
+  6. 🛡️ **Safety & Governance:** Deterministic rule engine (Python/JS), AES encryption, immutable clinician audit log, DPDP Act compliance.
+* **How Safety is Engineered:**
+  * *Deterministic Urgency Rules:* Rules set urgency; LLM is summary-only. AI cannot downgrade an emergency (`MAX(Rule, AI)`).
+  * *Dual-Source Verification:* OCR and translation show confidence indicators alongside original verbatim text.
+  * *Auditability:* Every flag stores its exact trigger rule (e.g. SpO2 < 90% -> RED), ensuring every decision is clinically auditable.
 
 ---
 
-### Slide 6: Odisha Public Health Network & NHM Referral Slip
-* **🏛️ Real 6-Tier All-India Facility Network:**
-  * PHC Jatni (Khordha - NIN: `OD-KHD-PHC-102`)
-  * CHC Tangi (Khordha - NIN: `OD-KHD-CHC-204`)
-  * Capital Hospital, Bhubaneswar (DHH - NIN: `OD-DHH-401`)
-  * SCB Medical College & Hospital, Cuttack (MCH - NIN: `OD-MCH-001`)
-  * Paradeep Industrial Estate Health Unit (NIN: `OD-JSP-IEH-301`)
-  * Koraput Mobile Public Health Camp (NIN: `OD-KPT-MOBI-501`)
-  * Flagship National Anchors: AIIMS New Delhi (`DL-NDLS-AIIMS-001`) & Thane MIDC Maharashtra (`MH-THN-MIDC-402`)
-* **📄 Official NHM Clinical Referral Slip:**  
-  Formally formatted under Government of Odisha Health & Family Welfare Department / National Health Mission. Displays patient ABHA, departure vitals (SpO2 89%, BP 158/96), pre-referral oxygen stabilization (`4 L/min via nasal cannula`), initial aspirin dose, and **108 Emergency Ambulance transfer escort**.
+### Slide 7: Prototype Architecture
+* **Subtitle:** *End-to-end 4-stage dataflow with unified governance across every operational layer.*
+* **4 Stages:**
+  1. **CAPTURE (With Explicit Consent):** Text / voice / report photo | Voice in Odia/Hindi | Consent gate & 2D Body Map.
+  2. **PROCESS (Clean & De-Identify):** Sarvam Speech-to-text | Indic <> English translation | OCR clean-up | PII Anonymiser.
+  3. **UNDERSTAND + FLAG (Dual-Engine Core):** Entity extractor | Timeline builder | Missing-info detector | Deterministic Red Flags.
+  4. **HUMAN REVIEW (Clinician Command):** 3-lane priority queue | Reviewer doctor dashboard | ABDM referral draft | Emergency siren.
+* **Data Governance (All Layers):**  
+  *Role-Based Access Control | Local AES-256 Encryption | Minimal Data Retention | Emergency Flag Skips Queue | Follow-ups Loop Back.*
 
 ---
 
-### Slide 7: Technical Architecture & Offline PWA Resilience
-* **🎨 Modern React Frontend:** React 18, Vite, Tailwind CSS, Web Speech API, SpeechSynthesis audio question playback, 2D Body Map, and Bento Grid vitals.
-* **⚡ FastAPI Backend:** Python 3.11+, Pydantic v2 strict schemas (all 10 hackathon domains), interactive Swagger docs (`/docs`), <50ms deterministic scoring.
-* **🧠 Gemini 2.5 Flash Multimodal AI:** Official `google-genai` SDK, native voice/report OCR in 1 call, structured JSON `response_schema`.
-* **📶 Offline-First PWA Resilience:** LocalStorage queue buffer + client-side mirror rule engine. If rural PHC Wi-Fi is lost, triage never stops. Auto-syncs when reconnected.
+### Slide 8: Execution Feasibility
+* **Subtitle:** *High feasibility across technical, operational, and economic pillars with robust risk mitigation.*
+* **3 Feasibility Dimensions:**
+  * ⚙️ **Technical:** Built on mature open-source tools & sovereign APIs; zero custom model training required; lightweight and maintainable.
+  * 🤝 **Operational:** Assists the frontline worker, never replaces the doctor; intuitive ergonomics require under 15 minutes of training.
+  * 💰 **Economic:** Open-source stack; runs on modest local laptops or cloud tiers; negligible per-facility operating expense.
+* **Risks & Built-in Architectural Mitigations:**
+  * *OCR errors:* Confidence indicators shown alongside raw photo; mandatory nurse verification.
+  * *Translation nuances:* Original verbatim regional audio and phonetic transliteration displayed beside translation.
+  * *LLM hallucination:* Summary-only role; deterministic clinical rules alone compute urgency (`MAX(Rule, AI)`).
+  * *Low connectivity:* Offline-tolerant PWA with local IndexedDB queue; auto-syncs when online.
+* **Prototype Scope:**  
+  *Synthetic patient cohort and sample reports; includes multimodal intake, OCR, rules flags, and reviewer dashboard.*
 
 ---
 
-### Slide 8: Evaluation Rubric Mastery & Future Roadmap
-* **🎯 100% Hackathon Rubric Alignment:**
-  * Safety-First Triage (20%): MAX(Rule, AI) ceiling, zero emergency downgrade.
-  * Information Extraction (20%): Chronological timeline stepper, Odia follow-up questions.
-  * Multimodal Capability (15%): Voice in Odia/Hindi + Lab OCR + Visuals + Vitals.
-  * India-Wide Relevance (15%): 8 facilities across 6 tiers, ABDM/ABHA integration, Body Map.
-  * Human-Review & Escalation (15%): Doctor queue, clinician override audit log, NHM referral slip.
-  * Privacy & Responsible AI (10%): Informed consent gate, PII scrubbing, advisory disclaimer.
-  * Demo Quality (5%): 1-click synthetic profiles, zero-latency execution.
-* **🚀 Future Scope:**
-  * Full ABDM M3 Milestone OAuth2/OTP health locker sync.
-  * eSanjeevani Telemedicine bridge for YELLOW priority cases.
-  * IoT Bluetooth medical device pairing (pulse oximeters, digital BP cuffs).
-  * Epidemiological outbreak clustering for early Dengue/Malaria surveillance.
-* **Closing Line:**  
-  *“Our goal: Help frontline healthcare staff prioritize patients faster and safer, while keeping clinical decisions in human hands.”*
+### Slide 9: Future Scalability
+* **Subtitle:** *A 3-phase rollout roadmap with institutional scale-up levers for national public health impact.*
+* **3 Phased Horizons:**
+  * **Phase 1: Working Prototype:** Single facility interactive demo, multimodal intake, deterministic rules + AI summary, reviewer dashboard.
+  * **Phase 2: Facility Clinical Pilot:** Deployment in 1 designated PHC/CHC (e.g., PHC Jatni), real clinical workflows, nurse shadowing, consent validation.
+  * **Phase 3: District & State Scale:** Multi-facility unified dashboard, shared state clinical rule library, direct 108 ambulance referral network to SCB Medical College.
+* **5 Institutional Scale-Up Levers:**
+  1. 🌐 *Multilingual Expansion:* All 22 official Indian languages via Sarvam AI and Bhashini.
+  2. 📱 *On-Device Edge Models:* Quantized lightweight SLMs (e.g. Gemma 2B via WebGPU) for 100% disconnected camps.
+  3. 🪪 *ABDM / ABHA Integration:* Full M3 Milestone sync with National Health Authority health lockers.
+  4. 📋 *Setting-Specific Rule Packs:* Specialized packs for Maternal Care, Occupational Health, and Outbreak Surveillance.
+  5. ☁️ *Flexible Deployment:* Cloud or on-premises deployment adhering to state government IT and DPDP Act guidelines.
+
+---
+
+### Slide 10: Thank You Slide
+* **Title:** **THANK YOU**
+* **Project:** **Saransh (सारांश)** — *Right Priority. Right Facility. Right on Time.*
+* **Team:** `CODEX` | **Team ID:** `BH26PS07T060`
+* **Track:** `BPUT Hackathon 2026 • Problem Statement 1`
+* **Closing Quote:**  
+  *“Our goal: Help frontline healthcare staff prioritize patients faster and safer, while keeping clinical decisions strictly in human hands.”*
+* **Regulatory Disclaimer:**  
+  *Educational prototype for triage support only. Not a diagnostic tool. Synthetic data only.*

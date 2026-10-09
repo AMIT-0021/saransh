@@ -607,13 +607,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/95 text-slate-900 flex flex-col font-sans selection:bg-teal-600 selection:text-white w-full max-w-full relative overflow-x-hidden">
-      {/* Ambient MedTech Luminous Backdrop */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-teal-600 selection:text-white w-full max-w-full relative overflow-x-hidden">
+      {/* Ambient Real-Life Clinical Hospital Backdrop */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-10 right-0 w-[28rem] h-[28rem] bg-cyan-200/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-1/3 w-[32rem] h-[32rem] bg-emerald-100/35 rounded-full blur-3xl"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(#94a3b8_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.22]"></div>
+        {/* Authentic Indian PHC Healthcare Triage Backdrop */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.28] mix-blend-multiply transition-opacity duration-1000 scale-[1.01]"
+          style={{ backgroundImage: "url('/backgrounds/phc_intake.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/88 via-slate-50/93 to-slate-100/96 backdrop-blur-[1.5px]" />
+
+        {/* Clinical Luminous Accent Orbs */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 right-0 w-[28rem] h-[28rem] bg-cyan-200/15 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-1/3 w-[32rem] h-[32rem] bg-emerald-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#94a3b8_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.12]"></div>
       </div>
 
       <div className="relative z-10 flex flex-col flex-1 w-full max-w-full">

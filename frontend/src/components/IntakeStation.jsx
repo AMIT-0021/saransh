@@ -152,7 +152,8 @@ export default function IntakeStation({
   isAnalyzing,
   triageResult,
   onSubmitFollowupAnswers,
-  onGoToDoctorQueue
+  onGoToDoctorQueue,
+  externalPresetId
 }) {
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
 
@@ -619,6 +620,16 @@ export default function IntakeStation({
     setDetectedIdioms(norm.detectedIdioms || []);
     setLiveStreamText(finalVerbatim || "");
   };
+
+  // Auto-load preset requested externally (e.g. from Judge Tour Modal)
+  useEffect(() => {
+    if (externalPresetId) {
+      const p = SYNTHETIC_CASES.find((c) => c.id === externalPresetId);
+      if (p) {
+        handleLoadPreset(p);
+      }
+    }
+  }, [externalPresetId]);
 
   // Sample report selection handler
   const handleSelectSampleReport = (reportId) => {

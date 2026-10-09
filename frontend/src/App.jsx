@@ -5,6 +5,7 @@ import DoctorDashboard from "./components/DoctorDashboard";
 import ClinicianReviewModal from "./components/ClinicianReviewModal";
 import ReferralSlipModal from "./components/ReferralSlipModal";
 import VoiceStudioModal from "./components/VoiceStudioModal";
+import JudgeTourModal from "./components/JudgeTourModal";
 import {
   getOfflinePendingCount,
   saveOfflineRecord,
@@ -176,6 +177,16 @@ export default function App() {
   const [backendError, setBackendError] = useState("");
   const [emergencyNotification, setEmergencyNotification] = useState(null);
   const [isVoiceStudioOpen, setIsVoiceStudioOpen] = useState(false);
+  const [isJudgeTourOpen, setIsJudgeTourOpen] = useState(false);
+  const [externalPresetId, setExternalPresetId] = useState(null);
+
+  // Fast-track preset launcher from Judge Tour Modal
+  const handleLaunchPresetFromTour = (presetId) => {
+    setActiveRole("NURSE");
+    setExternalPresetId(presetId);
+    setTimeout(() => setExternalPresetId(null), 500);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Hospital-grade Emergency Sound Tone
   const playEmergencyTone = () => {
@@ -701,6 +712,7 @@ export default function App() {
         onSyncOffline={handleSyncOffline}
         onResetDemo={handleResetDemo}
         onOpenVoiceStudio={() => setIsVoiceStudioOpen(true)}
+        onOpenJudgeTour={() => setIsJudgeTourOpen(true)}
         redCount={queueData.red_count}
         yellowCount={queueData.yellow_count}
         greenCount={queueData.green_count}
@@ -734,6 +746,7 @@ export default function App() {
             triageResult={triageResult}
             onSubmitFollowupAnswers={handleSubmitFollowupAnswers}
             onGoToDoctorQueue={() => setActiveRole("DOCTOR")}
+            externalPresetId={externalPresetId}
           />
         ) : (
           <DoctorDashboard
@@ -776,6 +789,13 @@ export default function App() {
       <VoiceStudioModal
         isOpen={isVoiceStudioOpen}
         onClose={() => setIsVoiceStudioOpen(false)}
+      />
+
+      {/* 6. BPUT Hackathon Judge & Evaluator Demo Tour Modal */}
+      <JudgeTourModal
+        isOpen={isJudgeTourOpen}
+        onClose={() => setIsJudgeTourOpen(false)}
+        onLaunchPreset={handleLaunchPresetFromTour}
       />
 
       {/* 5. Minimalist Healthcare Footer */}

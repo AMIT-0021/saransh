@@ -36,6 +36,7 @@ export default function HeaderBar({
   onSyncOffline,
   onResetDemo,
   onOpenVoiceStudio,
+  onOpenJudgeTour,
   redCount = 0,
   yellowCount = 0,
   greenCount,
@@ -329,6 +330,36 @@ export default function HeaderBar({
 
                   {/* 2. Interactive Clinical Action Items */}
                   <div className="space-y-1.5">
+                    {/* Item 0: Judge & Evaluator 3-Min Tour */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsToolsOpen(false);
+                        if (onOpenJudgeTour) onOpenJudgeTour();
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-amber-50/90 via-teal-50/80 to-emerald-50/80 hover:from-amber-100 hover:to-teal-100 border border-teal-300 transition flex items-center justify-between group cursor-pointer shadow-2xs"
+                    >
+                      <div className="flex items-start space-x-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                          <Sparkles className="w-4 h-4 text-amber-200 fill-amber-200" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center space-x-1.5 flex-wrap">
+                            <span className="text-xs font-black text-slate-900 group-hover:text-teal-950">
+                              🎯 Judge & Evaluator Tour
+                            </span>
+                            <span className="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded font-extrabold whitespace-nowrap">
+                              3-MIN FLOW
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-600 leading-tight mt-0.5 truncate">
+                            3-step winning sequence & 1-click test launch
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-teal-600 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1.5" />
+                    </button>
+
                     {/* Item 1: Sovereign Voice Studio */}
                     <button
                       type="button"
@@ -495,8 +526,19 @@ export default function HeaderBar({
             </button>
           </div>
 
-          {/* Right Status / Facility Strip */}
-          <div className="flex items-center space-x-2 text-xs text-slate-500 justify-between sm:justify-end">
+          {/* Right Status / Facility Strip & Judge Tour Button */}
+          <div className="flex items-center space-x-2 text-xs text-slate-500 justify-between sm:justify-end flex-wrap gap-y-1.5">
+            {/* Quick 1-Click Judge Tour Button */}
+            <button
+              type="button"
+              onClick={onOpenJudgeTour}
+              className="flex items-center space-x-1.5 text-xs font-black px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-slate-800 hover:from-teal-800 hover:to-slate-900 text-white shadow-xs hover:shadow-md transition-all cursor-pointer border border-teal-400/40 shrink-0 group"
+              title="Open 3-Minute BPUT Hackathon Judge & Evaluator Guide"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300 group-hover:scale-110 transition-transform" />
+              <span>🎯 Judge Demo Tour</span>
+            </button>
+
             <span className="flex items-center space-x-1.5 bg-white px-3 py-1 rounded-full border border-slate-200/90 shadow-2xs truncate">
               <Building2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span className="font-bold text-slate-800 truncate max-w-[150px] sm:max-w-[200px]">

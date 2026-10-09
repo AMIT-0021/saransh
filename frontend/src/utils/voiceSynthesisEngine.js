@@ -158,25 +158,25 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ODIA",
     language: "Odia",
-    keywords: ["ଛାତିଟା ପଥର", "ପଥର ଭଳି", "ଛାତି ଫାଟିଯିବା", "chhatita pathara", "pathara bhali", "୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା"],
+    keywords: ["ଛାତିଟା ପଥର", "ପଥର ଭଳି", "ଛାତି ଫାଟିଯିବା", "chhatita pathara", "pathara bhali", "୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା", "ଡାକ୍ତର ବାବୁ", "ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି"],
     url: "/audio/ramesh_cardiac_odia.wav"
   },
   {
     id: "PRIYA_FEVER_ODIA",
     language: "Odia",
-    keywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ଦେହ ସାରା ନିଆଁ", "ଲାଲ୍ ଦାଗ ବାହାରି", "nia bhali tatichhi", "୩ ଦିନ ହେଲା ଦେହ"],
+    keywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ଦେହ ସାରା ନିଆଁ", "ଲାଲ୍ ଦାଗ ବାହାରି", "nia bhali tatichhi", "୩ ଦିନ ହେଲା ଦେହ", "ଦିଦି, ୩ ଦିନ", "ଦିଦି... ୩ ଦିନ"],
     url: "/audio/priya_fever_odia.wav"
   },
   {
     id: "LIPU_PEDIATRIC_ODIA",
     language: "Odia",
-    keywords: ["ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ବାନ୍ତି ହେଲାଣି", "କିଛି ଖାଇ ହେଉନି", "petata bhisana", "banti helani", "ଖାଇ ହେଉନି"],
+    keywords: ["ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ବାନ୍ତି ହେଲାଣି", "କିଛି ଖାଇ ହେଉନି", "petata bhisana", "banti helani", "ଖାଇ ହେଉନି", "ଦିଦି, ପେଟଟା", "ଦିଦି... ପେଟଟା"],
     url: "/audio/lipu_pediatric_odia.wav"
   },
   {
     id: "SUBHASH_HEADACHE_ODIA",
     language: "Odia",
-    keywords: ["ପାଠ ପଢ଼ିବା ପରେ", "ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି", "ଟିକେ ଥକା ଲାଗୁଛି", "patha padhiba pare", "mathata samanya"],
+    keywords: ["ପାଠ ପଢ଼ିବା ପରେ", "ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି", "ଟିକେ ଥକା ଲାଗୁଛି", "patha padhiba pare", "mathata samanya", "ନମସ୍କାର ଦିଦି"],
     url: "/audio/subhash_headache_odia.wav"
   },
   {
@@ -190,31 +190,31 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_HINDI",
     language: "Hindi",
-    keywords: ["सीने में भारी पत्थर", "पत्थर जैसा दर्द", "सीना फट जाएगा", "२ घंटे से सीने"],
+    keywords: ["सीने में भारी पत्थर", "पत्थर जैसा दर्द", "सीना फट जाएगा", "२ घंटे से सीने", "डॉक्टर साहब", "सांस बिल्कुल नहीं आ रही"],
     url: "/audio/ramesh_cardiac_hindi.wav"
   },
   {
     id: "PRIYA_FEVER_HINDI",
     language: "Hindi",
-    keywords: ["भट्टी की तरह तप", "लाल चकत्ते निकल", "३ दिन से पूरा बदन", "आंखें भी नहीं खुल"],
+    keywords: ["भट्टी की तरह तप", "लाल चकत्ते निकल", "३ दिन से पूरा बदन", "आंखें भी नहीं खुल", "दीदी, ३ दिन", "दीदी... ३ दिन"],
     url: "/audio/priya_fever_hindi.wav"
   },
   {
     id: "AARAV_PEDIATRIC_HINDI",
     language: "Hindi",
-    keywords: ["पेट में बहुत तेज दर्द", "दो बार उल्टी हो गई", "बहुत रोना आ रहा", "कुछ भी खाया नहीं जा रहा"],
+    keywords: ["पेट में बहुत तेज दर्द", "दो बार उल्टी हो गई", "बहुत रोना आ रहा", "कुछ भी खाया नहीं जा रहा", "दीदी, पेट में", "दीदी... पेट में"],
     url: "/audio/aarav_pediatric_hindi.wav"
   },
   {
     id: "SUBHASH_HEADACHE_HINDI",
     language: "Hindi",
-    keywords: ["स्क्रीन पर पढ़ाई करने के बाद", "माथे में हल्का-हल्का", "बस थोड़ी थकान", "कल देर रात तक"],
+    keywords: ["स्क्रीन पर पढ़ाई करने के बाद", "माथे में हल्का-हल्का", "बस थोड़ी थकान", "कल देर रात तक", "नमस्ते दीदी"],
     url: "/audio/subhash_headache_hindi.wav"
   },
   {
     id: "MEENA_MATERNAL_HINDI",
     language: "Hindi",
-    keywords: ["८ महीने का गर्भ", "नर्स दीदी, मुझे ८", "चप्पल नहीं आ रही", "सिर बहुत तेज फटने", "धुंधलापन आ रहा है", "दोनों पैर इतने सूज गए", "मुझे ८ महीने का"],
+    keywords: ["८ महीने का गर्भ", "नर्स दीदी, मुझे ८", "चप्पल नहीं आ रही", "सिर बहुत तेज फटने", "धुंधलापन आ रहा है", "दोनों पैर इतने सूज गए", "मुझे ८ महीने का", "नर्स दीदी... मुझे ८"],
     url: "/audio/meena_maternal_hindi.wav"
   },
 
@@ -222,31 +222,31 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ENGLISH",
     language: "English",
-    keywords: ["crushed under heavy stone", "unbearable stabbing pain", "chest feels crushed", "chest is tearing"],
+    keywords: ["crushed under heavy stone", "unbearable stabbing pain", "chest feels crushed", "chest is tearing", "doctor, for the past two hours"],
     url: "/audio/ramesh_english.mp3"
   },
   {
     id: "PRIYA_FEVER_ENGLISH",
     language: "English",
-    keywords: ["entire body has been burning", "blinding i can't even open my eyes", "red spots have appeared", "zero strength to stand"],
+    keywords: ["entire body has been burning", "blinding i can't even open my eyes", "red spots have appeared", "zero strength to stand", "sister, for the past 3 days"],
     url: "/audio/priya_fever_english.mp3"
   },
   {
     id: "AARAV_PEDIATRIC_ENGLISH",
     language: "English",
-    keywords: ["tummy hurts very badly", "threw up twice", "cannot eat anything", "hurts really bad"],
+    keywords: ["tummy hurts very badly", "threw up twice", "cannot eat anything", "hurts really bad", "sister, my tummy hurts"],
     url: "/audio/aarav_pediatric_english.mp3"
   },
   {
     id: "SUBHASH_HEADACHE_ENGLISH",
     language: "English",
-    keywords: ["throbbing headache across my forehead", "long study hours", "mild screen fatigue", "just feeling tired"],
+    keywords: ["throbbing headache across my forehead", "long study hours", "mild screen fatigue", "just feeling tired", "good morning sister"],
     url: "/audio/subhash_headache_english.mp3"
   },
   {
     id: "MEENA_MATERNAL_ENGLISH",
     language: "English",
-    keywords: ["8 months pregnant", "slippers won't fit", "blurred vision", "feet are so swollen", "maternal pre-eclampsia"],
+    keywords: ["8 months pregnant", "slippers won't fit", "blurred vision", "feet are so swollen", "maternal pre-eclampsia", "nurse didi, i am 8 months"],
     url: "/audio/meena_maternal_english.mp3"
   },
 
@@ -254,8 +254,16 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "NURSE_ADVISORY",
     language: "English",
-    keywords: ["registered with abha", "high-flow oxygen", "emergency ecg", "bedside"],
+    keywords: ["registered with abha", "high-flow oxygen", "emergency ecg", "bedside", "nurse advisory"],
     url: "/audio/nurse_advisory.mp3"
+  },
+
+  // --- DOCTOR CLINICAL REFERRAL BRIEFING ---
+  {
+    id: "DOCTOR_REFERRAL",
+    language: "English",
+    keywords: ["clinical summary for referral", "immediate transfer to district hospital", "cardiac intensive care unit", "official 108 emergency handover briefing", "emergency handover briefing"],
+    url: "/audio/doctor_referral.mp3"
   }
 ];
 
@@ -639,11 +647,14 @@ export function humanizeSpeechText(text, { age = 35, role = "patient" } = {}) {
     cleaned = cleaned
       .replace(/\s+(ଆଉ|ଏବଂ|କିନ୍ତୁ|ଯେମିତି|ହଠାତ୍)\s+/g, ", $1 ")
       .replace(/\s+(ହେଉଛି|ଲାଗୁଛି|ହେଲାଣି)\s*([.।!])/g, " $1... ")
+      .replace(/\s*(ଡାକ୍ତର ବାବୁ|ଦିଦି|ମାଉସୀ)\s*[,।]?/g, "$1... ")
       // Hindi natural pause points
       .replace(/\s+(और|लेकिन|जैसे|अचानक|बहुत)\s+/g, ", $1 ")
       .replace(/\s+(हो रहा है|लग रहा है|गया है)\s*([.।!])/g, " $1... ")
+      .replace(/\s*(डॉक्टर साहब|दीदी|नर्स दीदी)\s*[,।]?/g, "$1... ")
       // English natural pause points
-      .replace(/\s+(and|but|suddenly|radiating to|because)\s+/g, ", $1 ");
+      .replace(/\s+(and|but|suddenly|radiating to|because)\s+/g, ", $1 ")
+      .replace(/\s*(Doctor|Sister|Nurse didi)\s*[,.]?/gi, "$1... ");
   }
 
   // Ensure sentence endings have a clean breath pause
@@ -656,11 +667,12 @@ let sharedMasteringAudioCtx = null;
 const masteredAudioElementsSet = new WeakSet();
 
 /**
- * Masters raw clinical TTS audio through an acoustic Web Audio API graph:
- * - Low-shelf warmth filter (+2.8dB @ 240Hz) for natural human vocal chest resonance
- * - Vocal clarity presence filter (+1.8dB @ 3200Hz) for natural Indic consonant definition
- * - High-shelf gentle de-esser (-2.2dB @ 7500Hz) to eliminate digital robotic harshness
- * - Broadcast dynamics compressor to bring up subtle emotional whispers & inhalation breaths
+ * Masters clinical voice audio with broadcast transparency & human warmth:
+ * - Gentle 75Hz high-pass: removes mic thumps & sub-bass rumble without altering speech body
+ * - Vocal body warmth: +0.8 dB @ 200Hz (Q=0.8) for natural chest resonance
+ * - Consonant presence: +1.4 dB @ 3200Hz (Q=1.0) for crisp Indic articulation
+ * - Vocal air & breath: +0.6 dB @ 9500Hz high-shelf for natural human breath intimacy
+ * - Soft-knee broadcast limiter: brings out quiet breath gasps while preventing distortion
  */
 export async function playWithClinicalMastering(audioElement) {
   if (!audioElement) return false;
@@ -682,38 +694,46 @@ export async function playWithClinicalMastering(audioElement) {
       try {
         const source = sharedMasteringAudioCtx.createMediaElementSource(audioElement);
 
-        // 1. Vocal Chest Warmth (240 Hz, +2.8 dB)
-        const warmth = sharedMasteringAudioCtx.createBiquadFilter();
-        warmth.type = "lowshelf";
-        warmth.frequency.value = 240;
-        warmth.gain.value = 2.8;
+        // 1. High-Pass Rumble Filter (75 Hz, 12dB/octave) to clean sub-bass artifacts
+        const rumbleCut = sharedMasteringAudioCtx.createBiquadFilter();
+        rumbleCut.type = "highpass";
+        rumbleCut.frequency.value = 75;
+        rumbleCut.Q.value = 0.7;
 
-        // 2. Vocal Clarity & Consonant Presence (3200 Hz, +1.8 dB)
+        // 2. Vocal Chest Warmth (200 Hz, subtle +0.8 dB)
+        const warmth = sharedMasteringAudioCtx.createBiquadFilter();
+        warmth.type = "peaking";
+        warmth.frequency.value = 200;
+        warmth.Q.value = 0.8;
+        warmth.gain.value = 0.8;
+
+        // 3. Vocal Clarity & Consonant Presence (3200 Hz, +1.4 dB)
         const presence = sharedMasteringAudioCtx.createBiquadFilter();
         presence.type = "peaking";
         presence.frequency.value = 3200;
-        presence.Q.value = 1.1;
-        presence.gain.value = 1.8;
+        presence.Q.value = 1.0;
+        presence.gain.value = 1.4;
 
-        // 3. De-Esser (7500 Hz, -2.2 dB)
-        const deEsser = sharedMasteringAudioCtx.createBiquadFilter();
-        deEsser.type = "highshelf";
-        deEsser.frequency.value = 7500;
-        deEsser.gain.value = -2.2;
+        // 4. Vocal Air & Breath Intimacy (9500 Hz, +0.6 dB)
+        const air = sharedMasteringAudioCtx.createBiquadFilter();
+        air.type = "highshelf";
+        air.frequency.value = 9500;
+        air.gain.value = 0.6;
 
-        // 4. Dynamics Compressor (enhances quiet breath gasps)
+        // 5. Transparent Broadcast Dynamics Compressor
         const compressor = sharedMasteringAudioCtx.createDynamicsCompressor();
-        compressor.threshold.value = -24;
-        compressor.knee.value = 10;
-        compressor.ratio.value = 3.2;
-        compressor.attack.value = 0.003;
-        compressor.release.value = 0.25;
+        compressor.threshold.value = -15;
+        compressor.knee.value = 8;
+        compressor.ratio.value = 1.8;
+        compressor.attack.value = 0.015;
+        compressor.release.value = 0.12;
 
-        // Wire graph: source -> warmth -> presence -> deEsser -> compressor -> speakers
-        source.connect(warmth);
+        // Wire graph: source -> rumbleCut -> warmth -> presence -> air -> compressor -> speakers
+        source.connect(rumbleCut);
+        rumbleCut.connect(warmth);
         warmth.connect(presence);
-        presence.connect(deEsser);
-        deEsser.connect(compressor);
+        presence.connect(air);
+        air.connect(compressor);
         compressor.connect(sharedMasteringAudioCtx.destination);
 
         masteredAudioElementsSet.add(audioElement);

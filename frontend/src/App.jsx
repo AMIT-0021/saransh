@@ -7,6 +7,7 @@ import ReferralSlipModal from "./components/ReferralSlipModal";
 import VoiceStudioModal from "./components/VoiceStudioModal";
 import JudgeTourModal from "./components/JudgeTourModal";
 import AbhaCreationModal from "./components/AbhaCreationModal";
+import DoctorLoginModal from "./components/DoctorLoginModal";
 import {
   getOfflinePendingCount,
   saveOfflineRecord,
@@ -181,7 +182,15 @@ export default function App() {
   const [isJudgeTourOpen, setIsJudgeTourOpen] = useState(false);
   const [isAbhaModalOpen, setIsAbhaModalOpen] = useState(false);
   const [externalAbhaProfile, setExternalAbhaProfile] = useState(null);
+  const [currentPatientDemographics, setCurrentPatientDemographics] = useState(null);
+  const [isDoctorLoginOpen, setIsDoctorLoginOpen] = useState(false);
+  const [authenticatedDoctor, setAuthenticatedDoctor] = useState(null);
   const [externalPresetId, setExternalPresetId] = useState(null);
+
+  const handleDoctorLogout = () => {
+    setAuthenticatedDoctor(null);
+    setActiveRole("NURSE");
+  };
 
   // Fast-track preset launcher from Judge Tour Modal
   const handleLaunchPresetFromTour = (presetId) => {
@@ -717,6 +726,9 @@ export default function App() {
         onOpenVoiceStudio={() => setIsVoiceStudioOpen(true)}
         onOpenJudgeTour={() => setIsJudgeTourOpen(true)}
         onOpenAbhaStudio={() => setIsAbhaModalOpen(true)}
+        authenticatedDoctor={authenticatedDoctor}
+        onOpenDoctorLogin={() => setIsDoctorLoginOpen(true)}
+        onDoctorLogout={handleDoctorLogout}
         redCount={queueData.red_count}
         yellowCount={queueData.yellow_count}
         greenCount={queueData.green_count}
@@ -749,9 +761,18 @@ export default function App() {
             isAnalyzing={isAnalyzing}
             triageResult={triageResult}
             onSubmitFollowupAnswers={handleSubmitFollowupAnswers}
-            onGoToDoctorQueue={() => setActiveRole("DOCTOR")}
+            onGoToDoctorQueue={() => {
+              if (authenticatedDoctor) {
+                setActiveRole("DOCTOR");
+              } else {
+                setIsDoctorLoginOpen(true);
+              }
+            }}
             externalPresetId={externalPresetId}
-            onOpenAbhaStudio={() => setIsAbhaModalOpen(true)}
+            onOpenAbhaStudio={(demo) => {
+              setCurrentPatientDemographics(demo || null);
+              setIsAbhaModalOpen(true);
+            }}
             externalAbhaProfile={externalAbhaProfile}
           />
         ) : (
@@ -767,6 +788,8 @@ export default function App() {
             selectedLanguage={selectedLanguage}
             onRefreshQueue={() => fetchQueue(selectedFacility)}
             isRefreshing={isFetchingQueue}
+            authenticatedDoctor={authenticatedDoctor}
+            onDoctorLogout={handleDoctorLogout}
           />
         )}
       </main>
@@ -808,12 +831,26 @@ export default function App() {
       <AbhaCreationModal
         isOpen={isAbhaModalOpen}
         onClose={() => setIsAbhaModalOpen(false)}
+        initialDemographics={currentPatientDemographics}
         onApplyProfile={(profile) => {
           setActiveRole("NURSE");
           setExternalAbhaProfile(profile);
           setIsAbhaModalOpen(false);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
+      />
+
+      {/* 8. ABDM Healthcare Professionals Registry (HPR) Doctor Login Gateway */}
+      <DoctorLoginModal
+        isOpen={isDoctorLoginOpen}
+        onClose={() => setIsDoctorLoginOpen(false)}
+        onLoginSuccess={(docProfile) => {
+          setAuthenticatedDoctor(docProfile);
+          setActiveRole("DOCTOR");
+          setIsDoctorLoginOpen(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        currentFacility={selectedFacility}
       />
 
       {/* 5. Minimalist Healthcare Footer */}

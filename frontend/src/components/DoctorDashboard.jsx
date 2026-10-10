@@ -20,7 +20,9 @@ export default function DoctorDashboard({
   onOpenReferralSlip,
   selectedLanguage = "English",
   onRefreshQueue,
-  isRefreshing = false
+  isRefreshing = false,
+  authenticatedDoctor = null,
+  onDoctorLogout = null
 }) {
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
   const [priorityFilter, setPriorityFilter] = useState("ALL");
@@ -80,6 +82,50 @@ export default function DoctorDashboard({
 
   return (
     <div className="space-y-4 sm:space-y-6 min-w-0 max-w-full">
+      {/* 0. Authenticated Clinician HPR Banner */}
+      {authenticatedDoctor && (
+        <div className="bg-gradient-to-r from-[#071733] via-[#092248] to-[#041c38] text-white p-3.5 sm:p-4 rounded-3xl border border-sky-400/30 shadow-lg shadow-sky-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
+          <div className="flex items-center space-x-3.5 min-w-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500 to-sky-600 p-0.5 shadow-md shrink-0">
+              <div className="w-full h-full bg-[#08152e] rounded-[14px] flex items-center justify-center text-teal-300">
+                <Stethoscope className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-2 flex-wrap">
+                <span className="font-black text-sm text-white tracking-tight truncate">
+                  {authenticatedDoctor.name}
+                </span>
+                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-extrabold px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400 inline" />
+                  <span>HPR LEVEL-2 VERIFIED</span>
+                </span>
+              </div>
+              <p className="text-xs text-sky-200/90 truncate mt-0.5">
+                {authenticatedDoctor.degrees} • {authenticatedDoctor.designation} • HPR:{" "}
+                <span className="font-mono text-teal-300 font-bold">{authenticatedDoctor.hpr_id}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 shrink-0 self-end sm:self-center">
+            <span className="text-[10px] text-slate-300 font-mono hidden md:inline bg-black/30 px-2 py-1 rounded-lg border border-sky-500/20">
+              Session: {authenticatedDoctor.verified_at || "Active"}
+            </span>
+            {onDoctorLogout && (
+              <button
+                type="button"
+                onClick={onDoctorLogout}
+                className="px-3 py-1.5 bg-white/10 hover:bg-rose-500/20 text-sky-200 hover:text-rose-200 rounded-xl text-xs font-bold transition border border-white/20 hover:border-rose-400/30 cursor-pointer"
+                title="Sign Out of Doctor Session & Switch to Nurse Station"
+              >
+                Sign Out ➔
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 1. Hospital Resource & Capacity Bar (Apple Health Style Live Telemetry) */}
       <div className="card-premium bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm shadow-slate-900/5 transition-all min-w-0 max-w-full overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-100 pb-3 sm:pb-4 min-w-0">

@@ -38,6 +38,9 @@ export default function HeaderBar({
   onOpenVoiceStudio,
   onOpenJudgeTour,
   onOpenAbhaStudio,
+  authenticatedDoctor,
+  onOpenDoctorLogin,
+  onDoctorLogout,
   redCount = 0,
   yellowCount = 0,
   greenCount,
@@ -231,6 +234,55 @@ export default function HeaderBar({
               </button>
             )}
 
+            {/* Role Switcher: Nurse Station vs Doctor Portal (HPR Authenticated) */}
+            <div className="flex items-center bg-slate-100/90 rounded-xl p-0.5 sm:p-1 border border-slate-200 shrink-0 min-h-[36px] sm:min-h-[38px] shadow-2xs">
+              <button
+                type="button"
+                onClick={() => onRoleChange("NURSE")}
+                className={`text-[11px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-lg transition font-bold flex items-center space-x-1 cursor-pointer ${
+                  activeRole === "NURSE"
+                    ? "bg-white text-teal-900 shadow-xs border border-teal-200"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="Switch to Frontline Nurse Intake Desk"
+              >
+                <span>👩‍⚕️</span>
+                <span className="hidden xl:inline">Nurse Station</span>
+                <span className="xl:hidden">Nurse</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (activeRole === "DOCTOR") {
+                    return;
+                  }
+                  if (authenticatedDoctor) {
+                    onRoleChange("DOCTOR");
+                  } else {
+                    if (onOpenDoctorLogin) onOpenDoctorLogin();
+                  }
+                }}
+                className={`text-[11px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-lg transition font-bold flex items-center space-x-1 cursor-pointer ${
+                  activeRole === "DOCTOR"
+                    ? "bg-gradient-to-r from-sky-600 to-teal-700 text-white shadow-xs"
+                    : "text-slate-700 hover:text-slate-900 hover:bg-white/60"
+                }`}
+                title={authenticatedDoctor ? "Doctor Dashboard (HPR Authorized)" : "Doctor Portal (Requires HPR Verification)"}
+              >
+                <span>🩺</span>
+                <span className="hidden xl:inline">
+                  {authenticatedDoctor ? "Doctor MO" : "Doctor Portal"}
+                </span>
+                <span className="xl:hidden">Doctor</span>
+                {authenticatedDoctor ? (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" title="HPR Verified Clinician"></span>
+                ) : (
+                  <span className="text-[10px] text-amber-500 font-mono ml-0.5" title="HPR Login Required">🔒</span>
+                )}
+              </button>
+            </div>
+
             {/* Language Switcher Pill (Always Visible) */}
             <div className="flex items-center bg-slate-100/90 rounded-xl p-0.5 sm:p-1 border border-slate-200 shrink-0 min-h-[36px] sm:min-h-[38px]">
               <Globe className="w-3.5 h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:block" />
@@ -419,6 +471,42 @@ export default function HeaderBar({
                         </div>
                       </div>
                       <ChevronRight className="w-4 h-4 text-sky-600 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1.5" />
+                    </button>
+
+                    {/* Item 2.5: ABDM HPR Doctor Portal Sign-In */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsToolsOpen(false);
+                        if (authenticatedDoctor) {
+                          if (onDoctorLogout) onDoctorLogout();
+                        } else {
+                          if (onOpenDoctorLogin) onOpenDoctorLogin();
+                        }
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-teal-50/80 via-sky-50/60 to-cyan-50/60 hover:from-teal-100 hover:to-sky-100 border border-teal-300 transition flex items-center justify-between group cursor-pointer shadow-2xs"
+                    >
+                      <div className="flex items-start space-x-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-600 to-sky-700 text-white flex items-center justify-center shrink-0 shadow-xs font-black text-sm">
+                          🩺
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center space-x-1.5 flex-wrap">
+                            <span className="text-xs font-black text-slate-900 group-hover:text-teal-950">
+                              {authenticatedDoctor ? "Doctor Signed In (HPR)" : "Doctor HPR Sign-In"}
+                            </span>
+                            <span className="text-[9px] bg-teal-100 text-teal-900 border border-teal-300 px-1.5 py-0.2 rounded font-extrabold whitespace-nowrap">
+                              {authenticatedDoctor ? "LOG OUT" : "GATEWAY"}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-600 leading-tight mt-0.5 truncate">
+                            {authenticatedDoctor
+                              ? `${authenticatedDoctor.name} (${authenticatedDoctor.hpr_id})`
+                              : "NHA Healthcare Professionals Registry portal"}
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-teal-600 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1.5" />
                     </button>
 
                     {/* Item 3: Reset Demo Cases */}

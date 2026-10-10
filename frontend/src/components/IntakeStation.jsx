@@ -1435,7 +1435,7 @@ export default function IntakeStation({
                     type="button"
                     onClick={() => {
                       if (onOpenAbhaStudio) {
-                        onOpenAbhaStudio();
+                        onOpenAbhaStudio(patientInfo);
                       } else {
                         handleMockScanAbha();
                       }

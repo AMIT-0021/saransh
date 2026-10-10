@@ -312,9 +312,9 @@ export default function IntakeStation({
       setPatientInfo((prev) => ({
         ...prev,
         abha_id: "91-4821-9923-0192",
-        name_or_alias: "Ramesh Kumar (ABHA Verified)",
-        age: 62,
-        sex: "Male",
+        name_or_alias: prev.name_or_alias || "Verified ABHA Citizen",
+        age: prev.age || 45,
+        sex: prev.sex || "Male",
         location_state: "Odisha - Khordha",
         consent_given: true
       }));
@@ -1255,7 +1255,7 @@ export default function IntakeStation({
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <h3 className="text-sm sm:text-lg font-black text-white tracking-tight truncate max-w-[200px] sm:max-w-none">
-                        {patientInfo.name_or_alias || (abhaScanned ? "ABHA Verified Citizen" : "Walk-in Citizen (New Intake)")}
+                        {patientInfo.name_or_alias || (abhaScanned ? "ABHA Verified Citizen" : "Walk-in Citizen (No Name)")}
                       </h3>
                       <span className={`text-[9px] sm:text-[10px] ${abhaScanned ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/30" : "bg-sky-500/20 text-sky-300 border-sky-400/30"} border px-2 py-0.5 rounded-md font-bold shrink-0`}>
                         {abhaScanned ? "ABHA VERIFIED" : "WALK-IN CITIZEN"}

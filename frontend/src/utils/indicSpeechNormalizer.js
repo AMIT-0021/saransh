@@ -157,12 +157,30 @@ export const INDIC_MEDICAL_IDIOMS = {
 
   Hindi: [
     {
+      idiom: "सीने में भारी पत्थर",
+      phonetic: "seene mein bhari patthar",
+      clinicalTerm: "Severe Retrosternal Chest Heaviness",
+      category: "Cardiac / Angina",
+      severity: "CRITICAL",
+      icon: "🪨",
+      mappedSymptom: "Chest Pain"
+    },
+    {
       idiom: "सीना भारी पत्थर जैसा",
       phonetic: "seena bhari patthar jaisa",
       clinicalTerm: "Severe Retrosternal Chest Heaviness",
       category: "Cardiac / Angina",
       severity: "CRITICAL",
       icon: "🪨",
+      mappedSymptom: "Chest Pain"
+    },
+    {
+      idiom: "सीना फट जाएगा",
+      phonetic: "seena fat jaayega",
+      clinicalTerm: "Tearing Retrosternal Chest Pain",
+      category: "Cardiac / Aortic / Emergency",
+      severity: "CRITICAL",
+      icon: "🚨",
       mappedSymptom: "Chest Pain"
     },
     {
@@ -173,6 +191,33 @@ export const INDIC_MEDICAL_IDIOMS = {
       severity: "CRITICAL",
       icon: "🫀",
       mappedSymptom: "Chest Pain"
+    },
+    {
+      idiom: "तेज चुभन महसूस हो रही है",
+      phonetic: "tez chubhan mahsoos ho rahi hai",
+      clinicalTerm: "Acute Precordial Stabbing Sensation",
+      category: "Cardiac / Pulmonary",
+      severity: "CRITICAL",
+      icon: "🫀",
+      mappedSymptom: "Chest Pain"
+    },
+    {
+      idiom: "पसीने से ठंडा",
+      phonetic: "paseene se thanda",
+      clinicalTerm: "Cold Diaphoresis / Shock Sign",
+      category: "Hemodynamic / Shock",
+      severity: "CRITICAL",
+      icon: "💦",
+      mappedSymptom: "Sweating"
+    },
+    {
+      idiom: "सांस बिल्कुल नहीं आ रही",
+      phonetic: "saans bilkul nahi aa rahi",
+      clinicalTerm: "Severe Acute Dyspnea / Air Hunger",
+      category: "Pulmonary / Critical",
+      severity: "CRITICAL",
+      icon: "🫁",
+      mappedSymptom: "Difficulty Breathing"
     },
     {
       idiom: "छाती फटने जैसा दर्द",
@@ -404,10 +449,13 @@ export function normalizeIndicSpeech(text, language = "English") {
 
   const detectedIdioms = [];
   const suggestedSymptoms = new Set();
+  const normDigits = (s) => (s || "").replace(/[०୦]/g, "0").replace(/[१୧]/g, "1").replace(/[२୨]/g, "2").replace(/[३୩]/g, "3").replace(/[४୪]/g, "4").replace(/[५୫]/g, "5").replace(/[६୬]/g, "6").replace(/[७୭]/g, "7").replace(/[८୮]/g, "8").replace(/[९୯]/g, "9");
+  const cleanNorm = normDigits(cleanText);
   let inferredTimeline = null;
 
   for (const item of idiomList) {
-    const directMatch = cleanText.includes(item.idiom);
+    const itemNorm = normDigits(item.idiom);
+    const directMatch = cleanText.includes(item.idiom) || cleanNorm.includes(itemNorm);
     const phoneticMatch = item.phonetic ? lowerText.includes(item.phonetic.toLowerCase()) : false;
 
     if (directMatch || phoneticMatch) {

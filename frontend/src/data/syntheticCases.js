@@ -2,11 +2,12 @@ export const SYNTHETIC_CASES = [
   {
     id: "RAMESH_CARDIAC_RED",
     badgeLabel: "🔴 Emergency Case #1 (62M) — Odia Chest Pain & Hypoxia (SpO2 89%)",
+    priority: "RED",
     priorityHint: "RED",
     patient_basic_info: {
       patient_id: "PHC-1024",
       token_number: "T-024",
-      name_or_alias: "",
+      name_or_alias: "Ramesh K. (Synthetic)",
       age: 62,
       sex: "Male",
       location_state: "Odisha - Khordha (PHC Jatni - NIN: OD-KHD-PHC-102)",
@@ -347,6 +348,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "RAJESH_TOXIC_YELLOW",
     badgeLabel: "🟠 Rajesh M. (45M) — Hindi Industrial Solvent Inhalation (SpO2 92%)",
+    priority: "YELLOW",
     priorityHint: "YELLOW",
     patient_basic_info: {
       patient_id: "IND-1027",
@@ -413,6 +415,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "KAMALA_NCD_GREEN",
     badgeLabel: "🟢 Kamala B. (68F) — Odia Mobile Health Camp NCD Check-In & Joint Pain",
+    priority: "GREEN",
     priorityHint: "GREEN",
     patient_basic_info: {
       patient_id: "CAMP-1028",
@@ -473,6 +476,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "ARVIND_RESPIRATORY_RED",
     badgeLabel: "🔴 Arvind N. (58M) — AIIMS New Delhi Hypoxia & Severe Dyspnea (SpO2 86%)",
+    priority: "RED",
     priorityHint: "RED",
     patient_basic_info: {
       patient_id: "AIIMS-1029",
@@ -540,6 +544,7 @@ export const SYNTHETIC_CASES = [
   {
     id: "SURESH_CHEMICAL_YELLOW",
     badgeLabel: "🟠 Suresh T. (44M) — Thane MIDC Industrial Chlorine Exposure (SpO2 91%)",
+    priority: "YELLOW",
     priorityHint: "YELLOW",
     patient_basic_info: {
       patient_id: "THN-1030",

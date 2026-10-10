@@ -163,40 +163,36 @@ export default function DoctorLoginModal({
           {/* TAB 1: Fast Demo Sign-In */}
           {authMethod === "FAST_DEMO" && (
             <div className="space-y-4">
-              {/* Doctor Smart ID Badge Card */}
-              <div className="relative rounded-2xl p-4 bg-gradient-to-br from-[#0c224a] to-[#071530] border border-sky-400/30 shadow-xl overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
-
+              {/* Doctor Smart ID Badge Card (Clean White Aesthetic) */}
+              <div className="relative rounded-2xl p-4 bg-white border border-slate-200/90 shadow-xl overflow-hidden text-slate-800">
                 <div className="flex items-start justify-between gap-3 relative">
                   <div className="flex items-center space-x-3.5">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-sky-600 p-0.5 shadow-md shrink-0">
-                      <div className="w-full h-full bg-[#08152e] rounded-[14px] flex flex-col items-center justify-center text-teal-300">
-                        <Stethoscope className="w-7 h-7" />
-                        <span className="text-[8px] font-black uppercase">DOCTOR</span>
-                      </div>
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-100 border border-teal-200 p-0.5 shadow-xs shrink-0 flex flex-col items-center justify-center text-teal-700">
+                      <Stethoscope className="w-7 h-7 stroke-[2.2]" />
+                      <span className="text-[8px] font-black uppercase text-teal-800 mt-0.5">DOCTOR</span>
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h3 className="text-base font-black text-white">{mockDoctorProfile.name}</h3>
-                        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-extrabold px-2 py-0.5 rounded-full flex items-center space-x-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-400 inline" />
+                        <h3 className="text-base font-black text-slate-900">{mockDoctorProfile.name}</h3>
+                        <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[9px] font-extrabold px-2 py-0.5 rounded-full flex items-center space-x-1 shadow-2xs">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600 inline" />
                           <span>HPR VERIFIED</span>
                         </span>
                       </div>
-                      <p className="text-xs text-sky-200 font-semibold">{mockDoctorProfile.degrees}</p>
-                      <p className="text-[11px] text-slate-300">{mockDoctorProfile.designation} • {mockDoctorProfile.facility}</p>
+                      <p className="text-xs text-teal-800 font-bold">{mockDoctorProfile.degrees}</p>
+                      <p className="text-[11px] text-slate-500 font-medium">{mockDoctorProfile.designation} • {mockDoctorProfile.facility}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-sky-400/20 text-[11px] font-mono">
-                  <div className="bg-[#050e20]/80 p-2 rounded-xl border border-sky-500/20">
-                    <span className="text-slate-400 block text-[9px] uppercase font-sans">NHA HPR ID:</span>
-                    <span className="text-teal-300 font-bold">{mockDoctorProfile.hpr_id}</span>
+                <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 text-[11px] font-mono">
+                  <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+                    <span className="text-slate-500 block text-[9px] uppercase font-sans font-bold">NHA HPR ID:</span>
+                    <span className="text-teal-800 font-black">{mockDoctorProfile.hpr_id}</span>
                   </div>
-                  <div className="bg-[#050e20]/80 p-2 rounded-xl border border-sky-500/20">
-                    <span className="text-slate-400 block text-[9px] uppercase font-sans">Medical Council Reg:</span>
-                    <span className="text-sky-300 font-bold">{mockDoctorProfile.council_reg}</span>
+                  <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+                    <span className="text-slate-500 block text-[9px] uppercase font-sans font-bold">Medical Council Reg:</span>
+                    <span className="text-sky-800 font-black">{mockDoctorProfile.council_reg}</span>
                   </div>
                 </div>
               </div>

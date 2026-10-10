@@ -15,7 +15,7 @@ import {
 } from "./utils/offlineQueue";
 import { evaluateLocalDeterministicTriage } from "./utils/localTriageRules";
 import { SYNTHETIC_CASES } from "./data/syntheticCases";
-import { stopHumanVoice } from "./utils/voiceSynthesisEngine";
+import { stopHumanVoice, preloadAllStudioAudio } from "./utils/voiceSynthesisEngine";
 
 const API_BASE = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_BACKEND_URL)
   ? import.meta.env.VITE_BACKEND_URL
@@ -286,6 +286,11 @@ export default function App() {
     }, 5000);
     return () => clearInterval(interval);
   }, [fetchQueue]);
+
+  // Pre-buffer sovereign studio audio files into browser cache on app load
+  useEffect(() => {
+    preloadAllStudioAudio();
+  }, []);
 
   // Run Triage Analysis
   const handleAnalyze = async (payload) => {

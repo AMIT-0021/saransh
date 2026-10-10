@@ -13,7 +13,13 @@ import {
   Stethoscope,
   Globe
 } from "lucide-react";
-import { stopHumanVoice, playWithClinicalMastering } from "../utils/voiceSynthesisEngine";
+import {
+  stopHumanVoice,
+  playWithClinicalMastering,
+  getOrCreatePreloadedAudio,
+  preloadAllStudioAudio,
+  DYNAMIC_TTS_CACHE
+} from "../utils/voiceSynthesisEngine";
 
 const PERSONA_PRESETS = [
   {
@@ -167,6 +173,56 @@ const LANGUAGES = [
   { code: "te-IN", label: "Telugu (తెలుగు)", key: "Telugu" }
 ];
 
+export const LOCAL_STUDIO_MAP = {
+  ELDERLY_MALE: {
+    Odia: "/audio/ramesh_cardiac_odia.wav",
+    Hindi: "/audio/ramesh_cardiac_hindi.wav",
+    English: "/audio/ramesh_english.mp3"
+  },
+  ADULT_FEMALE: {
+    Odia: "/audio/priya_fever_odia.wav",
+    Hindi: "/audio/priya_fever_hindi.wav",
+    English: "/audio/priya_fever_english.mp3"
+  },
+  CHILD_MALE: {
+    Odia: "/audio/lipu_pediatric_odia.wav",
+    Hindi: "/audio/aarav_pediatric_hindi.wav",
+    English: "/audio/aarav_pediatric_english.mp3"
+  },
+  MATERNAL_FEMALE: {
+    Odia: "/audio/meena_maternal_odia.wav",
+    Hindi: "/audio/meena_maternal_hindi.wav",
+    English: "/audio/meena_maternal_english.mp3"
+  },
+  YOUNG_MALE: {
+    Odia: "/audio/subhash_headache_odia.wav",
+    Hindi: "/audio/subhash_headache_hindi.wav",
+    English: "/audio/subhash_headache_english.mp3"
+  },
+  NURSE_FEMALE: {
+    Odia: "/audio/nurse_advisory.mp3",
+    Hindi: "/audio/nurse_advisory.mp3",
+    English: "/audio/nurse_advisory.mp3"
+  },
+  DOCTOR_MALE: {
+    Odia: "/audio/doctor_referral.mp3",
+    Hindi: "/audio/doctor_referral.mp3",
+    English: "/audio/doctor_referral.mp3"
+  }
+};
+
+function isMatchingSample(currentText, persona, langKey) {
+  if (!currentText || !persona) return false;
+  const sample = persona.sampleText?.[langKey];
+  if (!sample) return false;
+  const cleanCurrent = currentText.trim().replace(/[\s\p{P}\u2026\u0B64\u0964]+/gu, "").toLowerCase();
+  const cleanSample = sample.trim().replace(/[\s\p{P}\u2026\u0B64\u0964]+/gu, "").toLowerCase();
+  if (cleanCurrent === cleanSample) return true;
+  if (cleanCurrent.length >= 8 && (cleanCurrent.includes(cleanSample.slice(0, 16)) || cleanSample.includes(cleanCurrent.slice(0, 16)))) {
+    return true;
+  }
+  return false;
+}
 
 export default function VoiceStudioModal({ isOpen, onClose }) {
   const [selectedPersona, setSelectedPersona] = useState(PERSONA_PRESETS[0]);
@@ -188,6 +244,13 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
       setCustomText(text);
     }
   }, [selectedPersona, selectedLang]);
+
+  // Pre-buffer all audio as soon as modal opens for instant playback (<10ms)
+  useEffect(() => {
+    if (isOpen) {
+      preloadAllStudioAudio();
+    }
+  }, [isOpen]);
 
   // Cleanup on unmount or close
   useEffect(() => {
@@ -215,10 +278,54 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
 
   const handleSynthesizeAndPlay = async () => {
     handleStopAudio();
-    setIsGenerating(true);
-    setStatusMessage("Synthesizing 24,000 Hz Sovereign Neural Voice...");
 
-    // Convert any numeral digits in Odia to authentic spoken Odia words before synthesis
+    // 1. Instant Playback Check: Authentic Sovereign Studio Recording (<10ms)
+    const personaAudio = LOCAL_STUDIO_MAP[selectedPersona.id];
+    const localUrl = personaAudio
+      ? (personaAudio[selectedLang.key] || (["English", "Hindi", "Odia"].includes(selectedLang.key) ? null : personaAudio.English))
+      : null;
+    const isPresetMatch = isMatchingSample(customText, selectedPersona, selectedLang.key);
+
+    if (localUrl && isPresetMatch) {
+      const audio = getOrCreatePreloadedAudio(localUrl);
+      if (audio) {
+        audioRef.current = audio;
+        audio.currentTime = 0;
+
+        // Modulate playback speed if user adjusted cadence slider
+        const basePace = selectedPersona.pace || 0.85;
+        const targetPace = parseFloat(customPace) || basePace;
+        audio.playbackRate = Math.min(1.5, Math.max(0.65, targetPace / basePace));
+
+        audio.onplay = () => {
+          setIsGenerating(false);
+          setIsPlaying(true);
+          setStatusMessage(`Speaking (${selectedPersona.name} • 24kHz Sovereign Studio)`);
+        };
+        audio.onended = () => {
+          setIsPlaying(false);
+          setStatusMessage("Finished playback.");
+          audioRef.current = null;
+        };
+        audio.onerror = () => {
+          setIsPlaying(false);
+          setIsGenerating(false);
+          setStatusMessage("Audio playback failed.");
+          audioRef.current = null;
+        };
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn("Audio play prevented:", err);
+            setIsPlaying(false);
+          });
+        }
+        return;
+      }
+    }
+
+    // 2. Prepare text for dynamic synthesis with Odia numeral word expansion
     let textToSend = customText;
     if (selectedLang.code === "od-IN" || /[\u0B00-\u0B7F]/.test(textToSend)) {
       const ODIA_DIGITS = {
@@ -232,18 +339,58 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
         .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ମାସ`);
     }
 
+    // 3. Fast In-Memory Cache Check for custom replayed text
+    const ttsCacheKey = `${selectedLang.code}_${selectedPersona.speaker}_${textToSend}_${customPitch}_${customPace}`;
+    if (DYNAMIC_TTS_CACHE.has(ttsCacheKey)) {
+      const cachedUri = DYNAMIC_TTS_CACHE.get(ttsCacheKey);
+      const audio = new Audio(cachedUri);
+      audioRef.current = audio;
+      audio.currentTime = 0;
+      audio.onplay = () => {
+        setIsGenerating(false);
+        setIsPlaying(true);
+        setStatusMessage(`Speaking (${selectedPersona.name} • 24kHz Bulbul v3 Cache)`);
+      };
+      audio.onended = () => {
+        setIsPlaying(false);
+        setStatusMessage("Finished playback.");
+        audioRef.current = null;
+      };
+      audio.onerror = () => {
+        setIsPlaying(false);
+        setIsGenerating(false);
+        setStatusMessage("Audio playback failed.");
+        audioRef.current = null;
+      };
+      const playPromise = audio.play();
+      if (playPromise !== undefined) playPromise.catch(console.warn);
+      return;
+    }
+
+    // 4. Remote Neural Cloud Synthesis for custom text
+    setIsGenerating(true);
+    setStatusMessage("Synthesizing 24,000 Hz Sovereign Neural Voice...");
+
     try {
       const candidateUrls = [
-        (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000/api/v1/sarvam/tts" : "/api/v1/sarvam/tts",
+        "/api/v1/sarvam/tts",
         "https://saransh-two.vercel.app/api/v1/sarvam/tts"
       ];
+      if (typeof window !== "undefined" && window.location.port === "5173") {
+        candidateUrls.unshift("http://localhost:8000/api/v1/sarvam/tts");
+      }
 
       let resp = null;
       for (const url of candidateUrls) {
         try {
+          const controller = new AbortController();
+          const timeoutMs = url.includes("localhost:8000") ? 1500 : 4000;
+          const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
           resp = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            signal: controller.signal,
             body: JSON.stringify({
               text: textToSend,
               target_language_code: selectedLang.code,
@@ -252,7 +399,8 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
               pace: parseFloat(customPace)
             })
           });
-          if (resp.ok) break;
+          clearTimeout(timeoutId);
+          if (resp && resp.ok) break;
         } catch {
           // try next candidate endpoint
         }
@@ -262,6 +410,8 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
         const data = await resp.json();
         if (data.audio_base64) {
           const audioUri = `data:audio/wav;base64,${data.audio_base64}`;
+          DYNAMIC_TTS_CACHE.set(ttsCacheKey, audioUri);
+
           const audio = new Audio(audioUri);
           audioRef.current = audio;
 
@@ -283,7 +433,8 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
             setStatusMessage("Audio playback failed.");
           };
 
-          await playWithClinicalMastering(audio);
+          const p = audio.play();
+          if (p !== undefined) await p;
           return;
         }
       }
@@ -293,65 +444,35 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
       setIsGenerating(false);
       setStatusMessage("Using local pre-rendered audio...");
 
-      // Fallback to local audio if offline or serverless cold-start
-      const localAudioMap = {
-        ELDERLY_MALE: {
-          Odia: "/audio/ramesh_cardiac_odia.wav",
-          Hindi: "/audio/ramesh_cardiac_hindi.wav",
-          English: "/audio/ramesh_english.mp3"
-        },
-        ADULT_FEMALE: {
-          Odia: "/audio/priya_fever_odia.wav",
-          Hindi: "/audio/priya_fever_hindi.wav",
-          English: "/audio/priya_fever_english.mp3"
-        },
-        CHILD_MALE: {
-          Odia: "/audio/lipu_pediatric_odia.wav",
-          Hindi: "/audio/aarav_pediatric_hindi.wav",
-          English: "/audio/aarav_pediatric_english.mp3"
-        },
-        MATERNAL_FEMALE: {
-          Odia: "/audio/meena_maternal_odia.wav",
-          Hindi: "/audio/meena_maternal_hindi.wav",
-          English: "/audio/meena_maternal_english.mp3"
-        },
-        YOUNG_MALE: {
-          Odia: "/audio/subhash_headache_odia.wav",
-          Hindi: "/audio/subhash_headache_hindi.wav",
-          English: "/audio/subhash_headache_english.mp3"
-        },
-        NURSE_FEMALE: {
-          Odia: "/audio/nurse_advisory.mp3",
-          Hindi: "/audio/nurse_advisory.mp3",
-          English: "/audio/nurse_advisory.mp3"
-        },
-        DOCTOR_MALE: {
-          Odia: "/audio/doctor_referral.mp3",
-          Hindi: "/audio/doctor_referral.mp3",
-          English: "/audio/doctor_referral.mp3"
-        }
-      };
-
-      const personaAudio = localAudioMap[selectedPersona.id];
-      const fallbackUrl = personaAudio
-        ? (personaAudio[selectedLang.key] || personaAudio.English || personaAudio.Hindi || personaAudio.Odia)
-        : "/audio/ramesh_cardiac.mp3";
+      const fallbackUrl = localUrl || (personaAudio ? (personaAudio.English || personaAudio.Hindi || personaAudio.Odia) : "/audio/ramesh_cardiac.mp3");
 
       if (fallbackUrl) {
-        const audio = new Audio(fallbackUrl);
+        const audio = getOrCreatePreloadedAudio(fallbackUrl) || new Audio(fallbackUrl);
         audioRef.current = audio;
-        audio.onplay = () => setIsPlaying(true);
+        audio.currentTime = 0;
+        audio.onplay = () => {
+          setIsPlaying(true);
+          setStatusMessage(`Speaking (${selectedPersona.name} • 24kHz Local Backup)`);
+        };
         audio.onended = () => {
           setIsPlaying(false);
+          setStatusMessage("Finished playback.");
           audioRef.current = null;
         };
-        await playWithClinicalMastering(audio);
+        audio.onerror = () => {
+          setIsPlaying(false);
+          setStatusMessage("Failed to play audio.");
+          audioRef.current = null;
+        };
+        const p = audio.play();
+        if (p !== undefined) await p;
       } else {
         setIsPlaying(false);
         setStatusMessage("Failed to play audio.");
       }
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-fade-in">

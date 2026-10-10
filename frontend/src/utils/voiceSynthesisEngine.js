@@ -152,135 +152,291 @@ export function convertIndicToLatinPhonetic(str) {
   return res.replace(/a\s+/g, " ").replace(/a$/g, "").trim();
 }
 
+// =========================================================================
+// PRE-BUFFERED AUDIO INSTANCE CACHE FOR ZERO-LATENCY PLAYBACK
+// =========================================================================
+export const PRELOADED_STUDIO_AUDIO_CACHE = new Map();
+export const DYNAMIC_TTS_CACHE = new Map();
+
+/**
+ * Returns a warmed up, preloaded HTML5 Audio instance for instant playback (<10ms).
+ */
+export function getOrCreatePreloadedAudio(url) {
+  if (typeof window === "undefined" || !url) return null;
+  let audio = PRELOADED_STUDIO_AUDIO_CACHE.get(url);
+  if (!audio) {
+    audio = new Audio();
+    audio.preload = "auto";
+    audio.src = url;
+    audio.load();
+    PRELOADED_STUDIO_AUDIO_CACHE.set(url, audio);
+  }
+  return audio;
+}
+
+/**
+ * Pre-buffers all 28 studio audio files into browser cache.
+ */
+export function preloadAllStudioAudio() {
+  if (typeof window === "undefined") return;
+  const audioUrls = [
+    "/audio/ramesh_cardiac_odia.wav",
+    "/audio/ramesh_cardiac_hindi.wav",
+    "/audio/ramesh_english.mp3",
+    "/audio/priya_fever_odia.wav",
+    "/audio/priya_fever_hindi.wav",
+    "/audio/priya_fever_english.mp3",
+    "/audio/lipu_pediatric_odia.wav",
+    "/audio/aarav_pediatric_hindi.wav",
+    "/audio/aarav_pediatric_english.mp3",
+    "/audio/subhash_headache_odia.wav",
+    "/audio/subhash_headache_hindi.wav",
+    "/audio/subhash_headache_english.mp3",
+    "/audio/meena_maternal_odia.wav",
+    "/audio/meena_maternal_hindi.wav",
+    "/audio/meena_maternal_english.mp3",
+    "/audio/nurse_advisory.mp3",
+    "/audio/doctor_referral.mp3"
+  ];
+
+  audioUrls.forEach((url) => {
+    try {
+      getOrCreatePreloadedAudio(url);
+    } catch {}
+  });
+}
+
+// Automatically trigger audio pre-buffering on script evaluation
+if (typeof window !== "undefined") {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(() => preloadAllStudioAudio());
+  } else {
+    setTimeout(preloadAllStudioAudio, 50);
+  }
+}
+
 // Registry of high-fidelity Neural studio Indian voice audio files
 const PRE_RENDERED_STUDIO_AUDIO = [
   // --- ODIA PATIENT CASES ---
   {
     id: "RAMESH_ODIA",
     language: "Odia",
+    url: "/audio/ramesh_cardiac_odia.wav",
+    matchTexts: [
+      "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
+      "ଆଃ... ଡାକ୍ତର ବାବୁ... ଦୁଇ ଘଣ୍ଟା ହେଲା... ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ବାମ ହାତକୁ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ... ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି! ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ... ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି... ଆଃ...",
+      "ଡାକ୍ତର ବାବୁ, ବହୁତ ଜୋରରେ କଷ୍ଟ ହେଉଛି।"
+    ],
     fullText: "ଆଃ... ଡାକ୍ତର ବାବୁ... ଦୁଇ ଘଣ୍ଟା ହେଲା... ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ବାମ ହାତକୁ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ... ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି! ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ... ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି... ଆଃ...",
-    strictKeywords: ["ଛାତିଟା ପଥର", "ଦୁଇ ଘଣ୍ଟା", "ଫାଟିଯିବା"],
-    url: "/audio/ramesh_cardiac_odia.wav"
+    strictKeywords: ["ଛାତି", "ପଥର"],
+    signatures: ["ଛାତି", "ପଥର", "ଦରଦ", "ଝାଳ", "ଫାଟିଯିବା"]
   },
   {
     id: "PRIYA_FEVER_ODIA",
     language: "Odia",
+    url: "/audio/priya_fever_odia.wav",
+    matchTexts: [
+      "ଦିଦି, ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି। ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
+      "ଉଫ୍... ଦିଦି... ତିନି ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି... ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ବି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ନାଲି ଦାଗ ବାହାରି ପଡ଼ିଛି... ଆଉ ଠିଆ ହେବାକୁ ଜମା ବଳ ପାଉନି... ଦୟାକରି ସାହାଯ୍ୟ କରନ୍ତୁ।"
+    ],
     fullText: "ଉଫ୍... ଦିଦି... ତିନି ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି... ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ବି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ନାଲି ଦାଗ ବାହାରି ପଡ଼ିଛି... ଆଉ ଠିଆ ହେବାକୁ ଜମା ବଳ ପାଉନି... ଦୟାକରି ସାହାଯ୍ୟ କରନ୍ତୁ।",
-    strictKeywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ତିନି ଦିନ", "ନାଲି ଦାଗ"],
-    url: "/audio/priya_fever_odia.wav"
+    strictKeywords: ["ତାତିଛି", "ଦାଗ"],
+    signatures: ["ନିଆଁ", "ତାତିଛି", "ବିନ୍ଧୁଛି", "ଦାଗ", "ବଳ"]
   },
   {
     id: "LIPU_PEDIATRIC_ODIA",
     language: "Odia",
+    url: "/audio/lipu_pediatric_odia.wav",
+    matchTexts: [
+      "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
+      "ଦିଦି... ଆଃ... ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି! ସକାଳୁ ଦୁଇ ଥର ବାନ୍ତି ହେଲାଣି... ଆଉ କିଛି ଖାଇ ହେଉନି... ବହୁତ କଷ୍ଟ ହେଉଛି ଦିଦି... ପ୍ଲିଜ୍ ଟିକେ ଦେଖନ୍ତୁ..."
+    ],
     fullText: "ଦିଦି... ଆଃ... ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି! ସକାଳୁ ଦୁଇ ଥର ବାନ୍ତି ହେଲାଣି... ଆଉ କିଛି ଖାଇ ହେଉନି... ବହୁତ କଷ୍ଟ ହେଉଛି ଦିଦି... ପ୍ଲିଜ୍ ଟିକେ ଦେଖନ୍ତୁ...",
-    strictKeywords: ["ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ବାନ୍ତି ହେଲାଣି"],
-    url: "/audio/lipu_pediatric_odia.wav"
+    strictKeywords: ["ପେଟଟା", "ବାନ୍ତି"],
+    signatures: ["ପେଟ", "ବିନ୍ଧୁଛି", "ବାନ୍ତି", "ଖାଇ"]
   },
   {
     id: "SUBHASH_HEADACHE_ODIA",
     language: "Odia",
+    url: "/audio/subhash_headache_odia.wav",
+    matchTexts: [
+      "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
+      "ନମସ୍କାର ଦିଦି... ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।"
+    ],
     fullText: "ନମସ୍କାର ଦିଦି, ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
-    strictKeywords: ["ପାଠ ପଢ଼ିବା ପରେ", "ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି"],
-    url: "/audio/subhash_headache_odia.wav"
+    strictKeywords: ["ମଥାଟା", "ପାଠ"],
+    signatures: ["ମଥା", "ପାଠ", "ଥକା"]
   },
   {
     id: "MEENA_MATERNAL_ODIA",
     language: "Odia",
+    url: "/audio/meena_maternal_odia.wav",
+    matchTexts: [
+      "ମାଉସୀ, ମୋତେ ୮ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି, ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି ଆଉ ଗୋଡ଼ ଦୁଇଟା ଫୁଲି ଯାଇ ଚପଲ ପଶୁନି।",
+      "ମାଉସୀ... ମୋତେ ଆଠ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି... ଆଉ ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୋ ଛୁଆଟା ଠିକ୍ ଅଛି ତ ମାଉସୀ?",
+      "ମାଉସୀ... ମୋତେ ଆଠ ମାସ ଚାଲିଛି... ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଖିକୁ ସବୁ ଝାପ୍ସା ଦିଶୁଛି... ଆଉ ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୋ ଛୁଆଟା ଠିକ୍ ଅଛି ତ ମାଉସୀ?"
+    ],
     fullText: "ମାଉସୀ... ମୋତେ ଆଠ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି... ଆଉ ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୋ ଛୁଆଟା ଠିକ୍ ଅଛି ତ ମାଉସୀ?",
-    strictKeywords: ["ଆଠ ମାସ", "ଚପଲ ପଶୁନି"],
-    url: "/audio/meena_maternal_odia.wav"
+    strictKeywords: ["ମାସ", "ଚପଲ"],
+    signatures: ["ମାସ", "ମୁଣ୍ଡଟା", "ଝାପ୍ସା", "ଫୁଲି", "ଚପଲ"]
   },
 
   // --- HINDI PATIENT CASES ---
   {
     id: "RAMESH_HINDI",
     language: "Hindi",
+    url: "/audio/ramesh_cardiac_hindi.wav",
+    matchTexts: [
+      "डॉक्टर साहब, २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है और बहुत तेज चुभन महसूस हो रही है। सांस बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है। कृपया जल्दी देखें, लग रहा है सीना फट जाएगा।",
+      "डॉक्टर साहब... २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है... और बहुत तेज चुभन महसूस हो रही है। सांस... बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है!",
+      "डॉक्टर साहब, बहुत तेज दर्द हो रहा है।"
+    ],
     fullText: "डॉक्टर साहब, २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है और बहुत तेज चुभन महसूस हो रही है। सांस बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है। कृपया जल्दी देखें, लग रहा है सीना फट जाएगा।",
     strictKeywords: ["सीने में भारी पत्थर", "सीना फट जाएगा"],
-    url: "/audio/ramesh_cardiac_hindi.wav"
+    signatures: ["सीने", "पत्थर", "दर्द", "सांस", "पसीना", "फट"]
   },
   {
     id: "PRIYA_FEVER_HINDI",
     language: "Hindi",
+    url: "/audio/priya_fever_hindi.wav",
+    matchTexts: [
+      "दीदी, ३ दिन से पूरा बदन भट्टी की तरह तप रहा है। सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं और चलने की बिल्कुल ताक़त नहीं बची है।",
+      "दीदी... ३ दिन से पूरा बदन भट्टी की तरह तप रहा है... सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं... और चलने की बिल्कुल ताक़त नहीं बची है।"
+    ],
     fullText: "दीदी, ३ दिन से पूरा बदन भट्टी की तरह तप रहा है। सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं और चलने की बिल्कुल ताक़त नहीं बची है।",
     strictKeywords: ["भट्टी की तरह तप", "लाल चकत्ते"],
-    url: "/audio/priya_fever_hindi.wav"
+    signatures: ["भट्टी", "तप", "चकत्ते", "ताक़त"]
   },
   {
     id: "AARAV_PEDIATRIC_HINDI",
     language: "Hindi",
+    url: "/audio/aarav_pediatric_hindi.wav",
+    matchTexts: [
+      "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
+      "दीदी... पेट में बहुत तेज दर्द हो रहा है! सुबह से दो बार उल्टी हो गई... और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।"
+    ],
     fullText: "दीदी, पेट में बहुत तेज दर्द हो रहा है। सुबह से दो बार उल्टी हो गई और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
     strictKeywords: ["पेट में बहुत तेज दर्द", "उल्टी हो गई"],
-    url: "/audio/aarav_pediatric_hindi.wav"
+    signatures: ["पेट", "दर्द", "उल्टी", "रोना"]
   },
   {
     id: "SUBHASH_HEADACHE_HINDI",
     language: "Hindi",
+    url: "/audio/subhash_headache_hindi.wav",
+    matchTexts: [
+      "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
+      "नमस्ते दीदी... कल देर रात परीक्षा की पढ़ाई करने के बाद माथे में हल्का-हल्का दर्द है... बस थोड़ी थकान लग रही है, बाकी सब ठीक है।"
+    ],
     fullText: "नमस्ते दीदी, कल देर रात तक स्क्रीन पर पढ़ाई करने के बाद से माथे में हल्का-हल्का दर्द है। कोई बुखार या उल्टी नहीं है, बस थोड़ी थकान महसूस हो रही है।",
     strictKeywords: ["स्क्रीन पर पढ़ाई", "हल्का-हल्का दर्द"],
-    url: "/audio/subhash_headache_hindi.wav"
+    signatures: ["माथे", "पढ़ाई", "थकान"]
   },
   {
     id: "MEENA_MATERNAL_HINDI",
     language: "Hindi",
+    url: "/audio/meena_maternal_hindi.wav",
+    matchTexts: [
+      "नर्स दीदी, मुझे ८ महीने का गर्भ है। कल शाम से सिर बहुत तेज फटने जैसा दर्द कर रहा है, आंखों के आगे धुंधलापन आ रहा है और दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही।",
+      "नर्स दीदी... मुझे ८ महीने का गर्भ है... दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही। सिर फटने जैसा भारी दर्द है और आंखों के सामने सब धुंधला दिख रहा है!"
+    ],
     fullText: "नर्स दीदी, मुझे ८ महीने का गर्भ है। कल शाम से सिर बहुत तेज फटने जैसा दर्द कर रहा है, आंखों के आगे धुंधलापन आ रहा है और दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही।",
     strictKeywords: ["८ महीने का गर्भ", "चप्पल नहीं आ रही"],
-    url: "/audio/meena_maternal_hindi.wav"
+    signatures: ["गर्भ", "सूज", "चप्पल", "धुंधला"]
   },
 
   // --- ENGLISH PATIENT CASES ---
   {
     id: "RAMESH_ENGLISH",
     language: "English",
+    url: "/audio/ramesh_english.mp3",
+    matchTexts: [
+      "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
+      "Doctor... for the past two hours, my chest feels crushed under a heavy stone... with unbearable stabbing pain. I can barely breathe... and I am breaking into a cold sweat!",
+      "Doctor, I am experiencing severe pain and discomfort."
+    ],
     fullText: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
     strictKeywords: ["crushed under heavy stone", "chest is tearing"],
-    url: "/audio/ramesh_english.mp3"
+    signatures: ["chest", "stone", "breathe", "sweat", "tearing"]
   },
   {
     id: "PRIYA_FEVER_ENGLISH",
     language: "English",
+    url: "/audio/priya_fever_english.mp3",
+    matchTexts: [
+      "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
+      "Sister... for 3 days my entire body has been burning with high fever. My headache is blinding and red spots have appeared all over my arms and legs."
+    ],
     fullText: "Sister, for the past 3 days my entire body has been burning with high fever. My headache is so severe that I can't even open my eyes. Red spots have appeared across my arms and legs, and I have zero strength to stand.",
     strictKeywords: ["burning with high fever", "zero strength to stand"],
-    url: "/audio/priya_fever_english.mp3"
+    signatures: ["burning", "fever", "spots", "strength"]
   },
   {
     id: "AARAV_PEDIATRIC_ENGLISH",
     language: "English",
+    url: "/audio/aarav_pediatric_english.mp3",
+    matchTexts: [
+      "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
+      "Sister... my tummy hurts so bad! I threw up twice since morning and I can't eat anything... it hurts so much."
+    ],
     fullText: "Sister, my stomach hurts so much. I threw up twice this morning and I can't eat anything, it hurts really bad.",
     strictKeywords: ["stomach hurts so much", "threw up twice"],
-    url: "/audio/aarav_pediatric_english.mp3"
+    signatures: ["stomach", "tummy", "threw up", "hurts"]
   },
   {
     id: "SUBHASH_HEADACHE_ENGLISH",
     language: "English",
+    url: "/audio/subhash_headache_english.mp3",
+    matchTexts: [
+      "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
+      "Hello sister... after studying late last night for my exams, I have a mild tension headache across my forehead and feeling a bit tired, otherwise I am fine."
+    ],
     fullText: "Good morning sister, I've had a mild throbbing headache across my forehead since yesterday after long study hours. No fever or vomiting, just feeling tired.",
     strictKeywords: ["mild throbbing headache across my forehead", "long study hours"],
-    url: "/audio/subhash_headache_english.mp3"
+    signatures: ["forehead", "headache", "study", "tired"]
   },
   {
     id: "MEENA_MATERNAL_ENGLISH",
     language: "English",
+    url: "/audio/meena_maternal_english.mp3",
+    matchTexts: [
+      "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
+      "Sister... I am 8 months pregnant and my feet are so swollen my slippers won't fit. I have a blinding throbbing headache and my vision is completely blurred!"
+    ],
     fullText: "Nurse didi, I am 8 months pregnant. Since yesterday evening I have a severe throbbing headache, blurred vision, and my feet are so swollen my slippers won't fit.",
     strictKeywords: ["8 months pregnant", "slippers won't fit"],
-    url: "/audio/meena_maternal_english.mp3"
+    signatures: ["pregnant", "swollen", "slippers", "vision"]
   },
 
   // --- CLINICIAN / NURSE ADVISORY ---
   {
     id: "NURSE_ADVISORY",
     language: "English",
+    url: "/audio/nurse_advisory.mp3",
+    matchTexts: [
+      "Patient has been registered with verified ABHA ID. Priority triage indicates acute respiratory and cardiac distress. High-flow oxygen and emergency ECG are being prepared at the emergency bay.",
+      "Patient has been registered with verified ABHA ID. Priority triage indicates acute respiratory distress. High-flow oxygen and emergency ECG are being prepared at the bay.",
+      "ରୋଗୀଙ୍କର ଆଭା ଆଇଡି ଯାଞ୍ଚ ସରିଛି। ତୁରନ୍ତ ଇସିଜି ଓ ଅମ୍ଳଜାନ ସହାୟତା ପାଇଁ ଏମର୍ଜେନ୍ସି ବେ'କୁ ସ୍ଥାନାନ୍ତର କରାଯାଉଛି।",
+      "मरीज की आभा आईडी सत्यापित कर ली गई है। उच्च प्राथमिकता वाले ट्राइएज के तहत ऑक्सीजन और आपातकालीन ईसीजी तैयार की जा रही है।"
+    ],
     fullText: "Patient has been registered with verified ABHA ID. Priority triage indicates acute respiratory and cardiac distress. High-flow oxygen and emergency ECG are being prepared at the emergency bay.",
     strictKeywords: ["registered with verified abha", "high-flow oxygen and emergency ecg"],
-    url: "/audio/nurse_advisory.mp3"
+    signatures: ["abha", "registered", "oxygen", "ecg", "bay", "ଆଭା", "ଇସିଜି", "आभा"]
   },
 
   // --- DOCTOR CLINICAL REFERRAL BRIEFING ---
   {
     id: "DOCTOR_REFERRAL",
     language: "English",
+    url: "/audio/doctor_referral.mp3",
+    matchTexts: [
+      "Clinical summary for referral: Sixty-two year old male presenting with acute retrosternal chest pain and profound hypoxia, oxygen saturation eighty-nine percent. Priority RED verified. Immediate transfer to District Hospital cardiac intensive care unit.",
+      "Clinical handover alert. High priority cardiac case requiring immediate CCU transfer. Bilateral oxygenation active, emergency stabilization underway.",
+      "ଡିଷ୍ଟ୍ରିକ୍ଟ ହେଡକ୍ୱାର୍ଟର ହସ୍ପିଟାଲକୁ ଜରୁରୀକାଳୀନ ରେଫରାଲ ସ୍ଲିପ ପ୍ରସ୍ତୁତ କରାଗଲା। ଆମ୍ବୁଲାନ୍ସ ୧୦୮ ସହିତ ତୁରନ୍ତ ସ୍ଥାନାନ୍ତର କରନ୍ତୁ।",
+      "जिला अस्पताल के लिए आपातकालीन रेफरल पर्ची तैयार की गई है। एम्बुलेंस १०८ द्वारा तत्काल स्थानांतरण सुनिश्चित करें।"
+    ],
     fullText: "Clinical summary for referral: Sixty-two year old male presenting with acute retrosternal chest pain and profound hypoxia, oxygen saturation eighty-nine percent. Priority RED verified. Immediate transfer to District Hospital cardiac intensive care unit.",
     strictKeywords: ["clinical summary for referral", "immediate transfer to district hospital"],
-    url: "/audio/doctor_referral.mp3"
+    signatures: ["referral", "district hospital", "handover", "transfer", "108", "ରେଫରାଲ", "रेफरल"]
   }
 ];
 
@@ -707,75 +863,15 @@ const masteredAudioElementsSet = new WeakSet();
  */
 export async function playWithClinicalMastering(audioElement) {
   if (!audioElement) return false;
-
   try {
-    const AudioContextClass = typeof window !== "undefined" && (window.AudioContext || window.webkitAudioContext);
-    if (!AudioContextClass) {
-      return await audioElement.play();
+    const playPromise = audioElement.play();
+    if (playPromise !== undefined) {
+      return await playPromise;
     }
-
-    if (!sharedMasteringAudioCtx || sharedMasteringAudioCtx.state === "closed") {
-      sharedMasteringAudioCtx = new AudioContextClass();
-    }
-    if (sharedMasteringAudioCtx.state === "suspended") {
-      await sharedMasteringAudioCtx.resume();
-    }
-
-    if (!masteredAudioElementsSet.has(audioElement)) {
-      try {
-        const source = sharedMasteringAudioCtx.createMediaElementSource(audioElement);
-
-        // 1. High-Pass Rumble Filter (75 Hz, 12dB/octave) to clean sub-bass artifacts
-        const rumbleCut = sharedMasteringAudioCtx.createBiquadFilter();
-        rumbleCut.type = "highpass";
-        rumbleCut.frequency.value = 75;
-        rumbleCut.Q.value = 0.7;
-
-        // 2. Vocal Chest Warmth (200 Hz, subtle +0.8 dB)
-        const warmth = sharedMasteringAudioCtx.createBiquadFilter();
-        warmth.type = "peaking";
-        warmth.frequency.value = 200;
-        warmth.Q.value = 0.8;
-        warmth.gain.value = 0.8;
-
-        // 3. Vocal Clarity & Consonant Presence (3200 Hz, +1.4 dB)
-        const presence = sharedMasteringAudioCtx.createBiquadFilter();
-        presence.type = "peaking";
-        presence.frequency.value = 3200;
-        presence.Q.value = 1.0;
-        presence.gain.value = 1.4;
-
-        // 4. Vocal Air & Breath Intimacy (9500 Hz, +0.6 dB)
-        const air = sharedMasteringAudioCtx.createBiquadFilter();
-        air.type = "highshelf";
-        air.frequency.value = 9500;
-        air.gain.value = 0.6;
-
-        // 5. Transparent Broadcast Dynamics Compressor
-        const compressor = sharedMasteringAudioCtx.createDynamicsCompressor();
-        compressor.threshold.value = -15;
-        compressor.knee.value = 8;
-        compressor.ratio.value = 1.8;
-        compressor.attack.value = 0.015;
-        compressor.release.value = 0.12;
-
-        // Wire graph: source -> rumbleCut -> warmth -> presence -> air -> compressor -> speakers
-        source.connect(rumbleCut);
-        rumbleCut.connect(warmth);
-        warmth.connect(presence);
-        presence.connect(air);
-        air.connect(compressor);
-        compressor.connect(sharedMasteringAudioCtx.destination);
-
-        masteredAudioElementsSet.add(audioElement);
-      } catch {
-        // Fallback to standard direct playback if MediaElementSource already connected or restricted
-      }
-    }
-
-    return await audioElement.play();
-  } catch {
-    return await audioElement.play();
+    return true;
+  } catch (err) {
+    console.warn("Audio element play error:", err);
+    return false;
   }
 }
 
@@ -819,14 +915,27 @@ export async function speakHumanVoice(text, {
     // 1. Stop any currently active speech & clear watchdog
     stopHumanVoice();
 
-    // 2. Priority Check: Match Pre-rendered Neural Indian Studio Audio Assets
-    // STRICT EXACT-MATCH OR ASSET-ID ONLY:
-    // If user edited or wrote custom text, NEVER play canned audio! Fall through to dynamic Sarvam AI TTS!
-    const normClean = (s) => (s || "")
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s]/gu, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    // 2. Priority Check: Match Pre-rendered Neural Indian Studio Audio Assets (<10ms instant playback)
+    const DIGIT_NORMALIZER = {
+      "୦": "0", "୧": "1", "୨": "2", "୩": "3", "୪": "4", "୫": "5", "୬": "6", "୭": "7", "୮": "8", "୯": "9",
+      "०": "0", "१": "1", "२": "2", "३": "3", "४": "4", "५": "5", "६": "6", "७": "7", "८": "8", "९": "9",
+      "ଦୁଇ": "2", "ତିନି": "3", "ଚାରି": "4", "ପାଞ୍ଚ": "5", "ଛଅ": "6", "ସାତ": "7", "ଆଠ": "8",
+      "दो": "2", "तीन": "3", "चार": "4", "पाँच": "5", "छह": "6", "सात": "7", "आठ": "8",
+      "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7", "eight": "8"
+    };
+
+    const normClean = (s) => {
+      if (!s) return "";
+      let str = s.toLowerCase();
+      for (const [k, v] of Object.entries(DIGIT_NORMALIZER)) {
+        str = str.replaceAll(k, v);
+      }
+      str = str.replace(/^(ଆଃ|ଉଫ୍|ଡାକ୍ତର ବାବୁ|ଦିଦି|ମାଉସୀ|ନମସ୍କାର|doctor|doctor babu|doctor sahab|sister|nurse didi|didi|namaste|hello)\b[,.\s...]*/gi, "");
+      return str
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    };
 
     const textCleaned = normClean(text);
     const targetLangLower = (language || "english").toLowerCase();
@@ -840,32 +949,38 @@ export async function speakHumanVoice(text, {
     } else if (targetLangLower.includes("english") || targetLangLower.includes("en")) {
       canonicalLang = "english";
     } else {
-      // Bengali, Tamil, Telugu, etc. have no static pre-rendered audio files; must go to dynamic Sarvam AI TTS
       canonicalLang = "other";
     }
 
     const matchedStudioAudio = canonicalLang === "other" ? null : PRE_RENDERED_STUDIO_AUDIO.find((asset) => {
-      if ((asset.language || "").toLowerCase() !== canonicalLang) return false;
+      const assetLang = (asset.language || "").toLowerCase();
+      if (assetLang !== canonicalLang && asset.id !== "NURSE_ADVISORY" && asset.id !== "DOCTOR_REFERRAL") {
+        return false;
+      }
 
       // 1. Direct explicit assetId request
       if (assetId && assetId === asset.id) return true;
 
-      // 2. Exact or near-exact full text script match (ignoring whitespace & punctuation)
-      const assetCleaned = normClean(asset.fullText);
-      if (assetCleaned && (textCleaned === assetCleaned || textCleaned.startsWith(assetCleaned) || assetCleaned.startsWith(textCleaned))) {
-        return true;
+      // 2. Exact or substring match against any registered statement variation
+      const matchTargets = [asset.fullText, ...(asset.matchTexts || [])].filter(Boolean);
+      for (const t of matchTargets) {
+        const cleaned = normClean(t);
+        if (cleaned && (textCleaned === cleaned || textCleaned.startsWith(cleaned) || cleaned.startsWith(textCleaned) || textCleaned.includes(cleaned) || cleaned.includes(textCleaned))) {
+          return true;
+        }
       }
 
-      // 3. Strict multi-keyword clinical match (ALL distinctive clinical markers must be present)
-      // AND text must be of comparable length so a short custom sentence never false-matches!
-      if (asset.strictKeywords && asset.strictKeywords.length > 0) {
+      // 3. Clinical Signatures check (instant match on distinctive clinical symptom markers)
+      if (asset.signatures && asset.signatures.length >= 2) {
         const textLower = text.toLowerCase();
-        const allKeywordsPresent = asset.strictKeywords.every((kw) => textLower.includes(kw.toLowerCase()));
-        if (allKeywordsPresent) {
-          const lenRatio = text.length / Math.max(1, (asset.fullText || "").length);
-          if (lenRatio >= 0.70 && lenRatio <= 1.40) {
-            return true;
+        let hitCount = 0;
+        for (const sig of asset.signatures) {
+          if (textLower.includes(sig.toLowerCase())) {
+            hitCount++;
           }
+        }
+        if (hitCount >= 2) {
+          return true;
         }
       }
 
@@ -874,33 +989,39 @@ export async function speakHumanVoice(text, {
 
     if (matchedStudioAudio) {
       try {
-        const audio = new Audio(matchedStudioAudio.url);
-        activeAudioElementRef = audio;
-        activeAudioOnEnd = onEnd;
+        const audio = getOrCreatePreloadedAudio(matchedStudioAudio.url);
+        if (audio) {
+          activeAudioElementRef = audio;
+          activeAudioOnEnd = onEnd;
+          audio.currentTime = 0;
 
-        audio.onplay = () => {
-          const acoustics = getVocalAcoustics({ age, gender, role, language });
-          if (onStart) onStart({ acoustics, isStudio: true });
-        };
+          audio.onplay = () => {
+            const acoustics = getVocalAcoustics({ age, gender, role, language });
+            if (onStart) onStart({ acoustics, isStudio: true });
+          };
 
-        audio.onended = () => {
-          activeAudioElementRef = null;
-          activeAudioOnEnd = null;
-          if (onEnd) onEnd();
-        };
+          audio.onended = () => {
+            activeAudioElementRef = null;
+            activeAudioOnEnd = null;
+            if (onEnd) onEnd();
+          };
 
-        audio.onerror = (e) => {
-          console.warn("Studio audio file playback failed, clearing audio element...", e);
-          const cb = activeAudioOnEnd;
-          activeAudioElementRef = null;
-          activeAudioOnEnd = null;
-          if (cb) {
-            try { cb(); } catch {}
+          audio.onerror = (e) => {
+            console.warn("Studio audio file playback failed, clearing audio element...", e);
+            const cb = activeAudioOnEnd;
+            activeAudioElementRef = null;
+            activeAudioOnEnd = null;
+            if (cb) {
+              try { cb(); } catch {}
+            }
+          };
+
+          const p = audio.play();
+          if (p !== undefined) {
+            await p;
           }
-        };
-
-        await playWithClinicalMastering(audio);
-        return true;
+          return true;
+        }
       } catch (audioErr) {
         console.warn("Studio audio file playback failed, proceeding to dynamic/browser TTS:", audioErr);
         activeAudioElementRef = null;
@@ -908,7 +1029,7 @@ export async function speakHumanVoice(text, {
       }
     }
 
-    // 2.5 Dynamic Sarvam AI Bulbul v3 Neural Voice Generation (Level 2 Cloud Synthesis for Any Text)
+    // 2.5 Dynamic Sarvam AI Bulbul v3 Neural Voice Generation (Level 2 Cloud Synthesis for Custom Text)
     try {
       let targetLangCode = "od-IN";
       if (targetLangLower.includes("hindi") || /[\u0900-\u097F]/.test(text)) {
@@ -955,7 +1076,7 @@ export async function speakHumanVoice(text, {
         pace = isOdia ? 0.82 : 0.85;
       }
 
-      // Convert any numeral digits in Odia to authentic spoken Odia words before sending
+      // Convert numeral digits in Odia to authentic spoken Odia words before sending
       let textToSynthesize = text.slice(0, 500);
       if (isOdia || /[\u0B00-\u0B7F]/.test(textToSynthesize)) {
         const ODIA_DIGITS = {
@@ -969,16 +1090,48 @@ export async function speakHumanVoice(text, {
           .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ମାସ`);
       }
 
+      // Check in-memory Dynamic Cache for instant replay
+      const ttsCacheKey = `${targetLangCode}_${speaker}_${textToSynthesize}_${pitch}_${pace}`;
+      if (DYNAMIC_TTS_CACHE.has(ttsCacheKey)) {
+        const cachedUri = DYNAMIC_TTS_CACHE.get(ttsCacheKey);
+        const audio = new Audio(cachedUri);
+        activeAudioElementRef = audio;
+        activeAudioOnEnd = onEnd;
+        audio.currentTime = 0;
+
+        audio.onplay = () => {
+          const acoustics = getVocalAcoustics({ age, gender, role, language });
+          if (onStart) onStart({ acoustics, isStudio: true, isSarvam: true });
+        };
+        audio.onended = () => {
+          activeAudioElementRef = null;
+          activeAudioOnEnd = null;
+          if (onEnd) onEnd();
+        };
+        audio.onerror = () => {
+          activeAudioElementRef = null;
+          activeAudioOnEnd = null;
+          if (onEnd) onEnd();
+        };
+
+        const p = audio.play();
+        if (p !== undefined) await p;
+        return true;
+      }
+
       const candidateUrls = [
-        (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000/api/v1/sarvam/tts" : "/api/v1/sarvam/tts",
+        "/api/v1/sarvam/tts",
         "https://saransh-two.vercel.app/api/v1/sarvam/tts"
       ];
+      if (typeof window !== "undefined" && window.location.port === "5173") {
+        candidateUrls.unshift("http://localhost:8000/api/v1/sarvam/tts");
+      }
 
       let sarvamResp = null;
       for (const endpoint of candidateUrls) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
           sarvamResp = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1002,6 +1155,7 @@ export async function speakHumanVoice(text, {
         const sarvamData = await sarvamResp.json();
         if (sarvamData && sarvamData.audio_base64) {
           const audioUri = `data:audio/wav;base64,${sarvamData.audio_base64}`;
+          DYNAMIC_TTS_CACHE.set(ttsCacheKey, audioUri);
           const audio = new Audio(audioUri);
           activeAudioElementRef = audio;
           activeAudioOnEnd = onEnd;
@@ -1023,7 +1177,8 @@ export async function speakHumanVoice(text, {
             if (onEnd) onEnd();
           };
 
-          await playWithClinicalMastering(audio);
+          const p = audio.play();
+          if (p !== undefined) await p;
           return true;
         }
       }

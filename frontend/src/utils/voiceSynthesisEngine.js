@@ -180,23 +180,51 @@ export function getOrCreatePreloadedAudio(url) {
 export function preloadAllStudioAudio() {
   if (typeof window === "undefined") return;
   const audioUrls = [
+    // Elderly Male (Ramesh)
     "/audio/ramesh_cardiac_odia.wav",
     "/audio/ramesh_cardiac_hindi.wav",
     "/audio/ramesh_english.mp3",
+    "/audio/ramesh_cardiac_bengali.wav",
+    "/audio/ramesh_cardiac_tamil.wav",
+    "/audio/ramesh_cardiac_telugu.wav",
+    // Adult Female (Priya)
     "/audio/priya_fever_odia.wav",
     "/audio/priya_fever_hindi.wav",
     "/audio/priya_fever_english.mp3",
+    "/audio/priya_fever_bengali.wav",
+    "/audio/priya_fever_tamil.wav",
+    "/audio/priya_fever_telugu.wav",
+    // Child Male (Lipu)
     "/audio/lipu_pediatric_odia.wav",
     "/audio/aarav_pediatric_hindi.wav",
     "/audio/aarav_pediatric_english.mp3",
-    "/audio/subhash_headache_odia.wav",
-    "/audio/subhash_headache_hindi.wav",
-    "/audio/subhash_headache_english.mp3",
+    "/audio/lipu_pediatric_bengali.wav",
+    "/audio/lipu_pediatric_tamil.wav",
+    "/audio/lipu_pediatric_telugu.wav",
+    // Maternal Female (Meena)
     "/audio/meena_maternal_odia.wav",
     "/audio/meena_maternal_hindi.wav",
     "/audio/meena_maternal_english.mp3",
+    "/audio/meena_maternal_bengali.wav",
+    "/audio/meena_maternal_tamil.wav",
+    "/audio/meena_maternal_telugu.wav",
+    // Young Male (Subhash)
+    "/audio/subhash_headache_odia.wav",
+    "/audio/subhash_headache_hindi.wav",
+    "/audio/subhash_headache_english.mp3",
+    "/audio/subhash_headache_bengali.wav",
+    "/audio/subhash_headache_tamil.wav",
+    "/audio/subhash_headache_telugu.wav",
+    // Nurse Female (Ishita)
     "/audio/nurse_advisory.mp3",
-    "/audio/doctor_referral.mp3"
+    "/audio/nurse_advisory_bengali.wav",
+    "/audio/nurse_advisory_tamil.wav",
+    "/audio/nurse_advisory_telugu.wav",
+    // Doctor Male (Aditya)
+    "/audio/doctor_referral.mp3",
+    "/audio/doctor_referral_bengali.wav",
+    "/audio/doctor_referral_tamil.wav",
+    "/audio/doctor_referral_telugu.wav"
   ];
 
   audioUrls.forEach((url) => {
@@ -437,6 +465,222 @@ const PRE_RENDERED_STUDIO_AUDIO = [
     fullText: "Clinical summary for referral: Sixty-two year old male presenting with acute retrosternal chest pain and profound hypoxia, oxygen saturation eighty-nine percent. Priority RED verified. Immediate transfer to District Hospital cardiac intensive care unit.",
     strictKeywords: ["clinical summary for referral", "immediate transfer to district hospital"],
     signatures: ["referral", "district hospital", "handover", "transfer", "108", "ରେଫରାଲ", "रेफरल"]
+  },
+
+  // --- BENGALI VERNACULAR ASSETS ---
+  {
+    id: "RAMESH_BENGALI",
+    language: "Bengali",
+    url: "/audio/ramesh_cardiac_bengali.wav",
+    matchTexts: [
+      "ডাক্তারবাবু... ২ ঘণ্টা ধরে বুকটা পাথরের মতো ভারী লাগছে... আর খুব তীব্র চিনচিনে ব্যথা হচ্ছে। শ্বাস... একদম নিতে পারছি না... সারা শরীর ঘামে ঠান্ডা হয়ে গেছে!"
+    ],
+    fullText: "ডাক্তারবাবু... ২ ঘণ্টা ধরে বুকটা পাথরের মতো ভারী লাগছে... আর খুব তীব্র চিনচিনে ব্যথা হচ্ছে। শ্বাস... একদম নিতে পারছি না... সারা শরীর ঘামে ঠান্ডা হয়ে গেছে!",
+    signatures: ["ডাক্তারবাবু", "পাথরের", "শ্বাস", "ঘামে"]
+  },
+  {
+    id: "PRIYA_FEVER_BENGALI",
+    language: "Bengali",
+    url: "/audio/priya_fever_bengali.wav",
+    matchTexts: [
+      "দিদি... ৩ দিন ধরে পুরো শরীর আগুনের মতো জ্বলছে... মাথায় এত তীব্র যন্ত্রণা যে চোখ খুলতে পারছি না। হাত-পায়ে লাল দাগ ফুটে উঠেছে... আর হাঁটার একদম শক্তি নেই।"
+    ],
+    fullText: "দিদি... ৩ দিন ধরে পুরো শরীর আগুনের মতো জ্বলছে... মাথায় এত তীব্র যন্ত্রণা যে চোখ খুলতে পারছি না। হাত-পায়ে লাল দাগ ফুটে উঠেছে... আর হাঁটার একদম শক্তি নেই।",
+    signatures: ["দিদি", "জ্বলছে", "দাগ", "শক্তি"]
+  },
+  {
+    id: "LIPU_PEDIATRIC_BENGALI",
+    language: "Bengali",
+    url: "/audio/lipu_pediatric_bengali.wav",
+    matchTexts: [
+      "দিদি... পেটে খুব জোরে ব্যথা করছে! সকাল থেকে দু'বার বমি হয়ে গেছে... আর কিছুই খেতে পারছি না... খুব কষ্ট হচ্ছে।"
+    ],
+    fullText: "দিদি... পেটে খুব জোরে ব্যথা করছে! সকাল থেকে দু'বার বমি হয়ে গেছে... আর কিছুই খেতে পারছি না... খুব কষ্ট হচ্ছে।",
+    signatures: ["দিদি", "পেটে", "বমি", "কষ্ট"]
+  },
+  {
+    id: "MEENA_MATERNAL_BENGALI",
+    language: "Bengali",
+    url: "/audio/meena_maternal_bengali.wav",
+    matchTexts: [
+      "নার্স দিদি... আমার ৮ মাসের গর্ভ চলছে... দুটো পা এত ফুলে গেছে যে চটি পরতে পারছি না। মাথায় প্রচণ্ড যন্ত্রণা হচ্ছে আর চোখের সামনে সব ঝাপসা দেখছি!"
+    ],
+    fullText: "নার্স দিদি... আমার ৮ মাসের গর্ভ চলছে... দুটো পা এত ফুলে গেছে যে চটি পরতে পারছি না। মাথায় প্রচণ্ড যন্ত্রণা হচ্ছে আর চোখের সামনে সব ঝাপসা দেখছি!",
+    signatures: ["গর্ভ", "ফুলে", "ঝাপসা"]
+  },
+  {
+    id: "SUBHASH_HEADACHE_BENGALI",
+    language: "Bengali",
+    url: "/audio/subhash_headache_bengali.wav",
+    matchTexts: [
+      "নমস্কার দিদি... কাল রাতে পরীক্ষার পড়ার পর কপালে হালকা ব্যথা করছে... একটু ক্লান্তি লাগছে, বাকি সব ঠিক আছে।"
+    ],
+    fullText: "নমস্কার দিদি... কাল রাতে পরীক্ষার পড়ার পর কপালে হালকা ব্যথা করছে... একটু ক্লান্তি লাগছে, বাকি সব ঠিক আছে।",
+    signatures: ["নমস্কার", "কপালে", "ক্লান্তি"]
+  },
+  {
+    id: "NURSE_ADVISORY_BENGALI",
+    language: "Bengali",
+    url: "/audio/nurse_advisory_bengali.wav",
+    matchTexts: [
+      "রোগীর আভা আইডি যাচাই সম্পন্ন হয়েছে। জরুরি ভিত্তিতে ইসিজি এবং অক্সিজেন সহায়তার জন্য এমার্জেন্সি বে-তে স্থানান্তর করা হচ্ছে।"
+    ],
+    fullText: "রোগীর আভা আইডি যাচাই সম্পন্ন হয়েছে। জরুরি ভিত্তিতে ইসিজি এবং অক্সিজেন সহায়তার জন্য এমার্জেন্সি বে-তে স্থানান্তর করা হচ্ছে।",
+    signatures: ["আভা", "ইসিজি", "অক্সিজেন"]
+  },
+  {
+    id: "DOCTOR_REFERRAL_BENGALI",
+    language: "Bengali",
+    url: "/audio/doctor_referral_bengali.wav",
+    matchTexts: [
+      "জেলা সদর হাসপাতালের জন্য জরুরি রেফারাল স্লিপ তৈরি করা হয়েছে। ১০৮ অ্যাম্বুলেন্সের মাধ্যমে অবিলম্বে স্থানান্তর নিশ্চিত করুন।"
+    ],
+    fullText: "জেলা সদর হাসপাতালের জন্য জরুরি রেফারাল স্লিপ তৈরি করা হয়েছে। ১০৮ অ্যাম্বুলেন্সের মাধ্যমে অবিলম্বে স্থানান্তর নিশ্চিত করুন।",
+    signatures: ["রেফারাল", "১০৮"]
+  },
+
+  // --- TAMIL VERNACULAR ASSETS ---
+  {
+    id: "RAMESH_TAMIL",
+    language: "Tamil",
+    url: "/audio/ramesh_cardiac_tamil.wav",
+    matchTexts: [
+      "டாக்டர் ஐயா... இரண்டு மணி நேரமாக நெஞ்சு பாராங்கல் போல அழுத்துகிறது... தாங்க முடியாத அளவுக்கு ஊசி குத்துவது போல வலிக்கிறது. மூச்சு... விடவே முடியவில்லை... உடல் முழுவதும் குளிர்ந்து வியர்த்து கொட்டுகிறது!"
+    ],
+    fullText: "டாக்டர் ஐயா... இரண்டு மணி நேரமாக நெஞ்சு பாராங்கல் போல அழுத்துகிறது... தாங்க முடியாத அளவுக்கு ஊசி குத்துவது போல வலிக்கிறது. மூச்சு... விடவே முடியவில்லை... உடல் முழுவதும் குளிர்ந்து வியர்த்து கொட்டுகிறது!",
+    signatures: ["டாக்டர்", "நெஞ்சு", "மூச்சு", "வியர்த்து"]
+  },
+  {
+    id: "PRIYA_FEVER_TAMIL",
+    language: "Tamil",
+    url: "/audio/priya_fever_tamil.wav",
+    matchTexts: [
+      "அக்கா... 3 நாட்களாக உடம்பு நெருப்பு போல கொதிக்கிறது... தலை பயங்கரமாக வலிக்கிறது, கண்ணையே திறக்க முடியவில்லை. கை கால்களில் சிவப்பு புள்ளிகள் வந்துவிட்டன... எழுந்து நடக்கக் கூட தெம்பு இல்லை."
+    ],
+    fullText: "அக்கா... 3 நாட்களாக உடம்பு நெருப்பு போல கொதிக்கிறது... தலை பயங்கரமாக வலிக்கிறது, கண்ணையே திறக்க முடியவில்லை. கை கால்களில் சிவப்பு புள்ளிகள் வந்துவிட்டன... எழுந்து நடக்கக் கூட தெம்பு இல்லை.",
+    signatures: ["அக்கா", "நெருப்பு", "புள்ளிகள்", "தெம்பு"]
+  },
+  {
+    id: "LIPU_PEDIATRIC_TAMIL",
+    language: "Tamil",
+    url: "/audio/lipu_pediatric_tamil.wav",
+    matchTexts: [
+      "அக்கா... வயிறு ரொம்ப பயங்கரமா வலிக்குது! காலையில இருந்து ரெண்டு தடவ வாந்தி எடுத்திட்டேன்... ஒண்ணுமே சாப்பிட முடியல... ரொம்ப கஷ்டமா இருக்கு."
+    ],
+    fullText: "அக்கா... வயிறு ரொம்ப பயங்கரமா வலிக்குது! காலையில இருந்து ரெண்டு தடவ வாந்தி எடுத்திட்டேன்... ஒண்ணுமே சாப்பிட முடியல... ரொம்ப கஷ்டமா இருக்கு.",
+    signatures: ["அக்கா", "வயிறு", "வாந்தி", "கஷ்டமா"]
+  },
+  {
+    id: "MEENA_MATERNAL_TAMIL",
+    language: "Tamil",
+    url: "/audio/meena_maternal_tamil.wav",
+    matchTexts: [
+      "நர்ஸ் அக்கா... எனக்கு 8 மாத கர்ப்பம்... இரண்டு கால்களும் பயங்கரமாக வீங்கி செருப்பு கூட போட முடியவில்லை. தலை வெடிப்பது போல வலிக்கிறது, கண்ணும் மங்கலாக தெரிகிறது!"
+    ],
+    fullText: "நர்ஸ் அக்கா... எனக்கு 8 மாத கர்ப்பம்... இரண்டு கால்களும் பயங்கரமாக வீங்கி செருப்பு கூட போட முடியவில்லை. தலை வெடிப்பது போல வலிக்கிறது, கண்ணும் மங்கலாக தெரிகிறது!",
+    signatures: ["கர்ப்பம்", "வீங்கி", "மங்கலாக"]
+  },
+  {
+    id: "SUBHASH_HEADACHE_TAMIL",
+    language: "Tamil",
+    url: "/audio/subhash_headache_tamil.wav",
+    matchTexts: [
+      "வணக்கம் அக்கா... நேற்று இரவு தேர்வுக்கு படித்ததால் நெற்றியில் லேசான தலைவலி இருக்கிறது... கொஞ்சம் சோர்வாக உள்ளது, மற்றபடி பரவாயில்லை."
+    ],
+    fullText: "வணக்கம் அக்கா... நேற்று இரவு தேர்வுக்கு படித்ததால் நெற்றியில் லேசான தலைவலி இருக்கிறது... கொஞ்சம் சோர்வாக உள்ளது, மற்றபடி பரவாயில்லை.",
+    signatures: ["வணக்கம்", "நெற்றியில்", "சோர்வாக"]
+  },
+  {
+    id: "NURSE_ADVISORY_TAMIL",
+    language: "Tamil",
+    url: "/audio/nurse_advisory_tamil.wav",
+    matchTexts: [
+      "நோயாளியின் ஆயுஷ்மான் பாரத் (ABHA) அடையாள அட்டை சரிபார்க்கப்பட்டது. அவசர ஈசிஜி மற்றும் ஆக்சிஜன் சிகிச்சைக்காக நோயாளி அவசர சிகிச்சைப் பிரிவுக்கு மாற்றப்படுகிறார்."
+    ],
+    fullText: "நோயாளியின் ஆயுஷ்மான் பாரத் (ABHA) அடையாள அட்டை சரிபார்க்கப்பட்டது. அவசர ஈசிஜி மற்றும் ஆக்சிஜன் சிகிச்சைக்காக நோயாளி அவசர சிகிச்சைப் பிரிவுக்கு மாற்றப்படுகிறார்.",
+    signatures: ["ஆயுஷ்மான்", "ஈசிஜி", "ஆக்சிஜன்"]
+  },
+  {
+    id: "DOCTOR_REFERRAL_TAMIL",
+    language: "Tamil",
+    url: "/audio/doctor_referral_tamil.wav",
+    matchTexts: [
+      "மாவட்ட தலைமை மருத்துவமனைக்கு அவசர பரிந்துரை சீட்டு தயாராகிவிட்டது. 108 ஆம்புலன்ஸ் மூலம் உடனடியாக கொண்டு செல்ல ஏற்பாடு செய்யுங்கள்."
+    ],
+    fullText: "மாவட்ட தலைமை மருத்துவமனைக்கு அவசர பரிந்துரை சீட்டு தயாராகிவிட்டது. 108 ஆம்புலன்ஸ் மூலம் உடனடியாக கொண்டு செல்ல ஏற்பாடு செய்யுங்கள்.",
+    signatures: ["பரிந்துரை", "108"]
+  },
+
+  // --- TELUGU VERNACULAR ASSETS ---
+  {
+    id: "RAMESH_TELUGU",
+    language: "Telugu",
+    url: "/audio/ramesh_cardiac_telugu.wav",
+    matchTexts: [
+      "డాక్టర్ గారూ... రెండు గంటల నుంచి గుండె మీద రాయి పెట్టినట్లు బరువుగా ఉంది... విపరీతమైన పొడుస్తున్న నొప్పిగా ఉంది. ఊపిరి... అస్సలు ఆడటం లేదు... ఒళ్లంతా చల్లటి చెమటలు పట్టేస్తున్నాయి!"
+    ],
+    fullText: "డాక్టర్ గారూ... రెండు గంటల నుంచి గుండె మీద రాయి పెట్టినట్లు బరువుగా ఉంది... విపరీతమైన పొడుస్తున్న నొప్పిగా ఉంది. ఊపిరి... అస్సలు ఆడటం లేదు... ఒళ్లంతా చల్లటి చెమటలు పట్టేస్తున్నాయి!",
+    signatures: ["డాక్టర్", "గుండె", "ఊపిరి", "చెమటలు"]
+  },
+  {
+    id: "PRIYA_FEVER_TELUGU",
+    language: "Telugu",
+    url: "/audio/priya_fever_telugu.wav",
+    matchTexts: [
+      "అక్కా... మూడు రోజుల నుంచి ఒళ్లంతా నిప్పులా కాలిపోతోంది... తలనొప్పి ఎంత తీవ్రంగా ఉందంటే కళ్లు కూడా తెరవలేకపోతున్నాను. కాళ్లు చేతులపై ఎర్రటి మచ్చలు వచ్చాయి... నడవడానికి అస్సలు శక్తి లేదు."
+    ],
+    fullText: "అక్కా... మూడు రోజుల నుంచి ఒళ్లంతా నిప్పులా కాలిపోతోంది... తలనొప్పి ఎంత తీవ్రంగా ఉందంటే కళ్లు కూడా తెరవలేకపోతున్నాను. కాళ్లు చేతులపై ఎర్రటి మచ్చలు వచ్చాయి... నడవడానికి అస్సలు శక్తి లేదు.",
+    signatures: ["అక్కా", "నిప్పులా", "మచ్చలు", "శక్తి"]
+  },
+  {
+    id: "LIPU_PEDIATRIC_TELUGU",
+    language: "Telugu",
+    url: "/audio/lipu_pediatric_telugu.wav",
+    matchTexts: [
+      "అక్కా... కడుపులో విపరీతంగా నొప్పిగా ఉంది! పొద్దున్నుంచి రెండుసార్లు వాంతులు అయ్యాయి... ఏమీ తినలేకపోతున్నాను... చాలా ఏడుపు వస్తోంది."
+    ],
+    fullText: "అక్కా... కడుపులో విపరీతంగా నొప్పిగా ఉంది! పొద్దున్నుంచి రెండుసార్లు వాంతులు అయ్యాయి... ఏమీ తినలేకపోతున్నాను... చాలా ఏడుపు వస్తోంది.",
+    signatures: ["అక్కా", "కడుపులో", "వాంతులు", "ఏడుపు"]
+  },
+  {
+    id: "MEENA_MATERNAL_TELUGU",
+    language: "Telugu",
+    url: "/audio/meena_maternal_telugu.wav",
+    matchTexts: [
+      "నర్సు అక్కా... నాకు 8 నెలల గర్భం... రెండు కాళ్లూ బాగా వాచిపోయి చెప్పులు కూడా పట్టడం లేదు. తల బద్దలయ్యేంత తీవ్రమైన నొప్పిగా ఉంది, కళ్లు కూడా మసకగా కనిపిస్తున్నాయి!"
+    ],
+    fullText: "నర్సు అక్కా... నాకు 8 నెలల గర్భం... రెండు కాళ్లూ బాగా వాచిపోయి చెప్పులు కూడా పట్టడం లేదు. తల బద్దలయ్యేంత తీవ్రమైన నొప్పిగా ఉంది, కళ్లు కూడా మసకగా కనిపిస్తున్నాయి!",
+    signatures: ["గర్భం", "వాచిపోయి", "మసకగా"]
+  },
+  {
+    id: "SUBHASH_HEADACHE_TELUGU",
+    language: "Telugu",
+    url: "/audio/subhash_headache_telugu.wav",
+    matchTexts: [
+      "నమస్కారం అక్కా... నిన్న రాత్రి పరీక్షల కోసం చదువుకున్న తర్వాత నుదిటిలో కొద్దిగా తలనొప్పిగా ఉంది... కాస్త నీరసంగా ఉంది, మిగతా అంతా బాగుంది."
+    ],
+    fullText: "నమస్కారం అక్కా... నిన్న రాత్రి పరీక్షల కోసం చదువుకున్న తర్వాత నుదిటిలో కొద్దిగా తలనొప్పిగా ఉంది... కాస్త నీరసంగా ఉంది, మిగతా అంతా బాగుంది.",
+    signatures: ["నమస్కారం", "నుదిటిలో", "నీరసంగా"]
+  },
+  {
+    id: "NURSE_ADVISORY_TELUGU",
+    language: "Telugu",
+    url: "/audio/nurse_advisory_telugu.wav",
+    matchTexts: [
+      "రోగి ఆభా (ABHA) ఐడీ ధృవీకరణ పూర్తయింది. అత్యవసర ఈసీజీ మరియు ఆక్సిజన్ సపోర్ట్ కోసం వెంటనే ఎమర్జెన్సీ బేకి తరలిస్తున్నాము."
+    ],
+    fullText: "రోగి ఆభా (ABHA) ఐడీ ధృవీకరణ పూర్తయింది. అత్యవసర ఈసీజీ మరియు ఆక్సిజన్ సపోర్ట్ కోసం వెంటనే ఎమర్జెన్సీ బేకి తరలిస్తున్నాము.",
+    signatures: ["ఆభా", "ఈసీజీ", "ఆక్సిజన్"]
+  },
+  {
+    id: "DOCTOR_REFERRAL_TELUGU",
+    language: "Telugu",
+    url: "/audio/doctor_referral_telugu.wav",
+    matchTexts: [
+      "జిల్లా ఆసుపత్రికి అత్యవసర రెఫరల్ స్లిప్ సిద్ధం చేయబడింది. 108 అంబులెన్స్ ద్వారా వెంటనే తరలించండి."
+    ],
+    fullText: "జిల్లా ఆసుపత్రికి అత్యవసర రెఫరల్ స్లిప్ సిద్ధం చేయబడింది. 108 అంబులెన్స్ ద్వారా వెంటనే తరలించండి.",
+    signatures: ["రెఫరల్", "108"]
   }
 ];
 
@@ -709,6 +953,12 @@ export function findBestMatchingVoice(voices, { language = "English", isFemalePr
     targetLocalePrefixes = ["or", "ori", "hi-in", "hi", "en-in"];
   } else if (targetLangLower.includes("hindi")) {
     targetLocalePrefixes = ["hi-in", "hi", "en-in"];
+  } else if (targetLangLower.includes("bengali") || targetLangLower.includes("bangla")) {
+    targetLocalePrefixes = ["bn-in", "bn", "hi-in", "en-in"];
+  } else if (targetLangLower.includes("tamil")) {
+    targetLocalePrefixes = ["ta-in", "ta", "en-in", "hi-in"];
+  } else if (targetLangLower.includes("telugu")) {
+    targetLocalePrefixes = ["te-in", "te", "en-in", "hi-in"];
   } else {
     // English -> Strictly Indian English first, then Hindi Indian voices
     targetLocalePrefixes = ["en-in", "hi-in"];
@@ -946,10 +1196,16 @@ export async function speakHumanVoice(text, {
       canonicalLang = "odia";
     } else if (targetLangLower.includes("hindi") || /[\u0900-\u097F]/.test(text)) {
       canonicalLang = "hindi";
+    } else if (targetLangLower.includes("bengali") || targetLangLower.includes("bangla") || /[\u0980-\u09FF]/.test(text)) {
+      canonicalLang = "bengali";
+    } else if (targetLangLower.includes("tamil") || /[\u0B80-\u0BFF]/.test(text)) {
+      canonicalLang = "tamil";
+    } else if (targetLangLower.includes("telugu") || /[\u0C00-\u0C7F]/.test(text)) {
+      canonicalLang = "telugu";
     } else if (targetLangLower.includes("english") || targetLangLower.includes("en")) {
       canonicalLang = "english";
     } else {
-      canonicalLang = "other";
+      canonicalLang = "english";
     }
 
     const matchedStudioAudio = canonicalLang === "other" ? null : PRE_RENDERED_STUDIO_AUDIO.find((asset) => {
@@ -1237,6 +1493,12 @@ export async function speakHumanVoice(text, {
       utterance.lang = "hi-IN";
     } else if (effectiveTargetLang.includes("odia") || effectiveTargetLang.includes("oriya")) {
       utterance.lang = vLang.startsWith("or") ? "or-IN" : "hi-IN";
+    } else if (effectiveTargetLang.includes("bengali") || effectiveTargetLang.includes("bangla")) {
+      utterance.lang = vLang.startsWith("bn") ? "bn-IN" : "hi-IN";
+    } else if (effectiveTargetLang.includes("tamil")) {
+      utterance.lang = vLang.startsWith("ta") ? "ta-IN" : "en-IN";
+    } else if (effectiveTargetLang.includes("telugu")) {
+      utterance.lang = vLang.startsWith("te") ? "te-IN" : "en-IN";
     } else {
       utterance.lang = "en-IN"; // Explicit Indian English Accent
     }

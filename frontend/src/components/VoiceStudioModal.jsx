@@ -177,37 +177,58 @@ export const LOCAL_STUDIO_MAP = {
   ELDERLY_MALE: {
     Odia: "/audio/ramesh_cardiac_odia.wav",
     Hindi: "/audio/ramesh_cardiac_hindi.wav",
-    English: "/audio/ramesh_english.mp3"
+    English: "/audio/ramesh_english.mp3",
+    Bengali: "/audio/ramesh_cardiac_bengali.wav",
+    Tamil: "/audio/ramesh_cardiac_tamil.wav",
+    Telugu: "/audio/ramesh_cardiac_telugu.wav"
   },
   ADULT_FEMALE: {
     Odia: "/audio/priya_fever_odia.wav",
     Hindi: "/audio/priya_fever_hindi.wav",
-    English: "/audio/priya_fever_english.mp3"
+    English: "/audio/priya_fever_english.mp3",
+    Bengali: "/audio/priya_fever_bengali.wav",
+    Tamil: "/audio/priya_fever_tamil.wav",
+    Telugu: "/audio/priya_fever_telugu.wav"
   },
   CHILD_MALE: {
     Odia: "/audio/lipu_pediatric_odia.wav",
     Hindi: "/audio/aarav_pediatric_hindi.wav",
-    English: "/audio/aarav_pediatric_english.mp3"
+    English: "/audio/aarav_pediatric_english.mp3",
+    Bengali: "/audio/lipu_pediatric_bengali.wav",
+    Tamil: "/audio/lipu_pediatric_tamil.wav",
+    Telugu: "/audio/lipu_pediatric_telugu.wav"
   },
   MATERNAL_FEMALE: {
     Odia: "/audio/meena_maternal_odia.wav",
     Hindi: "/audio/meena_maternal_hindi.wav",
-    English: "/audio/meena_maternal_english.mp3"
+    English: "/audio/meena_maternal_english.mp3",
+    Bengali: "/audio/meena_maternal_bengali.wav",
+    Tamil: "/audio/meena_maternal_tamil.wav",
+    Telugu: "/audio/meena_maternal_telugu.wav"
   },
   YOUNG_MALE: {
     Odia: "/audio/subhash_headache_odia.wav",
     Hindi: "/audio/subhash_headache_hindi.wav",
-    English: "/audio/subhash_headache_english.mp3"
+    English: "/audio/subhash_headache_english.mp3",
+    Bengali: "/audio/subhash_headache_bengali.wav",
+    Tamil: "/audio/subhash_headache_tamil.wav",
+    Telugu: "/audio/subhash_headache_telugu.wav"
   },
   NURSE_FEMALE: {
     Odia: "/audio/nurse_advisory.mp3",
     Hindi: "/audio/nurse_advisory.mp3",
-    English: "/audio/nurse_advisory.mp3"
+    English: "/audio/nurse_advisory.mp3",
+    Bengali: "/audio/nurse_advisory_bengali.wav",
+    Tamil: "/audio/nurse_advisory_tamil.wav",
+    Telugu: "/audio/nurse_advisory_telugu.wav"
   },
   DOCTOR_MALE: {
     Odia: "/audio/doctor_referral.mp3",
     Hindi: "/audio/doctor_referral.mp3",
-    English: "/audio/doctor_referral.mp3"
+    English: "/audio/doctor_referral.mp3",
+    Bengali: "/audio/doctor_referral_bengali.wav",
+    Tamil: "/audio/doctor_referral_tamil.wav",
+    Telugu: "/audio/doctor_referral_telugu.wav"
   }
 };
 
@@ -281,9 +302,7 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
 
     // 1. Instant Playback Check: Authentic Sovereign Studio Recording (<10ms)
     const personaAudio = LOCAL_STUDIO_MAP[selectedPersona.id];
-    const localUrl = personaAudio
-      ? (personaAudio[selectedLang.key] || (["English", "Hindi", "Odia"].includes(selectedLang.key) ? null : personaAudio.English))
-      : null;
+    const localUrl = personaAudio?.[selectedLang.key] || null;
     const isPresetMatch = isMatchingSample(customText, selectedPersona, selectedLang.key);
 
     if (localUrl && isPresetMatch) {
@@ -444,7 +463,7 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
       setIsGenerating(false);
       setStatusMessage("Using local pre-rendered audio...");
 
-      const fallbackUrl = localUrl || (personaAudio ? (personaAudio.English || personaAudio.Hindi || personaAudio.Odia) : "/audio/ramesh_cardiac.mp3");
+      const fallbackUrl = localUrl || (personaAudio ? (personaAudio[selectedLang.key] || personaAudio.English || personaAudio.Hindi || personaAudio.Odia) : "/audio/ramesh_cardiac.mp3");
 
       if (fallbackUrl) {
         const audio = getOrCreatePreloadedAudio(fallbackUrl) || new Audio(fallbackUrl);

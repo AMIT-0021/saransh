@@ -192,22 +192,22 @@ export default function AbhaCreationModal({
           <div className="bg-[#138808] h-full"></div>
         </div>
 
-        {/* 2. Modal Top Header */}
-        <div className="bg-slate-900 text-white px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
+        {/* 2. Modal Top Header (Clean White Medical Styling) */}
+        <div className="bg-white text-slate-900 border-b border-slate-200 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-teal-600/20">
               🏛️
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
+                <span className="text-[10px] font-mono font-black uppercase tracking-widest text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">
                   NATIONAL HEALTH AUTHORITY • ABDM
                 </span>
-                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[9px] font-bold px-2 py-0.5 rounded-full">
                   LIVE ENROLLMENT
                 </span>
               </div>
-              <h2 className="text-sm sm:text-base font-extrabold text-white">
+              <h2 className="text-sm sm:text-base font-extrabold text-slate-900 mt-0.5">
                 2-Minute Assisted ABHA ID Creation Wizard
               </h2>
             </div>
@@ -216,7 +216,7 @@ export default function AbhaCreationModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
             title="Close"
           >
             <X className="w-5 h-5" />

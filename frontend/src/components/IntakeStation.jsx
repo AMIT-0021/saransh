@@ -229,7 +229,9 @@ export default function IntakeStation({
   triageResult,
   onSubmitFollowupAnswers,
   onGoToDoctorQueue,
-  externalPresetId
+  externalPresetId,
+  onOpenAbhaStudio,
+  externalAbhaProfile
 }) {
   const t = TRANSLATIONS[selectedLanguage] || TRANSLATIONS.English;
 
@@ -259,6 +261,37 @@ export default function IntakeStation({
 
   const [abhaScanned, setAbhaScanned] = useState(false);
   const [isScanningAbha, setIsScanningAbha] = useState(false);
+
+  // Synchronize externally generated ABHA ID & Profile
+  useEffect(() => {
+    if (externalAbhaProfile) {
+      setPatientInfo((prev) => ({
+        ...prev,
+        abha_id: externalAbhaProfile.abha_number,
+        name_or_alias: externalAbhaProfile.name,
+        age: externalAbhaProfile.age,
+        sex: externalAbhaProfile.gender,
+        location_state: externalAbhaProfile.state,
+        emergency_contact: externalAbhaProfile.mobile,
+        consent_given: true
+      }));
+
+      setMedicalHistory((prev) => ({
+        ...prev,
+        existing_conditions: prev.existing_conditions.length > 0
+          ? prev.existing_conditions
+          : ["Essential Hypertension (ICD-10 I10)", "Type 2 Diabetes"],
+        current_medications: prev.current_medications.length > 0
+          ? prev.current_medications
+          : ["Amlodipine 5mg OD"],
+        known_allergies: prev.known_allergies.length > 0
+          ? prev.known_allergies
+          : ["Penicillin Allergy"]
+      }));
+
+      setAbhaScanned(true);
+    }
+  }, [externalAbhaProfile]);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const currentlyPlayingTextRef = useRef(null);
@@ -1267,19 +1300,37 @@ export default function IntakeStation({
                   </div>
                 </div>
 
-                {/* Right side: Action Button */}
+                {/* Right side: Action Buttons */}
                 <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onOpenAbhaStudio) {
+                        onOpenAbhaStudio();
+                      } else {
+                        handleMockScanAbha();
+                      }
+                    }}
+                    className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 hover:from-emerald-400 hover:to-cyan-500 text-white font-black text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-lg shadow-teal-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
+                    title="Open the 2-Minute Assisted ABHA ID Creation & Verification Wizard (ABDM M1)"
+                  >
+                    <span className="text-sm">🪪</span>
+                    <span>Create / Verify ABHA (2 Min)</span>
+                    <span className="bg-white/20 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded">M1</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={handleMockScanAbha}
                     disabled={isScanningAbha}
-                    className="w-full sm:w-auto bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl transition shadow-lg shadow-orange-500/25 flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
+                    className="w-full sm:w-auto bg-slate-800/90 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-amber-300 font-bold text-xs px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 shrink-0 cursor-pointer active:scale-95 disabled:opacity-75"
+                    title="1-Click Instant Mock Scan with Demo Vitals and Past Records"
                   >
-                    <span className="text-sm">{isScanningAbha ? "⚡" : "🪪"}</span>
+                    <span className="text-xs">{isScanningAbha ? "⚡" : "⚡"}</span>
                     <span>
                       {isScanningAbha
-                        ? (t.abhaCardScanning || "Scanning ABHA Card...")
-                        : (t.mockScanAbhaBtn || "[ 🪪 Mock Scan ABHA Card ]")}
+                        ? (t.abhaCardScanning || "Scanning...")
+                        : "[ ⚡ 1-Click Scan ]"}
                     </span>
                   </button>
                 </div>

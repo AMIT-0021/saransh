@@ -6,6 +6,7 @@ import ClinicianReviewModal from "./components/ClinicianReviewModal";
 import ReferralSlipModal from "./components/ReferralSlipModal";
 import VoiceStudioModal from "./components/VoiceStudioModal";
 import JudgeTourModal from "./components/JudgeTourModal";
+import AbhaCreationModal from "./components/AbhaCreationModal";
 import {
   getOfflinePendingCount,
   saveOfflineRecord,
@@ -178,6 +179,8 @@ export default function App() {
   const [emergencyNotification, setEmergencyNotification] = useState(null);
   const [isVoiceStudioOpen, setIsVoiceStudioOpen] = useState(false);
   const [isJudgeTourOpen, setIsJudgeTourOpen] = useState(false);
+  const [isAbhaModalOpen, setIsAbhaModalOpen] = useState(false);
+  const [externalAbhaProfile, setExternalAbhaProfile] = useState(null);
   const [externalPresetId, setExternalPresetId] = useState(null);
 
   // Fast-track preset launcher from Judge Tour Modal
@@ -713,6 +716,7 @@ export default function App() {
         onResetDemo={handleResetDemo}
         onOpenVoiceStudio={() => setIsVoiceStudioOpen(true)}
         onOpenJudgeTour={() => setIsJudgeTourOpen(true)}
+        onOpenAbhaStudio={() => setIsAbhaModalOpen(true)}
         redCount={queueData.red_count}
         yellowCount={queueData.yellow_count}
         greenCount={queueData.green_count}
@@ -747,6 +751,8 @@ export default function App() {
             onSubmitFollowupAnswers={handleSubmitFollowupAnswers}
             onGoToDoctorQueue={() => setActiveRole("DOCTOR")}
             externalPresetId={externalPresetId}
+            onOpenAbhaStudio={() => setIsAbhaModalOpen(true)}
+            externalAbhaProfile={externalAbhaProfile}
           />
         ) : (
           <DoctorDashboard
@@ -796,6 +802,18 @@ export default function App() {
         isOpen={isJudgeTourOpen}
         onClose={() => setIsJudgeTourOpen(false)}
         onLaunchPreset={handleLaunchPresetFromTour}
+      />
+
+      {/* 7. 2-Minute Assisted ABHA Creation & Verification Wizard (ABDM M1) */}
+      <AbhaCreationModal
+        isOpen={isAbhaModalOpen}
+        onClose={() => setIsAbhaModalOpen(false)}
+        onApplyProfile={(profile) => {
+          setActiveRole("NURSE");
+          setExternalAbhaProfile(profile);
+          setIsAbhaModalOpen(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
       />
 
       {/* 5. Minimalist Healthcare Footer */}

@@ -37,6 +37,7 @@ export default function HeaderBar({
   onResetDemo,
   onOpenVoiceStudio,
   onOpenJudgeTour,
+  onOpenAbhaStudio,
   redCount = 0,
   yellowCount = 0,
   greenCount,
@@ -388,6 +389,36 @@ export default function HeaderBar({
                         </div>
                       </div>
                       <ChevronRight className="w-4 h-4 text-teal-600 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1.5" />
+                    </button>
+
+                    {/* Item 2: 2-Minute ABHA Enrollment Studio */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsToolsOpen(false);
+                        if (onOpenAbhaStudio) onOpenAbhaStudio();
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-sky-50/80 via-blue-50/60 to-indigo-50/60 hover:from-sky-100 hover:to-blue-100 border border-sky-300 transition flex items-center justify-between group cursor-pointer shadow-2xs"
+                    >
+                      <div className="flex items-start space-x-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs font-black text-sm">
+                          🪪
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center space-x-1.5 flex-wrap">
+                            <span className="text-xs font-black text-slate-900 group-hover:text-sky-950">
+                              2-Min ABHA Enrollment
+                            </span>
+                            <span className="text-[9px] bg-sky-100 text-sky-900 border border-sky-300 px-1.5 py-0.2 rounded font-extrabold whitespace-nowrap">
+                              ABDM v3
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-600 leading-tight mt-0.5 truncate">
+                            UIDAI Aadhaar OTP & digital smart card generation
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-sky-600 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1.5" />
                     </button>
 
                     {/* Item 3: Reset Demo Cases */}

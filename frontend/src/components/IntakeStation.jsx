@@ -18,7 +18,9 @@ import {
   Check,
   RotateCcw,
   Send,
-  Plus
+  Plus,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 import {
   SYNTHETIC_CASES,
@@ -448,6 +450,8 @@ export default function IntakeStation({
   const [isSoundDetected, setIsSoundDetected] = useState(false);
   const [audioVolumePercent, setAudioVolumePercent] = useState(0);
   const [detectedIdioms, setDetectedIdioms] = useState([]);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [micErrorMessage, setMicErrorMessage] = useState("");
 
   // Hardware Audio & Speech Recognition Refs
   const audioStreamRef = useRef(null);
@@ -455,6 +459,9 @@ export default function IntakeStation({
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const recognitionRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedAudioChunksRef = useRef([]);
+  const isListeningRef = useRef(false);
   const silenceTimerRef = useRef(null);
   const accumulatedTranscriptRef = useRef("");
 
@@ -484,6 +491,13 @@ export default function IntakeStation({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {
+        // media recorder stop error ignored
+      }
+    }
     if (audioStreamRef.current) {
       audioStreamRef.current.getTracks().forEach((track) => track.stop());
       audioStreamRef.current = null;
@@ -500,8 +514,9 @@ export default function IntakeStation({
     setAudioVolumePercent(0);
   }, []);
 
-  // Stop speech recognition, clear silence timer and finalize statement
-  const handleStopSpeech = useCallback((autoConfirmed = false) => {
+  // Stop speech recognition, finalize statement and optionally transcribe audio via Sarvam STT
+  const handleStopSpeech = useCallback(async (autoConfirmed = false) => {
+    isListeningRef.current = false;
     if (silenceTimerRef.current) {
       clearTimeout(silenceTimerRef.current);
       silenceTimerRef.current = null;
@@ -514,32 +529,99 @@ export default function IntakeStation({
       }
       recognitionRef.current = null;
     }
+
+    // Stop MediaRecorder and grab recorded audio chunks
+    let recordedBlob = null;
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        mediaRecorderRef.current.stop();
+        if (recordedAudioChunksRef.current.length > 0) {
+          const mime = mediaRecorderRef.current.mimeType || "audio/webm";
+          recordedBlob = new Blob(recordedAudioChunksRef.current, { type: mime });
+        }
+      } catch {
+        // media recorder stop error ignored
+      }
+    } else if (recordedAudioChunksRef.current.length > 0) {
+      recordedBlob = new Blob(recordedAudioChunksRef.current, { type: "audio/webm" });
+    }
+
     stopHardwareAudioStream();
     setIsListening(false);
 
-    if (autoConfirmed) {
-      setIsStatementVerified(true);
+    const liveText = accumulatedTranscriptRef.current?.trim();
+
+    // If Web Speech API didn't yield text (or for Odia) and we captured live audio, send to Sarvam STT
+    if (!liveText && recordedBlob && recordedBlob.size > 800) {
+      setIsTranscribing(true);
+      try {
+        const formData = new FormData();
+        const ext = recordedBlob.type.includes("mp4") ? "m4a" : "webm";
+        formData.append("file", recordedBlob, `patient_speech.${ext}`);
+        formData.append("model", "saaras:v3");
+
+        let lang = "en-IN";
+        if (patientInfo.language_preference === "Odia") lang = "od-IN";
+        else if (patientInfo.language_preference === "Hindi") lang = "hi-IN";
+        formData.append("language_code", lang);
+
+        const res = await fetch("/api/v1/sarvam/stt", {
+          method: "POST",
+          body: formData
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const transcript = (data.transcript || data.text || "").trim();
+          if (transcript) {
+            setLiveStreamText(transcript);
+            setSymptoms((prev) => ({
+              ...prev,
+              verbatim_local_statement: transcript
+            }));
+            const norm = normalizeIndicSpeech(transcript, patientInfo.language_preference);
+            if (norm.detectedIdioms && norm.detectedIdioms.length > 0) {
+              setDetectedIdioms(norm.detectedIdioms);
+            }
+            if (norm.clinicalSummary) {
+              setSymptoms((prev) => ({
+                ...prev,
+                translated_english_statement: norm.clinicalSummary,
+                chief_complaint: norm.clinicalSummary
+              }));
+            }
+            setIsStatementVerified(true);
+          }
+        }
+      } catch (sttErr) {
+        console.warn("Sarvam STT invocation note:", sttErr);
+      } finally {
+        setIsTranscribing(false);
+      }
+    } else if (liveText) {
+      if (autoConfirmed) {
+        setIsStatementVerified(true);
+      }
     }
-  }, [stopHardwareAudioStream]);
+  }, [stopHardwareAudioStream, patientInfo.language_preference]);
 
   // Sync facility and language props & synchronize clinical script
   useEffect(() => {
-    // 1. Immediately cancel active speech playback and recognition
-    stopHumanVoice();
-    setIsPlayingAudio(false);
-    currentlyPlayingTextRef.current = null;
-    if (isListening) {
-      handleStopSpeech(false);
-    }
-
     setPatientInfo((prev) => ({
       ...prev,
       facility_type: selectedFacility,
       language_preference: selectedLanguage
     }));
 
-    // 2. If language actually changed, synchronize statement to target script
+    // If language actually changed, cancel active playback and synchronize statement
     if (prevLangRef.current !== selectedLanguage) {
+      stopHumanVoice();
+      setIsPlayingAudio(false);
+      currentlyPlayingTextRef.current = null;
+      if (isListeningRef.current) {
+        handleStopSpeech(false);
+      }
+
       prevLangRef.current = selectedLanguage;
 
       setSymptoms((prev) => {
@@ -567,7 +649,7 @@ export default function IntakeStation({
         }
       });
     }
-  }, [selectedFacility, selectedLanguage, isListening, handleStopSpeech]);
+  }, [selectedFacility, selectedLanguage, handleStopSpeech]);
 
   // When triage result is available, auto transition to step 3
   useEffect(() => {
@@ -801,26 +883,57 @@ export default function IntakeStation({
     }
   };
 
-  // Studio-grade hardware audio constraints for noisy hackathon / OPD environments
-  const STUDIO_AUDIO_CONSTRAINTS = {
-    audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-      sampleRate: 48000
-    }
-  };
-
-  // Hardware audio capture & real-time volume detection (AnalyserNode)
+  // Hardware audio capture & real-time volume detection (AnalyserNode) + MediaRecorder
   const startHardwareAudioStream = async () => {
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia(STUDIO_AUDIO_CONSTRAINTS);
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            }
+          });
+        } catch {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        }
         audioStreamRef.current = stream;
+
+        // Initialize MediaRecorder for robust audio capture across all browsers
+        try {
+          recordedAudioChunksRef.current = [];
+          let mimeType = "";
+          if (typeof MediaRecorder !== "undefined") {
+            if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+              mimeType = "audio/webm;codecs=opus";
+            } else if (MediaRecorder.isTypeSupported("audio/webm")) {
+              mimeType = "audio/webm";
+            } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
+              mimeType = "audio/mp4";
+            }
+            const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+            recorder.ondataavailable = (e) => {
+              if (e.data && e.data.size > 0) {
+                recordedAudioChunksRef.current.push(e.data);
+              }
+            };
+            recorder.start(250);
+            mediaRecorderRef.current = recorder;
+          }
+        } catch (recErr) {
+          console.warn("MediaRecorder initialization note:", recErr);
+        }
 
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (AudioContextClass) {
           const audioCtx = new AudioContextClass();
+          if (audioCtx.state === "suspended") {
+            try {
+              await audioCtx.resume();
+            } catch {}
+          }
           audioContextRef.current = audioCtx;
           const analyser = audioCtx.createAnalyser();
           analyser.fftSize = 256;
@@ -842,118 +955,134 @@ export default function IntakeStation({
             const volPercent = Math.min(100, Math.round((avg / 128) * 100));
             setAudioVolumePercent(volPercent);
 
-            // Active voice activity threshold (detects vocal speech vs background noise)
-            setIsSoundDetected(volPercent > 4);
+            // Active voice activity threshold
+            setIsSoundDetected(volPercent > 2);
 
             animationFrameRef.current = requestAnimationFrame(checkAudioActivity);
           };
           animationFrameRef.current = requestAnimationFrame(checkAudioActivity);
         }
+        return stream;
       }
     } catch (err) {
-      console.warn("Hardware audio analysis warning (falling back to speech recognition):", err);
+      console.warn("Hardware audio capture warning:", err);
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        setMicErrorMessage("Microphone permission was denied. Please allow microphone access in your browser URL bar.");
+      } else {
+        setMicErrorMessage("Could not access microphone: " + (err.message || "Hardware error"));
+      }
+      return null;
     }
   };
 
-  // Start real-time speech recognition with interim streaming & 1.8s silence detector
+  // Start real-time speech recognition with interim streaming & 2.5s silence detector
   const handleStartSpeech = async () => {
-    if (!speechRecognitionSupported) {
-      alert("Web Speech API is not supported in this browser. Please use the 1-click Vernacular Voice buttons below.");
-      return;
-    }
-
+    setMicErrorMessage("");
     setLiveStreamText("");
     accumulatedTranscriptRef.current = "";
     setIsStatementVerified(false);
+    isListeningRef.current = true;
 
     // 1. Hardware studio constraints & sound detection
-    await startHardwareAudioStream();
+    const stream = await startHardwareAudioStream();
+    if (!stream) {
+      isListeningRef.current = false;
+      setIsListening(false);
+      return;
+    }
 
-    // 2. Web Speech API with regional BCP-47 locale tags
+    setIsListening(true);
+
+    // 2. Web Speech API with regional BCP-47 locale tags (Chrome/Edge)
     try {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognitionRef.current = recognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognitionRef.current = recognition;
 
-      // Regional BCP-47 locale tags: Odia: 'or-IN', Hindi: 'hi-IN', English: 'en-IN'
-      let langCode = "en-IN";
-      if (patientInfo.language_preference === "Hindi") langCode = "hi-IN";
-      if (patientInfo.language_preference === "Odia") langCode = "or-IN";
+        let langCode = "en-IN";
+        if (patientInfo.language_preference === "Hindi") langCode = "hi-IN";
+        if (patientInfo.language_preference === "Odia") langCode = "hi-IN"; // Use Indic phonetic model while Sarvam STT processes Odia audio
 
-      recognition.lang = langCode;
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 3;
+        recognition.lang = langCode;
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 3;
 
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
+        recognition.onstart = () => {
+          setIsListening(true);
+        };
 
-      recognition.onend = () => {
-        stopHardwareAudioStream();
-        setIsListening(false);
-      };
-
-      recognition.onerror = (e) => {
-        console.warn("Speech recognition warning:", e);
-        if (e.error !== "no-speech") {
-          handleStopSpeech(false);
-        }
-      };
-
-      recognition.onresult = (event) => {
-        let interim = "";
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            accumulatedTranscriptRef.current += (accumulatedTranscriptRef.current ? " " : "") + event.results[i][0].transcript;
-          } else {
-            interim += event.results[i][0].transcript;
+        recognition.onend = () => {
+          // If still listening and not manually stopped, keep recognition alive
+          if (isListeningRef.current && recognitionRef.current) {
+            try {
+              recognition.start();
+            } catch {}
           }
-        }
+        };
 
-        const currentLive = (accumulatedTranscriptRef.current + " " + interim).trim();
-        setLiveStreamText(currentLive);
-
-        if (currentLive) {
-          setSymptoms((prev) => ({
-            ...prev,
-            verbatim_local_statement: currentLive
-          }));
-
-          // Run Indic Medical Speech Normalizer
-          const norm = normalizeIndicSpeech(currentLive, patientInfo.language_preference);
-          if (norm.detectedIdioms && norm.detectedIdioms.length > 0) {
-            setDetectedIdioms(norm.detectedIdioms);
+        recognition.onerror = (e) => {
+          console.warn("Speech recognition warning:", e);
+          if (e.error === "not-allowed") {
+            setMicErrorMessage("Microphone permission was denied. Please allow microphone in your browser URL bar.");
+            handleStopSpeech(false);
           }
-          if (norm.clinicalSummary) {
+          // Do not abort on no-speech or language-not-supported; MediaRecorder continues recording!
+        };
+
+        recognition.onresult = (event) => {
+          let interim = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              accumulatedTranscriptRef.current += (accumulatedTranscriptRef.current ? " " : "") + event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+
+          const currentLive = (accumulatedTranscriptRef.current + " " + interim).trim();
+          setLiveStreamText(currentLive);
+
+          if (currentLive) {
             setSymptoms((prev) => ({
               ...prev,
-              translated_english_statement: norm.clinicalSummary,
-              chief_complaint: norm.clinicalSummary
+              verbatim_local_statement: currentLive
             }));
-          }
 
-          // 1.8-second Intelligent Silence Detector:
-          // If the patient finishes speaking and pauses for 1.8s, auto-stop and confirm statement
-          if (silenceTimerRef.current) {
-            clearTimeout(silenceTimerRef.current);
-          }
-          silenceTimerRef.current = setTimeout(() => {
-            console.log("1.8-second silence detected. Auto-stopping and verifying statement.");
-            handleStopSpeech(true);
-          }, 1800);
-        }
-      };
+            // Run Indic Medical Speech Normalizer
+            const norm = normalizeIndicSpeech(currentLive, patientInfo.language_preference);
+            if (norm.detectedIdioms && norm.detectedIdioms.length > 0) {
+              setDetectedIdioms(norm.detectedIdioms);
+            }
+            if (norm.clinicalSummary) {
+              setSymptoms((prev) => ({
+                ...prev,
+                translated_english_statement: norm.clinicalSummary,
+                chief_complaint: norm.clinicalSummary
+              }));
+            }
 
-      recognition.start();
+            // 2.5-second Intelligent Silence Detector
+            if (silenceTimerRef.current) {
+              clearTimeout(silenceTimerRef.current);
+            }
+            silenceTimerRef.current = setTimeout(() => {
+              handleStopSpeech(true);
+            }, 2500);
+          }
+        };
+
+        recognition.start();
+      }
     } catch (err) {
-      console.error("Speech recognition startup error:", err);
-      handleStopSpeech(false);
+      console.warn("Speech recognition startup note:", err);
+      // MediaRecorder is already recording audio, which will transcribe via Sarvam STT on stop!
     }
   };
 
   const handleToggleSpeech = () => {
-    if (isListening) {
+    if (isListening || isTranscribing) {
       handleStopSpeech(false);
     } else {
       handleStartSpeech();
@@ -1783,22 +1912,29 @@ export default function IntakeStation({
                     <button
                       type="button"
                       onClick={handleToggleSpeech}
-                      aria-label={isListening ? "Stop microphone recording" : "Start microphone voice recording"}
+                      disabled={isTranscribing}
+                      aria-label={isTranscribing ? "Transcribing recorded audio" : isListening ? "Stop microphone recording" : "Start microphone voice recording"}
                       className={`relative w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer min-h-[44px] ${
-                        isListening
+                        isTranscribing
+                          ? "bg-slate-800 text-slate-200 border border-teal-500/50 cursor-wait shadow-sm"
+                          : isListening
                           ? isSoundDetected
                             ? "bg-emerald-600 text-white ring-4 ring-emerald-400/80 shadow-lg shadow-emerald-500/40"
                             : "bg-rose-600 text-white ring-2 ring-rose-400 animate-pulse"
                           : "bg-teal-600 text-white hover:bg-teal-700"
                       }`}
                     >
-                      {isListening ? (
+                      {isTranscribing ? (
+                        <Loader2 className="w-4 h-4 text-teal-400 animate-spin shrink-0" />
+                      ) : isListening ? (
                         isSoundDetected ? <Mic className="w-4 h-4 text-white animate-bounce shrink-0" /> : <MicOff className="w-4 h-4 shrink-0" />
                       ) : (
                         <Mic className="w-4 h-4 shrink-0" />
                       )}
                       <span className="truncate">
-                        {isListening
+                        {isTranscribing
+                          ? "Transcribing with Sarvam AI..."
+                          : isListening
                           ? isSoundDetected
                             ? "Voice Detected • Speaking..."
                             : (t.voiceRecordingPrompt || t.listening)
@@ -1808,20 +1944,39 @@ export default function IntakeStation({
                   </div>
                 </div>
 
+                {/* Microphone Error Message Banner if Permissions Blocked */}
+                {micErrorMessage && (
+                  <div className="p-3 bg-rose-50 border border-rose-300 rounded-xl text-rose-800 text-xs flex items-center justify-between space-x-2 shadow-xs">
+                    <div className="flex items-center space-x-2 min-w-0">
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span className="font-medium truncate">{micErrorMessage}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMicErrorMessage("")}
+                      className="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded text-[11px] shrink-0"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
+
                 {/* Live Transcript Preview Pill */}
-                {(isListening || liveStreamText) && (
+                {(isListening || isTranscribing || liveStreamText) && (
                   <div className="flex items-center space-x-2.5 px-3 sm:px-3.5 py-2 bg-slate-900 border border-teal-500/40 rounded-xl text-xs text-white shadow-md animate-fadeIn min-w-0 max-w-full">
                     <span className="flex h-2.5 w-2.5 relative shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
                     <span className="font-mono text-[11px] font-black text-emerald-400 tracking-wider shrink-0">
-                      🎙️ Live:
+                      {isTranscribing ? "⚡ STT:" : "🎙️ Live:"}
                     </span>
                     <span className="text-slate-200 font-mono italic truncate flex-1 min-w-0">
-                      {liveStreamText || (isListening ? `Listening for speech in ${patientInfo.language_preference}...` : "")}
+                      {isTranscribing
+                        ? "Converting audio with Sarvam Saaras Indic STT..."
+                        : liveStreamText || (isListening ? `Listening for speech in ${patientInfo.language_preference}...` : "")}
                     </span>
-                    {audioVolumePercent > 0 && (
+                    {audioVolumePercent > 0 && !isTranscribing && (
                       <span className="ml-auto text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-800 shrink-0">
                         {audioVolumePercent}%
                       </span>

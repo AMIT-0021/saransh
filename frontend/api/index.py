@@ -11,7 +11,7 @@ import uuid
 import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional, Any
-from fastapi import FastAPI, HTTPException, Body, Query
+from fastapi import FastAPI, HTTPException, Body, Query, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -145,6 +145,17 @@ def sarvam_translate(payload: SarvamTranslatePayload):
     if not translated:
         raise HTTPException(status_code=500, detail="Sarvam AI translation failed")
     return {"translated_text": translated}
+
+@app.post("/api/v1/sarvam/stt")
+@app.post("/api/sarvam/stt")
+async def sarvam_stt(file: UploadFile = File(...)):
+    if not is_sarvam_configured():
+        raise HTTPException(status_code=503, detail="Sarvam AI API key is not configured")
+    audio_bytes = await file.read()
+    result = transcribe_sarvam_speech(audio_bytes, filename=file.filename or "audio.wav")
+    if not result:
+        raise HTTPException(status_code=500, detail="Sarvam AI speech recognition failed")
+    return result
 
 @app.get("/api/v1/facilities")
 

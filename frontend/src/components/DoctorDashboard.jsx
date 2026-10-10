@@ -560,7 +560,7 @@ export default function DoctorDashboard({
                         bay_number: "Resuscitation Bay #1",
                         status: "OCCUPIED",
                         patient_token: "T-024",
-                        patient_name: "Ramesh K. (Synthetic)",
+                        patient_name: "Emergency Patient (Token #T-024)",
                         priority: "RED",
                         chief_complaint: "Acute Retrosternal Chest Pain & Hypoxia",
                         vitals: "SpO₂ 89% • BP 158/96 • HR 112",

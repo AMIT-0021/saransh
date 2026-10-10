@@ -85,7 +85,7 @@ export default function JudgeTourModal({
                 Fast-Track Evaluation
               </span>
               <h3 className="text-base sm:text-lg font-black text-slate-900">
-                1-Click Recommended Demo: Ramesh K. (Cardiac Emergency)
+                1-Click Recommended Demo: Acute Cardiac Emergency (62M)
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed max-w-xl">
                 Loads an authentic 62M rural patient presenting with SpO₂ 89%, crushing chest pain, and 24kHz studio-mastered Odia voice. Demonstrates instant deterministic RED escalation!

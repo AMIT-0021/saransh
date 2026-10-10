@@ -1,12 +1,12 @@
 export const SYNTHETIC_CASES = [
   {
     id: "RAMESH_CARDIAC_RED",
-    badgeLabel: "🔴 Ramesh K. (62M) — Odia Chest Pain & Hypoxia (SpO2 89%)",
+    badgeLabel: "🔴 Emergency Case #1 (62M) — Odia Chest Pain & Hypoxia (SpO2 89%)",
     priorityHint: "RED",
     patient_basic_info: {
       patient_id: "PHC-1024",
       token_number: "T-024",
-      name_or_alias: "Ramesh K. (Synthetic)",
+      name_or_alias: "",
       age: 62,
       sex: "Male",
       location_state: "Odisha - Khordha (PHC Jatni - NIN: OD-KHD-PHC-102)",

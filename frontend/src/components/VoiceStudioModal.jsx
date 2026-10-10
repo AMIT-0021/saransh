@@ -18,7 +18,7 @@ import { stopHumanVoice, playWithClinicalMastering } from "../utils/voiceSynthes
 const PERSONA_PRESETS = [
   {
     id: "ELDERLY_MALE",
-    name: "Ramesh K. (62M Senior)",
+    name: "Elderly Citizen (62M Senior)",
     role: "Elderly Cardiac Patient",
     badge: "🔴 Acute Distress",
     speaker: "ashutosh",

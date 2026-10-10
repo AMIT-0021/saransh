@@ -158,21 +158,21 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "RAMESH_ODIA",
     language: "Odia",
-    fullText: "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
-    strictKeywords: ["ଛାତିଟା ପଥର", "କଣେଇକି", "ଫାଟିଯିବା"],
+    fullText: "ଆଃ... ଡାକ୍ତର ବାବୁ... ଦୁଇ ଘଣ୍ଟା ହେଲା... ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ବାମ ହାତକୁ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ... ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି! ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ... ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି... ଆଃ...",
+    strictKeywords: ["ଛାତିଟା ପଥର", "ଦୁଇ ଘଣ୍ଟା", "ଫାଟିଯିବା"],
     url: "/audio/ramesh_cardiac_odia.wav"
   },
   {
     id: "PRIYA_FEVER_ODIA",
     language: "Odia",
-    fullText: "ଦିଦି, ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି। ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
-    strictKeywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ଲାଲ୍ ଦାଗ"],
+    fullText: "ଉଫ୍... ଦିଦି... ତିନି ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି... ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ବି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ନାଲି ଦାଗ ବାହାରି ପଡ଼ିଛି... ଆଉ ଠିଆ ହେବାକୁ ଜମା ବଳ ପାଉନି... ଦୟାକରି ସାହାଯ୍ୟ କରନ୍ତୁ।",
+    strictKeywords: ["ନିଆଁ ଭଳି ତାତିଛି", "ତିନି ଦିନ", "ନାଲି ଦାଗ"],
     url: "/audio/priya_fever_odia.wav"
   },
   {
     id: "LIPU_PEDIATRIC_ODIA",
     language: "Odia",
-    fullText: "ଦିଦି, ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି। ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି ଆଉ କିଛି ଖାଇ ହେଉନି, ବହୁତ କଷ୍ଟ ହେଉଛି।",
+    fullText: "ଦିଦି... ଆଃ... ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି! ସକାଳୁ ଦୁଇ ଥର ବାନ୍ତି ହେଲାଣି... ଆଉ କିଛି ଖାଇ ହେଉନି... ବହୁତ କଷ୍ଟ ହେଉଛି ଦିଦି... ପ୍ଲିଜ୍ ଟିକେ ଦେଖନ୍ତୁ...",
     strictKeywords: ["ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି", "ବାନ୍ତି ହେଲାଣି"],
     url: "/audio/lipu_pediatric_odia.wav"
   },
@@ -186,8 +186,8 @@ const PRE_RENDERED_STUDIO_AUDIO = [
   {
     id: "MEENA_MATERNAL_ODIA",
     language: "Odia",
-    fullText: "ମାଉସୀ, ମୋତେ ୮ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି, ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି ଆଉ ଗୋଡ଼ ଦୁଇଟା ଫୁଲି ଯାଇ ଚପଲ ପଶୁନି।",
-    strictKeywords: ["୮ ମାସ", "ଚପଲ ପଶୁନି"],
+    fullText: "ମାଉସୀ... ମୋତେ ଆଠ ମାସ ଚାଲିଛି। ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଖିକୁ ଝାପ୍ସା ଦିଶୁଛି... ଆଉ ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୋ ଛୁଆଟା ଠିକ୍ ଅଛି ତ ମାଉସୀ?",
+    strictKeywords: ["ଆଠ ମାସ", "ଚପଲ ପଶୁନି"],
     url: "/audio/meena_maternal_odia.wav"
   },
 
@@ -658,13 +658,27 @@ export function humanizeSpeechText(text, { age = 35, role = "patient" } = {}) {
     .replace(/\s+/g, " ")
     .trim();
 
+  // Expand Odia and Arabic numerals into authentic spoken Odia words
+  if (/[\u0B00-\u0B7F]/.test(cleaned)) {
+    const ODIA_NUMS = {
+      "0": "ଶୂନ", "1": "ଏକ", "2": "ଦୁଇ", "3": "ତିନି", "4": "ଚାରି", "5": "ପାଞ୍ଚ", "6": "ଛଅ", "7": "ସାତ", "8": "ଆଠ", "9": "ନଅ",
+      "୦": "ଶୂନ", "୧": "ଏକ", "୨": "ଦୁଇ", "୩": "ତିନି", "୪": "ଚାରି", "୫": "ପାଞ୍ଚ", "୬": "ଛଅ", "୭": "ସାତ", "୮": "ଆଠ", "୯": "ନଅ"
+    };
+    cleaned = cleaned
+      .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଘଣ୍ଟା)/g, (m, d) => `${ODIA_NUMS[d] || d} ଘଣ୍ଟା`)
+      .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଦିନ)/g, (m, d) => `${ODIA_NUMS[d] || d} ଦିନ`)
+      .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଥର)/g, (m, d) => `${ODIA_NUMS[d] || d} ଥର`)
+      .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)/g, (m, d) => `${ODIA_NUMS[d] || d} ମାସ`);
+  }
+
   // If elderly or distressed patient, add gentle breath pauses at natural conjunctions
   if (age >= 60 || role === "patient") {
-    // Odia natural pause points
+    // Odia natural pause points & conversational distress breath markers
     cleaned = cleaned
       .replace(/\s+(ଆଉ|ଏବଂ|କିନ୍ତୁ|ଯେମିତି|ହଠାତ୍)\s+/g, ", $1 ")
       .replace(/\s+(ହେଉଛି|ଲାଗୁଛି|ହେଲାଣି)\s*([.।!])/g, " $1... ")
       .replace(/\s*(ଡାକ୍ତର ବାବୁ|ଦିଦି|ମାଉସୀ)\s*[,।]?/g, "$1... ")
+      .replace(/\b(ଆଃ|ଉଫ୍)\b\s*[,.]?/g, "$1... ")
       // Hindi natural pause points
       .replace(/\s+(और|लेकिन|जैसे|अचानक|बहुत)\s+/g, ", $1 ")
       .replace(/\s+(हो रहा है|लग रहा है|गया है)\s*([.।!])/g, " $1... ")
@@ -913,19 +927,20 @@ export async function speakHumanVoice(text, {
 
       const numericAge = parseInt(age, 10) || 35;
       const isFemale = (gender || "").toLowerCase().includes("female") || (gender || "").toLowerCase().includes("f");
+      const isOdia = targetLangCode === "od-IN";
       
       let speaker = isFemale ? "priya" : "shubh";
-      let pace = 0.86;
+      let pace = isOdia ? 0.84 : 0.86;
       let pitch = 0.0;
 
       if (numericAge <= 12) {
         speaker = "aayan";
         pitch = 0.16;
-        pace = 0.88;
+        pace = isOdia ? 0.85 : 0.88;
       } else if (numericAge >= 55) {
         speaker = isFemale ? "priya" : (targetLangCode === "en-IN" ? "ashutosh" : "ashutosh");
-        pitch = isFemale ? -0.04 : -0.08;
-        pace = 0.82;
+        pitch = isFemale ? -0.03 : -0.10;
+        pace = isFemale ? (isOdia ? 0.80 : 0.82) : (isOdia ? 0.78 : 0.82);
       } else if (role === "doctor") {
         speaker = "aditya";
         pitch = -0.04;
@@ -934,28 +949,56 @@ export async function speakHumanVoice(text, {
         speaker = "ishita";
         pitch = 0.00;
         pace = 0.90;
+      } else if (isFemale) {
+        speaker = "priya";
+        pitch = -0.03;
+        pace = isOdia ? 0.82 : 0.85;
       }
 
-      const baseUrl = (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000" : "";
+      // Convert any numeral digits in Odia to authentic spoken Odia words before sending
+      let textToSynthesize = text.slice(0, 500);
+      if (isOdia || /[\u0B00-\u0B7F]/.test(textToSynthesize)) {
+        const ODIA_DIGITS = {
+          "0": "ଶୂନ", "1": "ଏକ", "2": "ଦୁଇ", "3": "ତିନି", "4": "ଚାରି", "5": "ପାଞ୍ଚ", "6": "ଛଅ", "7": "ସାତ", "8": "ଆଠ", "9": "ନଅ",
+          "୦": "ଶୂନ", "୧": "ଏକ", "୨": "ଦୁଇ", "୩": "ତିନି", "୪": "ଚାରି", "୫": "ପାଞ୍ଚ", "୬": "ଛଅ", "୭": "ସାତ", "୮": "ଆଠ", "୯": "ନଅ"
+        };
+        textToSynthesize = textToSynthesize
+          .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଘଣ୍ଟା)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଘଣ୍ଟା`)
+          .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଦିନ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଦିନ`)
+          .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଥର)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଥର`)
+          .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ମାସ`);
+      }
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const candidateUrls = [
+        (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000/api/v1/sarvam/tts" : "/api/v1/sarvam/tts",
+        "https://saransh-two.vercel.app/api/v1/sarvam/tts"
+      ];
 
-      const sarvamResp = await fetch(`${baseUrl}/api/v1/sarvam/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: controller.signal,
-        body: JSON.stringify({
-          text: text.slice(0, 500),
-          target_language_code: targetLangCode,
-          speaker: speaker,
-          pitch: pitch,
-          pace: pace
-        })
-      });
-      clearTimeout(timeoutId);
+      let sarvamResp = null;
+      for (const endpoint of candidateUrls) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          sarvamResp = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            signal: controller.signal,
+            body: JSON.stringify({
+              text: textToSynthesize,
+              target_language_code: targetLangCode,
+              speaker: speaker,
+              pitch: pitch,
+              pace: pace
+            })
+          });
+          clearTimeout(timeoutId);
+          if (sarvamResp && sarvamResp.ok) break;
+        } catch {
+          // try next candidate endpoint
+        }
+      }
 
-      if (sarvamResp.ok) {
+      if (sarvamResp && sarvamResp.ok) {
         const sarvamData = await sarvamResp.json();
         if (sarvamData && sarvamData.audio_base64) {
           const audioUri = `data:audio/wav;base64,${sarvamData.audio_base64}`;

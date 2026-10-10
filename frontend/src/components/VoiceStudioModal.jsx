@@ -24,11 +24,11 @@ const PERSONA_PRESETS = [
     speaker: "ashutosh",
     gender: "Male",
     pitch: -0.10,
-    pace: 0.82,
+    pace: 0.78,
     sampleRate: 24000,
     icon: HeartPulse,
     sampleText: {
-      Odia: "ଡାକ୍ତର ବାବୁ... ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ... ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି!",
+      Odia: "ଆଃ... ଡାକ୍ତର ବାବୁ... ଦୁଇ ଘଣ୍ଟା ହେଲା... ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି... ବାମ ହାତକୁ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ... ଆଦୌ ନେଇପାରୁନି... ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି! ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ... ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି... ଆଃ...",
       Hindi: "डॉक्टर साहब... २ घंटे से सीने में भारी पत्थर जैसा दर्द हो रहा है... और बहुत तेज चुभन महसूस हो रही है। सांस... बिल्कुल नहीं आ रही, शरीर पसीने से ठंडा पड़ गया है!",
       English: "Doctor... for the past two hours, my chest feels crushed under a heavy stone... with unbearable stabbing pain. I can barely breathe... and I am breaking into a cold sweat!",
       Bengali: "ডাক্তারবাবু... ২ ঘণ্টা ধরে বুকটা পাথরের মতো ভারী লাগছে... আর খুব তীব্র চিনচিনে ব্যথা হচ্ছে। শ্বাস... একদম নিতে পারছি না... সারা শরীর ঘামে ঠান্ডা হয়ে গেছে!",
@@ -43,12 +43,12 @@ const PERSONA_PRESETS = [
     badge: "🟠 Severe Exhaustion",
     speaker: "priya",
     gender: "Female",
-    pitch: -0.02,
-    pace: 0.85,
+    pitch: -0.03,
+    pace: 0.82,
     sampleRate: 24000,
     icon: User,
     sampleText: {
-      Odia: "ଦିଦି... ୩ ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି... ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ଲାଲ୍ ଦାଗ ବାହାରି ପଡ଼ିଛି... ଆଉ ଚାଲିବାକୁ ଜମା ବଳ ପାଉନି।",
+      Odia: "ଉଫ୍... ଦିଦି... ତିନି ଦିନ ହେଲା ଦେହ ସାରା ନିଆଁ ଭଳି ତାତିଛି... ମୁଣ୍ଡଟା ଏତେ ଜୋରରେ ବିନ୍ଧୁଛି ଯେ ଆଖି ବି ଖୋଲି ହେଉନି। ହାତ ଗୋଡ଼ରେ ନାଲି ଦାଗ ବାହାରି ପଡ଼ିଛି... ଆଉ ଠିଆ ହେବାକୁ ଜମା ବଳ ପାଉନି... ଦୟାକରି ସାହାଯ୍ୟ କରନ୍ତୁ।",
       Hindi: "दीदी... ३ दिन से पूरा बदन भट्टी की तरह तप रहा है... सिर में इतना भयानक दर्द है कि आंखें भी नहीं खुल रही हैं। पूरे हाथ-पैरों में लाल चकत्ते निकल आए हैं... और चलने की बिल्कुल ताक़त नहीं बची है।",
       English: "Sister... for 3 days my entire body has been burning with high fever. My headache is blinding and red spots have appeared all over my arms and legs.",
       Bengali: "দিদি... ৩ দিন ধরে পুরো শরীর আগুনের মতো জ্বলছে... মাথায় এত তীব্র যন্ত্রণা যে চোখ খুলতে পারছি না। হাত-পায়ে লাল দাগ ফুটে উঠেছে... আর হাঁটার একদম শক্তি নেই।",
@@ -64,11 +64,11 @@ const PERSONA_PRESETS = [
     speaker: "aayan",
     gender: "Child (Male)",
     pitch: 0.16,
-    pace: 0.88,
+    pace: 0.85,
     sampleRate: 24000,
     icon: Baby,
     sampleText: {
-      Odia: "ଦିଦି... ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି! ସକାଳୁ ୨ ଥର ବାନ୍ତି ହେଲାଣି... ଆଉ କିଛି ଖାଇ ହେଉନି... ବହୁତ କଷ୍ଟ ହେଉଛି।",
+      Odia: "ଦିଦି... ଆଃ... ପେଟଟା ଭୀଷଣ ବିନ୍ଧୁଛି! ସକାଳୁ ଦୁଇ ଥର ବାନ୍ତି ହେଲାଣି... ଆଉ କିଛି ଖାଇ ହେଉନି... ବହୁତ କଷ୍ଟ ହେଉଛି ଦିଦି... ପ୍ଲିଜ୍ ଟିକେ ଦେଖନ୍ତୁ...",
       Hindi: "दीदी... पेट में बहुत तेज दर्द हो रहा है! सुबह से दो बार उल्टी हो गई... और कुछ भी खाया नहीं जा रहा, बहुत रोना आ रहा है।",
       English: "Sister... my tummy hurts so bad! I threw up twice since morning and I can't eat anything... it hurts so much.",
       Bengali: "দিদি... পেটে খুব জোরে ব্যথা করছে! সকাল থেকে দু'বার বমি হয়ে গেছে... আর কিছুই খেতে পারছি না... খুব কষ্ট হচ্ছে।",
@@ -83,12 +83,12 @@ const PERSONA_PRESETS = [
     badge: "🔴 Obstetric Critical",
     speaker: "priya",
     gender: "Female",
-    pitch: 0.04,
-    pace: 0.82,
+    pitch: -0.01,
+    pace: 0.80,
     sampleRate: 24000,
     icon: User,
     sampleText: {
-      Odia: "ମାଉସୀ... ମୋତେ ୮ ମାସ ଚାଲିଛି... ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଉ ଆଖିକୁ ସବୁ ଝାପ୍ସା ଦିଶୁଛି!",
+      Odia: "ମାଉସୀ... ମୋତେ ଆଠ ମାସ ଚାଲିଛି... ଗତକାଲି ସଞ୍ଜରୁ ମୁଣ୍ଡଟା କାଠ ଭଳିଆ ଖୁବ୍ ବିନ୍ଧୁଛି... ଆଖିକୁ ସବୁ ଝାପ୍ସା ଦିଶୁଛି... ଆଉ ଗୋଡ଼ ଦୁଇଟା ଏତେ ଫୁଲି ଯାଇଛି ଯେ ଚପଲ ପଶୁନି। ମୋ ଛୁଆଟା ଠିକ୍ ଅଛି ତ ମାଉସୀ?",
       Hindi: "नर्स दीदी... मुझे ८ महीने का गर्भ है... दोनों पैर इतने सूज गए हैं कि चप्पल नहीं आ रही। सिर फटने जैसा भारी दर्द है और आंखों के सामने सब धुंधला दिख रहा है!",
       English: "Sister... I am 8 months pregnant and my feet are so swollen my slippers won't fit. I have a blinding throbbing headache and my vision is completely blurred!",
       Bengali: "নার্স দিদি... আমার ৮ মাসের গর্ভ চলছে... দুটো পা এত ফুলে গেছে যে চটি পরতে পারছি না। মাথায় প্রচণ্ড যন্ত্রণা হচ্ছে আর চোখের সামনে সব ঝাপসা দেখছি!",
@@ -103,12 +103,12 @@ const PERSONA_PRESETS = [
     badge: "🟢 Ambulatory / Non-Urgent",
     speaker: "shubh",
     gender: "Male",
-    pitch: 0.02,
-    pace: 0.92,
+    pitch: 0.00,
+    pace: 0.88,
     sampleRate: 24000,
     icon: User,
     sampleText: {
-      Odia: "ନମସ୍କାର ଦିଦି... କାଲି ରାତିରେ ପରୀକ୍ଷା ପାଇଁ ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି... ଟିକେ ଥକା ଲାଗୁଛି, ବାକି ସବୁ ଠିକ୍ ଅଛି।",
+      Odia: "ନମସ୍କାର ଦିଦି... ଗତକାଲି ରାତିରେ ଅନେକ ସମୟ ଧରି ପାଠ ପଢ଼ିବା ପରେ ମଥାଟା ସାମାନ୍ୟ ବିନ୍ଧୁଛି। ଜ୍ୱର କି ବାନ୍ତି କିଛି ନାହିଁ, କେବଳ ଟିକେ ଥକା ଲାଗୁଛି।",
       Hindi: "नमस्ते दीदी... कल देर रात परीक्षा की पढ़ाई करने के बाद माथे में हल्का-हल्का दर्द है... बस थोड़ी थकान लग रही है, बाकी सब ठीक है।",
       English: "Hello sister... after studying late last night for my exams, I have a mild tension headache across my forehead and feeling a bit tired, otherwise I am fine.",
       Bengali: "নমস্কার দিদি... কাল রাতে পরীক্ষার পড়ার পর কপালে হালকা ব্যথা করছে... একটু ক্লান্তি লাগছে, বাকি সব ঠিক আছে।",
@@ -218,21 +218,47 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
     setIsGenerating(true);
     setStatusMessage("Synthesizing 24,000 Hz Sovereign Neural Voice...");
 
-    try {
-      const baseUrl = (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000" : "";
-      const resp = await fetch(`${baseUrl}/api/v1/sarvam/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: customText,
-          target_language_code: selectedLang.code,
-          speaker: selectedPersona.speaker,
-          pitch: parseFloat(customPitch),
-          pace: parseFloat(customPace)
-        })
-      });
+    // Convert any numeral digits in Odia to authentic spoken Odia words before synthesis
+    let textToSend = customText;
+    if (selectedLang.code === "od-IN" || /[\u0B00-\u0B7F]/.test(textToSend)) {
+      const ODIA_DIGITS = {
+        "0": "ଶୂନ", "1": "ଏକ", "2": "ଦୁଇ", "3": "ତିନି", "4": "ଚାରି", "5": "ପାଞ୍ଚ", "6": "ଛଅ", "7": "ସାତ", "8": "ଆଠ", "9": "ନଅ",
+        "୦": "ଶୂନ", "୧": "ଏକ", "୨": "ଦୁଇ", "୩": "ତିନି", "୪": "ଚାରି", "୫": "ପାଞ୍ଚ", "୬": "ଛଅ", "୭": "ସାତ", "୮": "ଆଠ", "୯": "ନଅ"
+      };
+      textToSend = textToSend
+        .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଘଣ୍ଟା)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଘଣ୍ଟା`)
+        .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଦିନ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଦିନ`)
+        .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ଥର)/g, (m, d) => `${ODIA_DIGITS[d] || d} ଥର`)
+        .replace(/([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)/g, (m, d) => `${ODIA_DIGITS[d] || d} ମାସ`);
+    }
 
-      if (resp.ok) {
+    try {
+      const candidateUrls = [
+        (typeof window !== "undefined" && window.location.port === "5173") ? "http://localhost:8000/api/v1/sarvam/tts" : "/api/v1/sarvam/tts",
+        "https://saransh-two.vercel.app/api/v1/sarvam/tts"
+      ];
+
+      let resp = null;
+      for (const url of candidateUrls) {
+        try {
+          resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              text: textToSend,
+              target_language_code: selectedLang.code,
+              speaker: selectedPersona.speaker,
+              pitch: parseFloat(customPitch),
+              pace: parseFloat(customPace)
+            })
+          });
+          if (resp.ok) break;
+        } catch {
+          // try next candidate endpoint
+        }
+      }
+
+      if (resp && resp.ok) {
         const data = await resp.json();
         if (data.audio_base64) {
           const audioUri = `data:audio/wav;base64,${data.audio_base64}`;
@@ -258,12 +284,10 @@ export default function VoiceStudioModal({ isOpen, onClose }) {
           };
 
           await playWithClinicalMastering(audio);
-        } else {
-          throw new Error("No audio returned");
+          return;
         }
-      } else {
-        throw new Error(`Server status: ${resp.status}`);
       }
+      throw new Error("Cloud TTS endpoints unavailable");
     } catch (err) {
       console.warn("Dynamic synthesis error:", err);
       setIsGenerating(false);

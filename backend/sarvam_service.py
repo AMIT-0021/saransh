@@ -63,12 +63,30 @@ def _post_json(url: str, payload: dict, timeout: int = 20) -> Optional[dict]:
 
 def enhance_clinical_prosody(text: str) -> str:
     """
-    Inserts subtle prosody breath pauses (...) at clause boundaries and commas
-    so neural Indic TTS takes natural human breaths instead of reading monotonically.
+    Inserts subtle prosody breath pauses (...) at clause boundaries, interjections,
+    and converts written Odia numerals into authentic spoken Odia words so neural
+    Indic TTS takes natural human breaths and pronounces numbers with local vernacular cadence.
     """
     if not text or not text.strip():
         return text
     enhanced = text.strip()
+
+    # Spoken Odia numeral expansion before temporal/frequency/cardinal terms
+    if re.search(r'[\u0B00-\u0B7F]', enhanced):
+        odia_digits = {
+            "0": "ଶୂନ", "1": "ଏକ", "2": "ଦୁଇ", "3": "ତିନି", "4": "ଚାରି", "5": "ପାଞ୍ଚ", "6": "ଛଅ", "7": "ସାତ", "8": "ଆଠ", "9": "ନଅ",
+            "୦": "ଶୂନ", "୧": "ଏକ", "୨": "ଦୁଇ", "୩": "ତିନି", "୪": "ଚାରି", "୫": "ପାଞ୍ଚ", "୬": "ଛଅ", "୭": "ସାତ", "୮": "ଆଠ", "୯": "ନଅ"
+        }
+        enhanced = re.sub(r'([0-9]|[\u0B66-\u0B6F])\s*(?:ଘଣ୍ଟା)', lambda m: f"{odia_digits.get(m.group(1), m.group(1))} ଘଣ୍ଟା", enhanced)
+        enhanced = re.sub(r'([0-9]|[\u0B66-\u0B6F])\s*(?:ଦିନ)', lambda m: f"{odia_digits.get(m.group(1), m.group(1))} ଦିନ", enhanced)
+        enhanced = re.sub(r'([0-9]|[\u0B66-\u0B6F])\s*(?:ଥର)', lambda m: f"{odia_digits.get(m.group(1), m.group(1))} ଥର", enhanced)
+        enhanced = re.sub(r'([0-9]|[\u0B66-\u0B6F])\s*(?:ମାସ)', lambda m: f"{odia_digits.get(m.group(1), m.group(1))} ମାସ", enhanced)
+        
+        # Conversational Odia distress interjections breath tokens
+        for interj in ["ଆଃ", "ଉଫ୍", "ଡାକ୍ତର ବାବୁ", "ଦିଦି", "ମାଉସୀ"]:
+            if interj in enhanced and f"{interj}..." not in enhanced:
+                enhanced = re.sub(rf'\b{re.escape(interj)}\b(?!\.\.\.)', f"{interj}...", enhanced)
+
     enhanced = re.sub(r'\.{2,}', '...', enhanced)
     for marker in [", ", " - ", "—", "। ", "! "]:
         if marker in enhanced and "..." not in enhanced:

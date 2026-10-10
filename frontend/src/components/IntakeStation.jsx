@@ -245,19 +245,19 @@ export default function IntakeStation({
   const [patientInfo, setPatientInfo] = useState({
     patient_id: "PHC-1024",
     token_number: "T-024",
-    name_or_alias: "Ramesh K. (Synthetic)",
-    age: 62,
+    name_or_alias: "",
+    age: 35,
     sex: "Male",
     location_state: "Odisha - Khordha",
     facility_type: selectedFacility || "PHC_OPD",
     language_preference: selectedLanguage || "English",
     consent_given: true,
     unconscious_bypass: false,
-    emergency_contact: "+91-9876543210",
-    abha_id: "91-4821-9923-0192"
+    emergency_contact: "+91-",
+    abha_id: ""
   });
 
-  const [abhaScanned, setAbhaScanned] = useState(true);
+  const [abhaScanned, setAbhaScanned] = useState(false);
   const [isScanningAbha, setIsScanningAbha] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -363,39 +363,39 @@ export default function IntakeStation({
   };
 
   const [symptoms, setSymptoms] = useState({
-    chief_complaint: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing.",
-    selected_symptoms: ["Chest Pain", "Difficulty Breathing", "Sweating"],
-    duration: "2 hours",
-    onset_trend: "Worsening rapidly",
-    severity_self_reported: "Severe (8/10)",
-    associated_symptoms: ["Dizziness", "Left arm heaviness"],
+    chief_complaint: "",
+    selected_symptoms: [],
+    duration: "",
+    onset_trend: "Gradual",
+    severity_self_reported: "Moderate (5/10)",
+    associated_symptoms: [],
     previous_similar_episodes: "",
-    verbatim_local_statement: "ଡାକ୍ତର ବାବୁ, ୨ ଘଣ୍ଟା ହେଲା ଛାତିଟା ପଥର ଭଳି ଭାରି ଲାଗୁଛି ଆଉ ବହୁତ ଜୋରରେ କଣେଇକି ଦରଦ ହେଉଛି। ନିଶ୍ୱାସ ଆଦୌ ନେଇପାରୁନି, ଦେହ ସାରା ଝାଳରେ ଥଣ୍ଡା ପଡ଼ିଗଲାଣି। ଟିକେ ଶୀଘ୍ର ଦେଖନ୍ତୁ ବାବୁ, ଛାତି ଫାଟିଯିବା ଭଳି ଲାଗୁଛି।",
-    phonetic_transliteration: "Doctor babu, 2 ghanta hela chhatita pathara bhali bhari laguchhi au bahut jor re kaneiki darada heuchhi. Nishwas aadou neiparuni, deha sara jhalare thanda padigalani. Tike shighra dekhantu babu, chhati fatijiba bhali laguchhi.",
-    translated_english_statement: "Doctor, for the past 2 hours my chest feels crushed under heavy stone with unbearable stabbing pain. I can barely breathe, and I'm breaking into a cold sweat. Please check me quickly, it feels like my chest is tearing."
+    verbatim_local_statement: "",
+    phonetic_transliteration: "",
+    translated_english_statement: ""
   });
 
   const [vitals, setVitals] = useState({
-    temperature_f: 99.8,
-    spo2_percent: 89,
-    heart_rate_bpm: 112,
-    bp_systolic: 158,
-    bp_diastolic: 96,
-    respiratory_rate_min: 26,
-    blood_glucose_mg_dl: 142,
-    weight_kg: 68
+    temperature_f: 98.6,
+    spo2_percent: 98,
+    heart_rate_bpm: 76,
+    bp_systolic: 120,
+    bp_diastolic: 80,
+    respiratory_rate_min: 16,
+    blood_glucose_mg_dl: 100,
+    weight_kg: 60
   });
 
   const [medicalHistory, setMedicalHistory] = useState({
-    existing_conditions: ["Hypertension (5 years)", "Type 2 Diabetes"],
-    current_medications: ["Amlodipine 5mg irregular", "Metformin 500mg"],
-    known_allergies: ["Sulfa drugs"]
+    existing_conditions: [],
+    current_medications: [],
+    known_allergies: []
   });
 
   const [redFlags, setRedFlags] = useState({
-    severe_chest_pain: true,
-    severe_breathing_difficulty: true,
-    very_low_oxygen_spo2: true,
+    severe_chest_pain: false,
+    severe_breathing_difficulty: false,
+    very_low_oxygen_spo2: false,
     loss_of_consciousness: false,
     severe_bleeding: false,
     seizure: false,
@@ -403,14 +403,14 @@ export default function IntakeStation({
     severe_allergic_reaction: false
   });
 
-  const [selectedReportId, setSelectedReportId] = useState("ECG_LVH");
+  const [selectedReportId, setSelectedReportId] = useState("");
   const [uploadedReports, setUploadedReports] = useState([]);
-  const [visualCategory, setVisualCategory] = useState("Swelling_Edema");
-  const [visualCaption, setVisualCaption] = useState("Mild bilateral ankle swelling noticed for 3 days");
+  const [visualCategory, setVisualCategory] = useState("None");
+  const [visualCaption, setVisualCaption] = useState("");
 
   const [isListening, setIsListening] = useState(false);
   const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(false);
-  const [isStatementVerified, setIsStatementVerified] = useState(true);
+  const [isStatementVerified, setIsStatementVerified] = useState(false);
   const [liveStreamText, setLiveStreamText] = useState("");
   const [isSoundDetected, setIsSoundDetected] = useState(false);
   const [audioVolumePercent, setAudioVolumePercent] = useState(0);
@@ -1244,23 +1244,25 @@ export default function IntakeStation({
                     <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-sky-200 shadow-inner">
                       <User className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 sm:p-1 border-2 border-[#060d1d] shadow-sm" title="ABDM Verified Citizen">
-                      <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
-                    </div>
+                    {abhaScanned && (
+                      <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 sm:p-1 border-2 border-[#060d1d] shadow-sm" title="ABDM Verified Citizen">
+                        <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Citizen Basic Info */}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <h3 className="text-sm sm:text-lg font-black text-white tracking-tight truncate max-w-[200px] sm:max-w-none">
-                        {patientInfo.name_or_alias || "Ramesh Kumar (ABHA Verified)"}
+                        {patientInfo.name_or_alias || (abhaScanned ? "ABHA Verified Citizen" : "Walk-in Citizen (New Intake)")}
                       </h3>
-                      <span className="text-[9px] sm:text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-md font-bold shrink-0">
-                        CITIZEN
+                      <span className={`text-[9px] sm:text-[10px] ${abhaScanned ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/30" : "bg-sky-500/20 text-sky-300 border-sky-400/30"} border px-2 py-0.5 rounded-md font-bold shrink-0`}>
+                        {abhaScanned ? "ABHA VERIFIED" : "WALK-IN CITIZEN"}
                       </span>
                     </div>
                     <p className="text-xs text-slate-300 mt-0.5 truncate">
-                      {Math.max(0, Math.abs(Number(patientInfo.age) || 0))} Yrs • {patientInfo.sex} • {patientInfo.location_state || "Odisha - Khordha"}
+                      {patientInfo.age ? `${Math.max(0, Math.abs(Number(patientInfo.age) || 0))} Yrs • ` : ""}{patientInfo.sex} • {patientInfo.location_state || "Odisha - Khordha"}
                     </p>
                   </div>
                 </div>
@@ -1291,8 +1293,14 @@ export default function IntakeStation({
                   </span>
                   <div className="bg-[#08152e] border border-sky-400/40 px-2.5 sm:px-3.5 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-black text-sky-200 tracking-wider shadow-inner flex items-center space-x-1.5 sm:space-x-2 max-w-full min-w-0">
                     <span className="text-cyan-400 shrink-0">ABHA:</span>
-                    <span className="text-white tracking-wider sm:tracking-widest truncate">{patientInfo.abha_id || "91-4821-9923-0192"}</span>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-auto" />
+                    <span className="text-white tracking-wider sm:tracking-widest truncate">
+                      {patientInfo.abha_id || (abhaScanned ? "91-4821-9923-0192" : "Not Linked (Scan QR or enter 14-digit ID)")}
+                    </span>
+                    {abhaScanned ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-auto" />
+                    ) : (
+                      <span className="text-[10px] text-amber-400/90 font-sans font-medium shrink-0 ml-auto hidden sm:inline">Optional</span>
+                    )}
                   </div>
                 </div>
 
@@ -1318,20 +1326,27 @@ export default function IntakeStation({
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <span className="bg-blue-500/15 text-blue-200 border border-blue-400/30 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                    <span>Essential Hypertension (ICD-10 I10)</span>
-                  </span>
+                  {(medicalHistory.existing_conditions?.length > 0 || medicalHistory.known_allergies?.length > 0) ? (
+                    <>
+                      {medicalHistory.existing_conditions?.map((cond, idx) => (
+                        <span key={`cond-${idx}`} className="bg-blue-500/15 text-blue-200 border border-blue-400/30 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                          <span>{cond}</span>
+                        </span>
+                      ))}
 
-                  <span className="bg-cyan-500/15 text-cyan-200 border border-cyan-400/30 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                    <span>Type 2 Diabetes</span>
-                  </span>
-
-                  <span className="bg-rose-500/20 text-rose-200 border border-rose-400/50 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 ring-1 ring-rose-500/30 shadow-xs animate-pulse">
-                    <span>🚨</span>
-                    <span>Penicillin Allergy Alert</span>
-                  </span>
+                      {medicalHistory.known_allergies?.map((allergy, idx) => (
+                        <span key={`allergy-${idx}`} className="bg-rose-500/20 text-rose-200 border border-rose-400/50 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 ring-1 ring-rose-500/30 shadow-xs animate-pulse">
+                          <span>🚨</span>
+                          <span>{allergy} Allergy Alert</span>
+                        </span>
+                      ))}
+                    </>
+                  ) : (
+                    <span className="text-xs text-sky-200/70 italic py-0.5">
+                      No prior chronic alerts on record — Ready for fresh clinical intake or ABHA scan
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -1339,14 +1354,25 @@ export default function IntakeStation({
 
           {/* 1-Click Demo Quick Fill Profiles */}
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-5 space-y-3 min-w-0 max-w-full overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center space-x-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
                 <Sparkles className="w-4 h-4 text-teal-600" />
                 <span>{t.quickFillTitle || "1-Click Demo Quick Fill Profiles:"}</span>
               </div>
-              <span className="text-[11px] text-slate-500 font-medium">
-                Standardized clinical profiles across facility scenarios
-              </span>
+              <div className="flex items-center space-x-2.5">
+                <span className="text-[11px] text-slate-500 font-medium hidden md:inline">
+                  Standardized clinical profiles across facility scenarios
+                </span>
+                <button
+                  type="button"
+                  onClick={handleResetForm}
+                  className="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition flex items-center space-x-1 cursor-pointer active:scale-95"
+                  title="Clear all fields and reset to a neutral walk-in intake"
+                >
+                  <span>🔄</span>
+                  <span>Reset to Clean Intake</span>
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-3.5">
@@ -1532,7 +1558,7 @@ export default function IntakeStation({
                   type="text"
                   value={patientInfo.name_or_alias}
                   onChange={(e) => setPatientInfo({ ...patientInfo, name_or_alias: e.target.value })}
-                  placeholder="e.g. Ramesh Kumar"
+                  placeholder={t.namePlaceholder || "e.g. Patient / Citizen Name"}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 font-medium"
                 />
               </div>

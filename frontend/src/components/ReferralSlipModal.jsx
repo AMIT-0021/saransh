@@ -122,14 +122,14 @@ const FACILITY_MAP = {
 
 export default function ReferralSlipModal({ record, onClose, selectedLanguage = "English" }) {
   const p = record?.patient_basic_info || {
-    name_or_alias: record?.name_or_alias || "Ramesh K. (Synthetic)",
-    age: Math.max(0, Math.abs(Number(record?.age ?? 62))),
+    name_or_alias: record?.name_or_alias || "Patient / Citizen",
+    age: Math.max(0, Math.abs(Number(record?.age ?? 35))),
     sex: record?.sex || "Male",
     facility_type: record?.facility_type || "PHC_JATNI",
     token_number: record?.token_number || "T-024",
-    abha_id: record?.abha_id || "91-4821-9923-0192",
-    language_preference: record?.language_preference || "Odia",
-    emergency_contact: record?.emergency_contact || "+91-9876543210"
+    abha_id: record?.abha_id || "",
+    language_preference: record?.language_preference || "English",
+    emergency_contact: record?.emergency_contact || "+91-"
   };
 
   const v = record?.vital_signs || {};

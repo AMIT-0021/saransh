@@ -211,7 +211,7 @@ export default function App() {
   };
 
   // High-visibility Emergency Escalation Trigger
-  const triggerEmergencyEscalation = (token, patientName = "Ramesh K.", conditionSummary = "Critical Hypoxia SpO2 89%") => {
+  const triggerEmergencyEscalation = (token, patientName = "Patient / Citizen", conditionSummary = "Critical Clinical Alert") => {
     const cleanToken = token || "T-024";
     playEmergencyTone();
     setEmergencyNotification({
@@ -334,7 +334,7 @@ export default function App() {
       setTriageResult(saved);
       setPendingSyncCount(getOfflinePendingCount());
       if (local.priority === "RED") {
-        const patName = payload?.patient_basic_info?.name_or_alias || "Ramesh K.";
+        const patName = payload?.patient_basic_info?.name_or_alias || "Patient / Citizen";
         const spo2 = payload?.vital_signs?.spo2_percent || 89;
         triggerEmergencyEscalation(
           offlineRecord.token_number,
@@ -361,7 +361,7 @@ export default function App() {
       setTriageResult(data);
       if (data?.ai_triage_output?.final_computed_priority === "RED" || data?.priority === "RED") {
         const tok = data.token_number || data.patient_basic_info?.token_number || payload.patient_basic_info?.token_number || "T-024";
-        const patName = data.patient_basic_info?.name_or_alias || payload.patient_basic_info?.name_or_alias || "Ramesh K.";
+        const patName = data.patient_basic_info?.name_or_alias || payload.patient_basic_info?.name_or_alias || "Patient / Citizen";
         const spo2 = data.vital_signs?.spo2_percent || payload.vital_signs?.spo2_percent || 89;
         triggerEmergencyEscalation(
           tok,
@@ -418,7 +418,7 @@ export default function App() {
 
       setTriageResult(fallbackRecord);
       if (local.priority === "RED") {
-        const patName = payload?.patient_basic_info?.name_or_alias || "Ramesh K.";
+        const patName = payload?.patient_basic_info?.name_or_alias || "Patient / Citizen";
         const spo2 = payload?.vital_signs?.spo2_percent || 89;
         triggerEmergencyEscalation(
           fallbackRecord.token_number,
@@ -460,7 +460,7 @@ export default function App() {
         const prio = record?.ai_triage_output?.final_computed_priority || record?.priority;
         if (prio === "RED") {
           const tok = record.token_number || record.patient_basic_info?.token_number || "T-024";
-          const patName = record.patient_basic_info?.name_or_alias || record.name_or_alias || "Ramesh K.";
+          const patName = record.patient_basic_info?.name_or_alias || record.name_or_alias || "Patient / Citizen";
           const spo2 = record.vital_signs?.spo2_percent || record.vitals?.spo2_percent || 89;
           triggerEmergencyEscalation(
             tok,
@@ -480,7 +480,7 @@ export default function App() {
       const prio = found.ai_triage_output?.final_computed_priority || found.priority;
       if (prio === "RED") {
         const tok = found.token_number || "T-024";
-        const patName = found.name_or_alias || found.patient_basic_info?.name_or_alias || "Ramesh K.";
+        const patName = found.name_or_alias || found.patient_basic_info?.name_or_alias || "Patient / Citizen";
         const spo2 = found.vital_signs?.spo2_percent || 89;
         triggerEmergencyEscalation(
           tok,
@@ -536,7 +536,7 @@ export default function App() {
       if (res.ok) {
         await res.json();
         if (reviewPayload.final_priority === "RED") {
-          const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || "Ramesh K.";
+          const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || "Patient / Citizen";
           triggerEmergencyEscalation(
             selectedRecordForReview.token_number,
             patName,
@@ -582,7 +582,7 @@ export default function App() {
     });
 
     if (reviewPayload.final_priority === "RED") {
-      const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || selectedRecordForReview.name_or_alias || "Ramesh K.";
+      const patName = selectedRecordForReview.patient_basic_info?.name_or_alias || selectedRecordForReview.name_or_alias || "Patient / Citizen";
       triggerEmergencyEscalation(
         selectedRecordForReview.token_number || "T-024",
         patName,
